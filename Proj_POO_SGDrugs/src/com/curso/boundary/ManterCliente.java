@@ -657,7 +657,7 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 		cc.attTableProb(new ArrayList<ProblemaSaude>());
 		ControlClientes.clientSel = new Cliente();
 		startStyle();
-		btnSelected(0);
+		//btnSelected(0);
 	}
 	
 	private boolean camposValidos() {
