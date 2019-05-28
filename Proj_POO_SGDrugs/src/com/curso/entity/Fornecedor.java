@@ -1,6 +1,6 @@
 package com.curso.entity;
 
-public class Fornecedor {
+public class Fornecedor extends Pessoa {
 
 	private long cnpj;
 	private String nome_fantasia;
