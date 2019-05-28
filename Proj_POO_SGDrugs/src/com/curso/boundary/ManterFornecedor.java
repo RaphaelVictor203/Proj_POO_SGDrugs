@@ -61,8 +61,8 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 	private TextField txtUFPesquisa;
 	private TextField txtCidadePesquisa;
 	private ComboBox<String> cmbSexo;
-	private TableView<Fornecedor> tblProb;
-	private Button btnAddProb, btnLimpaCampos, btnCadastrar, btnPesquisa;
+	private TableView<Fornecedor> tblFornec;
+	private Button btnAddPFornec, btnLimpaCampos, btnCadastrar, btnPesquisa;
 
 	
 	
@@ -80,11 +80,11 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 		
 		txtNome = new TextField();
 		cmbFarmacia = new ComboBox<>(FXCollections.observableArrayList(
-				new Farmacia ("Unidae Leste"),
-				new Farmacia ("Unidae Sul"),
-				new Farmacia ("Unidae Norte"),
-				new Farmacia ("Unidae Oeste"),
-				new Farmacia ("Unidae Sudeste")
+				new Farmacia ("Unidade Leste"),
+				new Farmacia ("Unidade Sul"),
+				new Farmacia ("Unidade Norte"),
+				new Farmacia ("Unidade Oeste"),
+				new Farmacia ("Unidade Sudeste")
 				)) ;
 		cmbDia = new ComboBox<String>(FXCollections.observableArrayList(ff.gerarArrayNum(1, 31)));
 		cmbDia.setPromptText("Dia");
@@ -113,9 +113,9 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 		
 		btnLimpaCampos = new Button("LIMPAR CAMPOS");
 		btnCadastrar = new Button("CADASTRAR");
-		btnAddProb = new Button("PESQUISAR");
-		tblProb = new TableView<Fornecedor>();
-		tblProb.setMaxWidth(625);
+		btnAddPFornec = new Button("PESQUISAR");
+		tblFornec = new TableView<Fornecedor>();
+		tblFornec.setMaxWidth(625);
 		
 		
 		
@@ -150,15 +150,23 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 		entradaInfoEnd.setStyle("-fx-min-width: 50%; -fx-font-size: 15px"); 
 		entradaInfoEnd.setPadding(new Insets(0, 40, 40, 40));
 		
+		VBox entradaFarmacia = new VBox(
+				new Label("FARMÁCIA"),
+				new Separator(),
+				new HBox(10, new Label("Unidade :"), cmbFarmacia)
+		);
+		entradaFarmacia.setSpacing(10);
+		entradaFarmacia.setStyle("-fx-min-width: 50%; -fx-font-size: 15px"); 
+		entradaFarmacia.setPadding(new Insets(0, 40, 40, 40));
 	
-		Label tituloProb = new Label("PESQUISAR FUNCIONÁRIO");
-		tituloProb.setStyle(" -fx-font-size: 15px");
+		Label tituloFunc = new Label("PESQUISAR FUNCIONÁRIO");
+		tituloFunc.setStyle(" -fx-font-size: 15px");
 		VBox entradaTab = new VBox(
-				tituloProb,
+				tituloFunc,
 				new Separator(),
 				new HBox(txtPesquisa),
-				btnAddProb,
-				tblProb
+				btnAddPFornec,
+				tblFornec
 		);
 		entradaTab.setPadding(new Insets(39, 40, 40, 40));
 		entradaTab.setSpacing(10);
@@ -173,7 +181,7 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 		hbBtns.setSpacing(20);
 		
 		HBox entradaInfoGeral = new HBox(
-				new VBox(entradaInfoCli,entradaInfoEnd,hbBtns),
+				new VBox(entradaInfoCli,entradaFarmacia,entradaInfoEnd,hbBtns),
 				entradaTab
 		);
 		entradaInfoGeral.setPadding(new Insets(20, 0, 0, 0));
@@ -218,7 +226,7 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 		btnCadFornec.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
 		
 		btnCadastrar.addEventFilter(MouseEvent.MOUSE_CLICKED, this);
-		btnAddProb.addEventFilter(MouseEvent.MOUSE_CLICKED, this);
+		btnAddPFornec.addEventFilter(MouseEvent.MOUSE_CLICKED, this);
 		btnLimpaCampos.addEventFilter(MouseEvent.MOUSE_CLICKED, this);
 		btnPesquisa.addEventFilter(MouseEvent.MOUSE_CLICKED, this);
 		
@@ -304,7 +312,7 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 		desc.setCellValueFactory(item -> new ReadOnlyLongWrapper(item.getValue().getCnpj()));
 		
 		
-		tblProb.getColumns().addAll(id_fornec,tipo,desc);
+		tblFornec.getColumns().addAll(id_fornec,tipo,desc);
 		
 	}
 	
@@ -379,7 +387,7 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 				+ "-fx-min-height: 40px;"
 				+ "-fx-cursor: hand;";
 		
-		String styleBtnAddProb =
+		String stylebtnAddPFornec =
 				"-fx-min-width: 625px;"
 				+ "-fx-background-color: #007F0E;"
 				+ "-fx-text-fill: white;"
@@ -443,7 +451,7 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 		cmbUF.setStyle("-fx-min-width: 259px; " + styleEntradas + comboStyle);
 		cmbUF.setEffect(dp);
 		txtPesquisa.setStyle(styleEntradaPesquisa + "-fx-font-size: 15px");
-		btnAddProb.setStyle(styleBtnAddProb);
+		btnAddPFornec.setStyle(stylebtnAddPFornec);
 		btnLimpaCampos.setStyle(styleBtns);
 		btnCadastrar.setStyle(styleBtns);
 		txtNomePesquisa.setStyle("-fx-min-width: 515px;" + styleEntradas);
@@ -488,7 +496,7 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 		
 		if(e.getSource() == btnCadastrar) {
 			if(btnCadastrar.getText().equals("CADASTRAR") && camposValidos()) {
-				JOptionPane.showMessageDialog(null, "cadastro realizado !!!", "Cadastro", JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(null, "Cadastro realizado !!!", "Cadastro", JOptionPane.INFORMATION_MESSAGE);
 				if(ff.cadFornecedor(boundaryToFornecedor())) {
 					limparCampos();
 				}
@@ -526,6 +534,7 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 		btnCadFornec.setText("CADASTRO");
 		btnLimpaCampos.setText("LIMPAR CAMPOS");
 		this.txtNome.setText("");
+		this.cmbFarmacia.getSelectionModel().select(-1);
 		this.cmbDia.getSelectionModel().select(-1);
 		this.cmbMes.getSelectionModel().select(-1);
 		this.cmbAno.getSelectionModel().select(-1);
