@@ -65,12 +65,9 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 	private TextField txtCartaoSus;
 	private TextField txtCEP;
 	private TextField txtRua, txtNum;
-	private ComboBox<String> cmbCid, cmbUF;
+	private ComboBox<String> cmbCid, cmbUF, cmbPesquisa;
 	private TextField txtPesquisa;
-	private TextField txtNomePesquisa;
-	private TextField txtCPFPesquisa;
-	private TextField txtUFPesquisa;
-	private TextField txtCidadePesquisa;
+	private TextField txtClientePesquisa;
 	private ComboBox<String> cmbSexo;
 	private TableView<Cliente> tblCli;
 	private TableView<ProblemaSaude> tblProb;
@@ -186,16 +183,18 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 		
 //INICIO PAINEL GERENCIAMENTO--------------------------------------------------------------------------
 		
-		txtNomePesquisa = new TextField();
-		txtCPFPesquisa = new TextField();
-		txtUFPesquisa = new TextField();
-		txtCidadePesquisa = new TextField();
+		//txtNomePesquisa = new TextField();
+		txtClientePesquisa = new TextField();
+		//txtUFPesquisa = new TextField();
+		//txtCidadePesquisa = new TextField();
 		btnPesquisa = new Button("PESQUISAR");
 		tblCli = new TableView<Cliente>();
-		tblCli.setMinWidth(600);
+		cmbPesquisa = new ComboBox<String>(FXCollections.observableArrayList(new String[]{"CPF", "NOME", "CIDADE"}));
+		cmbPesquisa.setPromptText("TIPO");
+		//tblCli.setMinWidth(600);
 		
 		Label lblTitulo = new Label("PESQUISA CLIENTE");
-		HBox hb = new HBox(80,
+		/*HBox hb = new HBox(80,
 				new VBox(10,
 							lblTitulo,
 							new Separator(),
@@ -203,6 +202,9 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 							new HBox(10, new Label("CPF.: "), txtCPFPesquisa, new Label("UF.: "), txtUFPesquisa),
 							new HBox(10, new Label("Cidade: "), txtCidadePesquisa, btnPesquisa)
 						),
+				tblCli);*/
+		VBox hb = new VBox(10,lblTitulo,new Separator(),
+				new HBox(5, cmbPesquisa, new HBox(txtClientePesquisa, btnPesquisa)),
 				tblCli);
 		hb.setStyle("-fx-font-size: 15px;");
 		painelMant = new BorderPane(hb);
@@ -383,6 +385,7 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 				cc.removerCliente();
 				setFunctionCliButtons();
 				limparCampos();
+				btnSelected(1);
 			});
 		}
 	}
@@ -443,9 +446,9 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 		String styleBtnPesquisa = 
 				"-fx-background-color: #0095FE;"
 				+ "-fx-text-fill: white;"
-				+ "-fx-background-radius: 7;"
+				+ "-fx-background-radius: 0px 8px 8px 0px;"
 				+ "-fx-min-width: 240px;"
-				+ "-fx-min-height: 30px;"
+				+ "-fx-min-height: 27px;"
 				+ "-fx-cursor: hand;";
 		
 		String styleBtns = 
@@ -524,13 +527,12 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 		btnLimpaCampos.setStyle(styleBtns);
 		btnCadastrar.setStyle(styleBtns);
 		btnPesquisaProb.setStyle(stylePesquisaProb);
-		txtNomePesquisa.setStyle("-fx-min-width: 515px;" + styleEntradas);
-		txtCPFPesquisa.setStyle("-fx-min-width: 280px;" + styleEntradas);
-		txtUFPesquisa.setStyle("-fx-min-width: 200px;" + styleEntradas);
-		txtCidadePesquisa.setStyle("-fx-min-width: 262px;" + styleEntradas);
+		txtClientePesquisa.setStyle(styleEntradaPesquisa + "-fx-min-width: 930px; -fx-min-height: 32px;");
 		btnPesquisa.setStyle(styleBtnPesquisa);
 		cmbSexo.setStyle(comboStyle);
 		cmbSexo.setEffect(dp);
+		cmbPesquisa.setStyle(comboStyle + "-fx-min-width: 100px;");
+		cmbPesquisa.setEffect(dp);
 	}
 	
 	public void btnSelected(int btn) {
@@ -589,6 +591,7 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 				limparCampos();
 				setFunctionCliButtons();
 			}
+			btnSelected(0);
 		}else
 		if(e.getSource() == btnAddProb) {
 			ProblemaSaude ps = cc.pesquisarProb(this.txtPesquisa.getText());
@@ -620,10 +623,10 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 			}
 		}else
 		if(e.getSource() == btnPesquisa) {
-			if(txtCPFPesquisa.getText().equals("")) {
+			if(txtClientePesquisa.getText().equals("")) {
 				cc.attTableCliente();
 			}else {
-				long cpf = Long.parseLong(txtCPFPesquisa.getText());
+				long cpf = Long.parseLong(txtClientePesquisa.getText());
 				Cliente cl = cc.pesquisarCliente(cpf);
 				if(cl != null) {
 					cc.attTableCliente(cl);
@@ -657,7 +660,7 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 		cc.attTableProb(new ArrayList<ProblemaSaude>());
 		ControlClientes.clientSel = new Cliente();
 		startStyle();
-		//btnSelected(0);
+		btnSelected(0);
 	}
 	
 	private boolean camposValidos() {

@@ -99,13 +99,23 @@ public class FarmaciaProduto extends Application implements EventHandler<MouseEv
 		hb.setStyle("-fx-font-size: 15px;");
 		
 //FIM FORMULARIO CADASTRO PRODUTO FARMACIA------------------------------------------		
+
+//INICIO TELA GERENCIMENTO----------------------------------------------------------
+		
+		VBox vb = new VBox(
+				new HBox(new ComboBox(), new TextField(), new Button()),
+				new TableView<>()
+		);
+		
+		
+//FIM TELA GERENCIAMENTO------------------------------------------------------------
 		
 		BorderPane pane = new BorderPane();
 		
 		btnCadProd = new Button("CADASTRO");
 		btnMantProd = new Button("GERENCIAMENTO");
 		painelCad = new BorderPane(hb);
-		painelMant = new BorderPane();
+		painelMant = new BorderPane(vb);
 		
 		menuTop = new HBox(btnCadProd, btnMantProd);
 		pane.setTop(menuTop);
