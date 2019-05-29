@@ -5,13 +5,25 @@ import java.io.FileInputStream;
 import javax.xml.ws.handler.Handler;
 import javax.xml.ws.handler.MessageContext;
 
+import com.curso.control.ControlProdutos;
+import com.curso.entity.Fornecedor;
+import com.curso.entity.ProblemaSaude;
+import com.curso.entity.Produto;
+
 import javafx.application.Application;
+import javafx.beans.property.ReadOnlyIntegerWrapper;
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
@@ -38,7 +50,10 @@ public class FarmaciaProduto extends Application implements EventHandler<MouseEv
 	private ComboBox<String> cmbGrupo;
 	private ComboBox<String> cmbSessao;
 	private ComboBox<String> cmbTipoPesquisa;
+	private TableView<Produto> tblProduto;
+	private Label lblNomeProduto, lblFornecedor;
 	private HBox menuTop;
+	private ControlProdutos cp;
 	
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -59,13 +74,17 @@ public class FarmaciaProduto extends Application implements EventHandler<MouseEv
 		iv.setFitWidth(22);
 		btnPesquisaProd = new Button("", iv);
 		txtPesquisaProd = new TextField();
-		cmbTipoPesquisa = new ComboBox<String>();
+		cmbTipoPesquisa = new ComboBox<String>(FXCollections.observableArrayList(new String[] {"ID", "NOME", "CATEGORIA", "FORNECEDOR"}));
 		cmbTipoPesquisa.setPromptText("Tipo");
+		tblProduto = new TableView<Produto>();
+		cp = new ControlProdutos();
+		lblNomeProduto = new Label();
+		lblFornecedor = new Label();
 		
 		HBox hb = new HBox(80,
 				new VBox(10,
-						new Label("Produto selecionado: "),
-						new Label("Fornecedor: "),
+						new HBox(new Label("Produto selecionado: "), lblNomeProduto),
+						new HBox(new Label("Fornecedor: "), lblFornecedor),
 						new HBox(10, txtQntd, txtPrecoUnit),
 						new HBox(10, cmbGrupo, cmbSessao),
 						btnCadastro
@@ -74,7 +93,7 @@ public class FarmaciaProduto extends Application implements EventHandler<MouseEv
 						new Label("Produtos cadastrados"),
 						new Separator(),
 						new HBox(10, cmbTipoPesquisa, new HBox(txtPesquisaProd, btnPesquisaProd)),
-						new TableView<>()
+						tblProduto
 				)
 		);
 		hb.setStyle("-fx-font-size: 15px;");
@@ -93,6 +112,9 @@ public class FarmaciaProduto extends Application implements EventHandler<MouseEv
 		StackPane painels = new StackPane(painelMant, painelCad);
 		pane.setCenter(painels);
 		
+		createTableColumnsProds();
+		cp.attTableProds();
+		
 		Scene scene = new Scene(pane, 1100,600);
 		stage.setScene(scene);
 		stage.setTitle("Manter Clientes");
@@ -106,7 +128,7 @@ public class FarmaciaProduto extends Application implements EventHandler<MouseEv
 		
 	}
 	
-public void startStyle() {
+	public void startStyle() {
 		
 		DropShadow dp = new DropShadow(4, 0, 0, Color.GRAY);
 		
@@ -226,4 +248,39 @@ public void startStyle() {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	public void createTableColumnsProds() {
+
+		tblProduto.setItems(cp.getDataListProds());
+		
+		tblProduto.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Produto>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Produto> observable, Produto p1, Produto p2) {
+				produtoToBoundary(p2);				
+			}
+			
+		});
+		
+		TableColumn<Produto, Number> id_produto = new TableColumn<>("ID produto");
+		id_produto.setCellValueFactory(item -> new ReadOnlyIntegerWrapper(item.getValue().getId_produto()));
+		
+		TableColumn<Produto, String> categoria = new TableColumn<>("Categoria");
+		categoria.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getCategoria()));
+		
+		TableColumn<Produto, String> nome = new TableColumn<>("Produto");
+		nome.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getNome()));
+		
+		TableColumn<Produto, String> nomeF = new TableColumn<>("Fornecedor");
+		nomeF.setCellValueFactory(item -> new ReadOnlyObjectWrapper<>(item.getValue().getFornecedor().getNome_fantasia()));
+		
+		tblProduto.getColumns().addAll(id_produto, nome, categoria, nomeF);
+		
+	}
+	
+	public void produtoToBoundary(Produto p) {
+		this.lblNomeProduto.setText(p.getNome());
+		this.lblFornecedor.setText(p.getFornecedor().getNome_fantasia());
+	}
+	
 }
