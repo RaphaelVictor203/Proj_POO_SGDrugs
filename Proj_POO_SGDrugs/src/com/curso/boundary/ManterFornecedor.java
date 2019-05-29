@@ -48,9 +48,8 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 	private BorderPane painelMant;
 	private HBox menuTop;
 	private TextField txtNome;
-	private ComboBox<String> cmbDia, cmbMes, cmbAno;
-	private TextField txtRG, txtCNPJ;
-	private TextField txtTelefone, txtEmail;
+	private TextField txtCNPJ;
+	private TextField txtTelefone;
     private ComboBox<Farmacia> cmbFarmacia;
 	private TextField txtCEP;
 	private TextField txtRua, txtNum;
@@ -60,7 +59,6 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 	private TextField txtCNPJPesquisa;
 	private TextField txtUFPesquisa;
 	private TextField txtCidadePesquisa;
-	private ComboBox<String> cmbSexo;
 	private TableView<Fornecedor> tblFornec;
 	private Button btnAddPFornec, btnLimpaCampos, btnCadastrar, btnPesquisa;
 
@@ -77,7 +75,6 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 //INICIO PAINEL CADASTRO-------------------------------------------------------------------------------
 		
 		
-		
 		txtNome = new TextField();
 		cmbFarmacia = new ComboBox<>(FXCollections.observableArrayList(
 				new Farmacia ("Unidade Leste"),
@@ -86,18 +83,8 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 				new Farmacia ("Unidade Oeste"),
 				new Farmacia ("Unidade Sudeste")
 				)) ;
-		cmbDia = new ComboBox<String>(FXCollections.observableArrayList(ff.gerarArrayNum(1, 31)));
-		cmbDia.setPromptText("Dia");
-		cmbMes = new ComboBox<String>(FXCollections.observableArrayList(ff.gerarArrayNum(1, 12)));
-		cmbMes.setPromptText("Mês");
-		cmbAno = new ComboBox<String>(FXCollections.observableArrayList(ff.gerarArrayNum(1900, 2019)));
-		cmbAno.setPromptText("Ano");
-		txtRG = new TextField(); 
 		txtCNPJ = new TextField();
 		txtTelefone = new TextField();
-		txtEmail = new TextField();
-	
-		
 		txtCEP = new TextField();
 		txtRua = new TextField();
 		txtNum = new TextField();
@@ -105,18 +92,16 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 		txtUF = new TextField();*/
 		cmbCid = new ComboBox<String>(FXCollections.observableArrayList(new String[] {"São Paulo", "Ribeirão", "Botucatu", "Piracicaba", "Santos", "Franca", "Araçatuba"}));
 		cmbUF = new ComboBox<String>(FXCollections.observableArrayList(new String[] {"SP"}));
-		cmbSexo = new ComboBox<String>(FXCollections.observableArrayList(new String[]{"M", "F"}));
-		cmbSexo.getSelectionModel().select(0);
-		
+
 		txtPesquisa = new TextField();
-		txtPesquisa.setPromptText("Insira o nome ou CNPJ do Funcionário..");
+		txtPesquisa.setPromptText("Insira o nome ou CNPJ do FORNECEDOR..");
 		
 		btnLimpaCampos = new Button("LIMPAR CAMPOS");
 		btnCadastrar = new Button("CADASTRAR");
 		btnAddPFornec = new Button("PESQUISAR");
 		tblFornec = new TableView<Fornecedor>();
 		tblFornec.setMaxWidth(625);
-		
+		tblFornec.setPrefHeight(390);
 		
 		
 		BorderPane pane = new BorderPane();
@@ -126,13 +111,10 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 		menuTop = new HBox(btnCadFornec);
 		
 		VBox entradaInfoCli = new VBox(
-				new Label("INFORMAÇÕES RELACIONADAS AO FUNCIONÁRIO"),
+				new Label("INFORMAÇÕES RELACIONADAS AO FORNECEDOR"),
 				new Separator(),
-				new HBox(10, new Label("Nome: "), txtNome),
-				new HBox(10, new Label("Data Nascimento: "), cmbDia, new Label("/"), cmbMes, new Label("/"),cmbAno),
-				new HBox(10, new Label("RG: "), txtRG, new Label("CNPJ: "), txtCNPJ),
-				new HBox(10, new Label("Telefone: "), txtTelefone,new Label("Sexo: "), cmbSexo) ,
-				new HBox(10, new Label("Email:"), txtEmail) 
+				new HBox(10, new Label("Nome Fantasia: "), txtNome),
+				new HBox(10, new Label("CNPJ: "), txtCNPJ, new Label("Telefone: "), txtTelefone) 
 		);
 		entradaInfoCli.setSpacing(10);
 		entradaInfoCli.setStyle("-fx-min-width: 50%; -fx-font-size: 15px;");
@@ -159,7 +141,7 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 		entradaFarmacia.setStyle("-fx-min-width: 50%; -fx-font-size: 15px"); 
 		entradaFarmacia.setPadding(new Insets(0, 40, 40, 40));
 	
-		Label tituloFunc = new Label("PESQUISAR FUNCIONÁRIO");
+		Label tituloFunc = new Label("PESQUISAR FORNECEDOR");
 		tituloFunc.setStyle(" -fx-font-size: 15px");
 		VBox entradaTab = new VBox(
 				tituloFunc,
@@ -168,14 +150,14 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 				btnAddPFornec,
 				tblFornec
 		);
-		entradaTab.setPadding(new Insets(39, 40, 40, 40));
+		entradaTab.setPadding(new Insets(40, 0, 0, 0));
 		entradaTab.setSpacing(10);
 		
 		HBox hbBtns = new HBox(
 				btnLimpaCampos,
 				btnCadastrar
 		);
-		hbBtns.setPadding(new Insets(7, 0, 0, 0));
+		hbBtns.setPadding(new Insets(7, 5, 0, 0));
 		hbBtns.setStyle("-fx-min-width: 50%; -fx-font-size: 15px");
 		hbBtns.setAlignment(Pos.BASELINE_CENTER);
 		hbBtns.setSpacing(20);
@@ -218,7 +200,7 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 		StackPane painels = new StackPane(painelMant, painelCad);
 		pane.setCenter(painels);
 		
-		Scene scene = new Scene(pane, 1100,600);
+		Scene scene = new Scene(pane, 1100,700);
 		stage.setScene(scene);
 		stage.setTitle("Manter Fornecedores");
 		stage.show();
@@ -244,26 +226,6 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 					+ "-fx-border-radius: 8px;"
 					+ "-fx-background-radius: 8px;");
 		});
-		cmbDia.focusedProperty().addListener(e -> {
-			cmbDia.setStyle(cmbDia.getStyle() + "-fx-border-color: none;"
-					+ "-fx-border-radius: 8px;"
-					+ "-fx-background-radius: 8px;");
-		});
-		cmbMes.focusedProperty().addListener(e -> {
-			cmbMes.setStyle(cmbMes.getStyle() + "-fx-border-color: none;"
-					+ "-fx-border-radius: 8px;"
-					+ "-fx-background-radius: 8px;");
-		});
-		cmbAno.focusedProperty().addListener(e -> {
-			cmbAno.setStyle(cmbAno.getStyle() + "-fx-border-color: none;"
-					+ "-fx-border-radius: 8px;"
-					+ "-fx-background-radius: 8px;");
-		});
-		txtRG.focusedProperty().addListener(e -> {
-			txtRG.setStyle(txtRG.getStyle() + "-fx-border-color: none;"
-					+ "-fx-border-radius: 8px;"
-					+ "-fx-background-radius: 8px;");
-		}); 
 		txtCNPJ.focusedProperty().addListener(e -> {
 			txtCNPJ.setStyle(txtCNPJ.getStyle() + "-fx-border-color: none;"
 					+ "-fx-border-radius: 8px;"
@@ -298,12 +260,10 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 	
 
 	@SuppressWarnings("unchecked")
-	public void createTableColumnsFornec() {
+	public void createTableColumnsFornec() {	
 		
-	
-		
-		TableColumn<Fornecedor, Number> id_fornec = new TableColumn<>("ID");
-		id_fornec.setCellValueFactory(item -> new ReadOnlyIntegerWrapper(item.getValue().getID()));
+		TableColumn<Fornecedor, Number> id_fornecedor = new TableColumn<>("ID");
+		id_fornecedor.setCellValueFactory(item -> new ReadOnlyIntegerWrapper(item.getValue().getID()));
 		
 		TableColumn<Fornecedor, String> tipo = new TableColumn<>("Nome");
 		tipo.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getPrimeiroNome()));
@@ -311,51 +271,37 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 		TableColumn<Fornecedor, Number> desc = new TableColumn<>("CNPJ");
 		desc.setCellValueFactory(item -> new ReadOnlyLongWrapper(item.getValue().getCnpj()));
 		
+		TableColumn<Fornecedor, Number> tel = new TableColumn<>("Telefone");
+		tel.setCellValueFactory(item -> new ReadOnlyLongWrapper(item.getValue().getTelefone()));
 		
-		tblFornec.getColumns().addAll(id_fornec,tipo,desc);
+		tblFornec.getColumns().addAll(id_fornecedor,tipo,desc,tel);
 		
 	}
 	
 	
-	
-	
-	
-	@SuppressWarnings("deprecation")
 	public void FornecedorToBoundary(Fornecedor f) {
 		this.txtNome.setText(f.getPrimeiroNome());
-		this.cmbDia.getSelectionModel().select(Integer.toString(f.getDt_nasc().getDate()));
-		this.cmbMes.getSelectionModel().select(Integer.toString(f.getDt_nasc().getMonth()));
-		this.cmbAno.getSelectionModel().select(Integer.toString(f.getDt_nasc().getYear()));
-		this.txtRG.setText(Long.toString(f.getRg()));
 		this.txtCNPJ.setText(Long.toString(f.getCnpj()));
 		this.txtTelefone.setText(Long.toString(f.getTelefone()));
-		this.txtEmail.setText(f.getEmail());
-	
+
 		Endereco ed = f.getEnd();
 		this.txtCEP.setText(ed.getCep());
 		this.txtRua.setText(ed.getRua());
 		this.txtNum.setText(Integer.toString(ed.getNumero()));
 		this.cmbCid.getSelectionModel().select(ed.getCidade());
 		this.cmbUF.getSelectionModel().select(ed.getUf());
-		this.cmbSexo.getSelectionModel().select(String.valueOf(f.getSexo()));
 	}
 	
 	
-	@SuppressWarnings("deprecation")
+
 	public Fornecedor boundaryToFornecedor() {
 		
 		Fornecedor f = new Fornecedor();
 		f.setPrimeiroNome(this.txtNome.getText());
-		f.setDt_nasc(new Date(Integer.parseInt(this.cmbAno.getSelectionModel().getSelectedItem()), Integer.parseInt(this.cmbMes.getSelectionModel().getSelectedItem()), Integer.parseInt(this.cmbDia.getSelectionModel().getSelectedItem())));
-		f.setRg(Long.parseLong(this.txtRG.getText()));
 		f.setCnpj(Long.parseLong(this.txtCNPJ.getText()));
 		if(!this.txtTelefone.getText().equals("")) {
 			f.setTelefone(Long.parseLong(this.txtTelefone.getText()));
 		}
-		f.setEmail(this.txtEmail.getText());
-		
-		f.setSexo(cmbSexo.getSelectionModel().getSelectedItem().charAt(0));
-		
 		Endereco ed = new Endereco();
 		ed.setCep(this.txtCEP.getText());
 		ed.setRua(this.txtRua.getText());
@@ -409,18 +355,11 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 		
 		String styleMenuTop = "-fx-background-color: #E0DACE";
 		
-		String styleEntradaDataNasc = "-fx-min-width: 130px;";
-		
 		String styleEntradas = "-fx-background-radius: 8;";
 		
 		String styleEntradaPesquisa = "-fx-background-radius: 8px 8px 8px 8px;"
 				+ "-fx-min-width: 625px;";
 		
-		String stylePesquisaProb = "-fx-min-height: 30px;"
-				+ "-fx-min-width: 30px;"
-				+ "-fx-background-radius: 0px 8px 8px 0px;"
-				+ "-fx-background-color: #0095FE;"
-				+ "-fx-cursor: hand;";
 		
 		String comboStyle = "-fx-background-radius: 8;"
 				+ "-fx-background-color: #FEFFFA;"
@@ -431,17 +370,9 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 		painelCad.setStyle(stylePainel);
 		painelMant.setStyle(stylePainel);
 		menuTop.setStyle(styleMenuTop);
-		txtNome.setStyle("-fx-min-width: 515px;" + styleEntradas);
-		cmbDia.setStyle(styleEntradaDataNasc + styleEntradas + comboStyle);
-		cmbDia.setEffect(dp);
-		cmbMes.setStyle(styleEntradaDataNasc + styleEntradas + comboStyle);
-		cmbMes.setEffect(dp);
-		cmbAno.setStyle(styleEntradaDataNasc + styleEntradas + comboStyle);
-		cmbAno.setEffect(dp);
-		txtRG.setStyle("-fx-min-width: 225px;" + styleEntradas);
-		txtCNPJ.setStyle("-fx-min-width: 259px;" + styleEntradas);
-		txtTelefone.setStyle("-fx-max-width: 250px;" + styleEntradas);
-		txtEmail.setStyle("-fx-min-width: 523px;" + styleEntradas);
+		txtNome.setStyle("-fx-min-width: 450px;" + styleEntradas);
+		txtCNPJ.setStyle("-fx-min-width: 240px;" + styleEntradas);
+		txtTelefone.setStyle("-fx-max-width: 200px;" + styleEntradas);
 	
 		txtCEP.setStyle("-fx-min-width: 228px; " + styleEntradas);
 		txtRua.setStyle("-fx-min-width: 530px; " + styleEntradas);
@@ -450,17 +381,16 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 		cmbCid.setEffect(dp);
 		cmbUF.setStyle("-fx-min-width: 259px; " + styleEntradas + comboStyle);
 		cmbUF.setEffect(dp);
+		cmbFarmacia.setStyle("-fx-min-width: 495px;" + styleEntradas + comboStyle);
+		cmbFarmacia.setEffect(dp);
 		txtPesquisa.setStyle(styleEntradaPesquisa + "-fx-font-size: 15px");
 		btnAddPFornec.setStyle(stylebtnAddPFornec);
 		btnLimpaCampos.setStyle(styleBtns);
 		btnCadastrar.setStyle(styleBtns);
-		txtNomePesquisa.setStyle("-fx-min-width: 515px;" + styleEntradas);
-		txtCNPJPesquisa.setStyle("-fx-min-width: 280px;" + styleEntradas);
 		txtUFPesquisa.setStyle("-fx-min-width: 200px;" + styleEntradas);
 		txtCidadePesquisa.setStyle("-fx-min-width: 262px;" + styleEntradas);
 		btnPesquisa.setStyle(styleBtnPesquisa);
-		cmbSexo.setStyle(comboStyle);
-		cmbSexo.setEffect(dp);
+
 	}
 	
 	public void btnSelected(int btn) {
@@ -522,7 +452,7 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 				if(cl != null) {
 					ff.attTableFornecedor(cl);
 				}else {
-					JOptionPane.showMessageDialog(null, "Funcionário não encontrado", "Erro", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, "FORNECEDOR não encontrado", "Erro", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		
@@ -535,14 +465,9 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 		btnLimpaCampos.setText("LIMPAR CAMPOS");
 		this.txtNome.setText("");
 		this.cmbFarmacia.getSelectionModel().select(-1);
-		this.cmbDia.getSelectionModel().select(-1);
-		this.cmbMes.getSelectionModel().select(-1);
-		this.cmbAno.getSelectionModel().select(-1);
-		this.txtRG.setText("");
 		this.txtCNPJ.setText("");
 		this.txtTelefone.setText("");
-		this.txtEmail.setText("");
-		
+	
 		this.txtCEP.setText("");
 		this.txtRua.setText("");
 		this.txtNum.setText("");
@@ -562,30 +487,7 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 					+ "-fx-background-radius: 8px;");
 			isValid = false;
 		}
-		if(this.cmbDia.getSelectionModel().getSelectedIndex() == -1) {
-			this.cmbDia.setStyle(this.cmbDia.getStyle() + "-fx-border-color: red;"
-					+ "-fx-border-radius: 8px;"
-					+ "-fx-background-radius: 8px;");
-			isValid = false;
-		}
-		if(this.cmbMes.getSelectionModel().getSelectedIndex() == -1) {
-			this.cmbMes.setStyle(this.cmbMes.getStyle() + "-fx-border-color: red;"
-					+ "-fx-border-radius: 8px;"
-					+ "-fx-background-radius: 8px;");
-			isValid = false;
-		}
-		if(this.cmbAno.getSelectionModel().getSelectedIndex() == -1) {
-			this.cmbAno.setStyle(this.cmbAno.getStyle() + "-fx-border-color: red;"
-					+ "-fx-border-radius: 8px;"
-					+ "-fx-background-radius: 8px;");
-			isValid = false;
-		}
-		if(this.txtRG.getText().equals("")) {
-			this.txtRG.setStyle(this.txtRG.getStyle() + "-fx-border-color: red;"
-					+ "-fx-border-radius: 8px;"
-					+ "-fx-background-radius: 8px;");
-			isValid = false;
-		}
+		
 		if(this.txtCNPJ.getText().equals("")) {
 			this.txtCNPJ.setStyle(this.txtCNPJ.getStyle() + "-fx-border-color: red;"
 					+ "-fx-border-radius: 8px;"
