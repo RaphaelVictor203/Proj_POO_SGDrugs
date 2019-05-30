@@ -266,7 +266,7 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 		id_fornecedor.setCellValueFactory(item -> new ReadOnlyIntegerWrapper(item.getValue().getID()));
 		
 		TableColumn<Fornecedor, String> tipo = new TableColumn<>("Nome");
-		tipo.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getPrimeiroNome()));
+		tipo.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getNome_fantasia()));
 		
 		TableColumn<Fornecedor, Number> desc = new TableColumn<>("CNPJ");
 		desc.setCellValueFactory(item -> new ReadOnlyLongWrapper(item.getValue().getCnpj()));
@@ -280,11 +280,11 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 	
 	
 	public void FornecedorToBoundary(Fornecedor f) {
-		this.txtNome.setText(f.getPrimeiroNome());
+		this.txtNome.setText(f.getNome_fantasia());
 		this.txtCNPJ.setText(Long.toString(f.getCnpj()));
 		this.txtTelefone.setText(Long.toString(f.getTelefone()));
 
-		Endereco ed = f.getEnd();
+		Endereco ed = f.getEndereco();
 		this.txtCEP.setText(ed.getCep());
 		this.txtRua.setText(ed.getRua());
 		this.txtNum.setText(Integer.toString(ed.getNumero()));
@@ -297,7 +297,7 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 	public Fornecedor boundaryToFornecedor() {
 		
 		Fornecedor f = new Fornecedor();
-		f.setPrimeiroNome(this.txtNome.getText());
+		f.setNome_fantasia(this.txtNome.getText());
 		f.setCnpj(Long.parseLong(this.txtCNPJ.getText()));
 		if(!this.txtTelefone.getText().equals("")) {
 			f.setTelefone(Long.parseLong(this.txtTelefone.getText()));
@@ -308,7 +308,7 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 		ed.setNumero(Integer.parseInt(this.txtNum.getText()));
 		ed.setCidade(this.cmbCid.getSelectionModel().getSelectedItem());
 		ed.setUf(this.cmbUF.getSelectionModel().getSelectedItem());
-		f.setEnd(ed);
+		f.setEndereco(ed);
 		
 		return f;
 	}
@@ -520,6 +520,12 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 		}
 		if(this.cmbUF.getSelectionModel().getSelectedIndex() == -1) {
 			this.cmbUF.setStyle(this.cmbUF.getStyle() + "-fx-border-color: red;"
+					+ "-fx-border-radius: 8px;"
+					+ "-fx-background-radius: 8px;");
+			isValid = false;
+		}
+		if(this.cmbFarmacia.getSelectionModel().getSelectedIndex() == -1) {
+			this.cmbFarmacia.setStyle(this.cmbFarmacia.getStyle() + "-fx-border-color: red;"
 					+ "-fx-border-radius: 8px;"
 					+ "-fx-background-radius: 8px;");
 			isValid = false;
