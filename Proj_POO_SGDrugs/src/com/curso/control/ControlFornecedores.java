@@ -122,19 +122,14 @@ public class ControlFornecedores {
 	public void attFornecedor(Fornecedor cl) {
 		for(Fornecedor f : FornecedorsCadastrados) {
 			if(f.getCnpj() == fornecSel.getCnpj()) {
-				f.setPrimeiroNome(cl.getPrimeiroNome());
-				f.setDt_nasc(cl.getDt_nasc());
-				f.setRg(cl.getRg());
+				f.setNome_fantasia(cl.getNome_fantasia());
 				f.setCnpj(cl.getCnpj());
 				f.setTelefone(cl.getTelefone());
-				f.setEmail(cl.getEmail());
-
-				f.getEnd().setCep(cl.getEnd().getCep());
-				f.getEnd().setRua(cl.getEnd().getRua());
-				f.getEnd().setNumero(cl.getEnd().getNumero());
-				f.getEnd().setCidade(cl.getEnd().getCidade());
-				f.getEnd().setUf(cl.getEnd().getUf());
-				f.setSexo(cl.getSexo());
+				f.getEndereco().setCep(cl.getEndereco().getCep());
+				f.getEndereco().setRua(cl.getEndereco().getRua());
+				f.getEndereco().setNumero(cl.getEndereco().getNumero());
+				f.getEndereco().setCidade(cl.getEndereco().getCidade());
+				f.getEndereco().setUf(cl.getEndereco().getUf());
 			}
 		}
 	}
