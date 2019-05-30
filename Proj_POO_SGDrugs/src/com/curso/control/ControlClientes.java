@@ -104,12 +104,18 @@ public class ControlClientes {
 		}
 	}
 	
-	public void pesquisarCliente(String nome, long cpf, String uf, String cidade) {
+	public void pesquisarCliente(String cont, String tipo) {
 		dataList.clear();
-		if(!nome.equals("")) {
+		if(!cont.equals("")) {
 			for(Cliente c : clientesCadastrados) {
-				if(c.getCpf() == cpf) {
-					dataList.add(c);
+				if(tipo.equals("CIDADE")) {
+					if(c.getEnd().getCidade().equals(cont)) {
+						dataList.add(c);
+					}
+				}else {
+					if(c.getPrimeiroNome().equals(cont)) {
+						dataList.add(c);
+					}
 				}
 			}
 		}
@@ -239,6 +245,11 @@ public class ControlClientes {
 	public void attTableCliente(Cliente cl) {
 		this.dataList.clear();
 		this.dataList.add(cl);
+	}
+	
+	public void attTableCliente(List<Cliente> cls) {
+		this.dataList.clear();
+		this.dataList.addAll(cls);
 	}
 	
 	public void attTableProb(List<ProblemaSaude> list) {

@@ -2,9 +2,16 @@ package com.curso.entity;
 
 import java.util.Date;
 
-public  class Pessoa {
+public abstract class Pessoa {
 	
+	private String primeiroNome;
+	private Date dt_nasc;
+	private long rg, cpf, telefone;
+	private String email;
+	private char sexo;
+	private Endereco end;
 	private int ID;
+	
 	public int getID() {
 		return ID;
 	}
@@ -12,12 +19,6 @@ public  class Pessoa {
 	public void setID(int iD) {
 		ID = iD;
 	}
-	private String primeiroNome;
-	private Date dt_nasc;
-	private long rg, cpf, telefone;
-	private String email;
-	private char sexo;
-	private Endereco end;
 	
 
 	public Endereco getEnd() {

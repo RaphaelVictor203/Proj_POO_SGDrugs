@@ -366,11 +366,12 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 			final int l = i;
 			
 			tblCli.getItems().get(i).getBtnEditar().setOnAction(e -> {
+				limparCampos();
 				Cliente c = cc.pesquisarCliente((long) tblCli.getItems().get(l).getCpf());
 				ControlClientes.clientSel = c;
+				btnSelected(0);
 				clienteToBoundary(c);
 				painelCad.toFront();
-				btnSelected(0);
 				cc.attTableProb(c.getProblemasSaude());
 				tblProb.refresh();
 				setFunctionProbButtons();
@@ -380,11 +381,11 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 			});
 			
 			tblCli.getItems().get(i).getBtnExcluir().setOnAction(e -> {
+				limparCampos();
 				Cliente c = cc.pesquisarCliente((long) tblCli.getItems().get(l).getCpf());
 				ControlClientes.clientSel = c;
 				cc.removerCliente();
 				setFunctionCliButtons();
-				limparCampos();
 				btnSelected(1);
 			});
 		}
@@ -596,9 +597,11 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 		if(e.getSource() == btnAddProb) {
 			ProblemaSaude ps = cc.pesquisarProb(this.txtPesquisa.getText());
 			if(ControlClientes.clientSel == null) {
+				System.out.println("CLIENTE NÃO SELECIONADO");
 				ControlClientes.clientSel = new Cliente();
 			}
 			if(!ControlClientes.clientSel.existProb(ps.getId_problema())) {
+				//System.out.println(ControlClientes.clientSel.getProblemasSaude().size());
 				ControlClientes.clientSel.getProblemasSaude().add(ps);
 			}
 			cc.attTableProb();
@@ -626,12 +629,28 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 			if(txtClientePesquisa.getText().equals("")) {
 				cc.attTableCliente();
 			}else {
-				long cpf = Long.parseLong(txtClientePesquisa.getText());
-				Cliente cl = cc.pesquisarCliente(cpf);
-				if(cl != null) {
-					cc.attTableCliente(cl);
+				Cliente cl = null;
+				if(cmbPesquisa.getSelectionModel().getSelectedItem() != null) {
+					switch(cmbPesquisa.getSelectionModel().getSelectedItem()) {
+						case "CPF":
+							long cpf = Long.parseLong(txtClientePesquisa.getText());
+							cl = cc.pesquisarCliente(cpf);
+							if(cl != null) {
+								cc.attTableCliente(cl);
+							}
+							break;
+						case "NOME":
+							String nome = txtClientePesquisa.getText();
+							cc.pesquisarCliente(nome, "NOME");
+							break;
+						case "CIDADE":
+							String cidade = txtClientePesquisa.getText();
+							cc.pesquisarCliente(cidade, "CIDADE");
+							System.out.println("CIDADE SELECIONADO");
+							break;							
+					}
 				}else {
-					JOptionPane.showMessageDialog(null, "Cliente não encontrado", "Erro", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Atenção, é preciso determinar o tipo de pesquisa que sera realizada", "Erro", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 			setFunctionCliButtons();
