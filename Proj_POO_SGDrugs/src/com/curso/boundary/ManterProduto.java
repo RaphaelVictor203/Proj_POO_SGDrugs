@@ -2,10 +2,10 @@ package com.curso.boundary;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
+ 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+ 
 
 import com.curso.control.ControlProdutos;
 import com.curso.entity.Fornecedor;
@@ -196,7 +196,8 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 	public void loadstyles() {
 
 		String styleButtons = "-fx-background-radius: 7;" + "-fx-font-size: 15px;" + "-fx-text-fill: white;"
-				+ "-fx-background-color: #0095FE;";
+				+ "-fx-background-color: #0095FE;"
+				+ "-fx-cursor: hand;";
 
 		String styleBtnPesquisa = "-fx-background-radius: 8;" + "-fx-background-color: #0095FE;";
 
