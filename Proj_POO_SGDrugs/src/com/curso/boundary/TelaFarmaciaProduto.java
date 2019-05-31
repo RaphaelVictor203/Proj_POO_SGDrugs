@@ -38,7 +38,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-public class FarmaciaProduto extends Application implements EventHandler<MouseEvent>{
+public class TelaFarmaciaProduto extends Application implements EventHandler<MouseEvent>{
 
 	private Button btnCadProd;
 	private Button btnMantProd, btnCadastro, btnPesquisaProd;

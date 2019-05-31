@@ -6,7 +6,12 @@ public class FarmaciaProduto {
 	//private Grupo grupo;
 	private int qntdEstoque;
 	private double preco;
+	private Farmacia farmacia;
 	
+	public FarmaciaProduto() {
+		this.produto = new Produto();
+		this.farmacia = new Farmacia();
+	}
 	
 	public Farmacia getFarmacia() {
 		return farmacia;
@@ -14,7 +19,6 @@ public class FarmaciaProduto {
 	public void setFarmacia(Farmacia farmacia) {
 		this.farmacia = farmacia;
 	}
-	private Farmacia farmacia;
 	
 	public Produto getProduto() {
 		return produto;

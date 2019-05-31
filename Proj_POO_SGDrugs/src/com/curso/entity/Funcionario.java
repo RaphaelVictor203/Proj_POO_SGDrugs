@@ -7,6 +7,7 @@ public class Funcionario extends Pessoa {
 	private Farmacia farmacia;
 	private Endereco endereco;
 	private String cargo;
+	
 	public String getCargo() {
 		return cargo;
 	}

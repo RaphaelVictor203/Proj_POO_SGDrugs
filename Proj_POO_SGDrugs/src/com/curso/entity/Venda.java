@@ -1,5 +1,6 @@
 package com.curso.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Venda {
@@ -8,6 +9,10 @@ public class Venda {
 	private Cliente cliente;
 	private Funcionario funcionario;
 	private List<ItemVenda> items;
+	
+	public Venda() {
+		this.items = new ArrayList<ItemVenda>();
+	}
 	
 	public int getId_venda() {
 		return id_venda;
@@ -33,13 +38,17 @@ public class Venda {
 		this.funcionario = funcionario;
 	}
 
+	public void addItem(ItemVenda item) {
+		this.items.add(item);
+	}
+	
 	public List<ItemVenda> getItems() {
 		return items;
 	}
 
-	public void setItems(List<ItemVenda> items) {
+	/*public void setItems(List<ItemVenda> items) {
 		this.items = items;
-	}
+	}*/
 
 	public double returnPrecoTotal() {
 		double total = 0;
