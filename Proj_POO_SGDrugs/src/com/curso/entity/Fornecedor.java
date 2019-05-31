@@ -24,5 +24,10 @@ public class Fornecedor {
 	public void setEndereco(Endereco endereco) {
 		this.endereco = endereco;
 	}
+	@Override
+	public String toString() {
+		return  nome_fantasia;
+	}
 	
+
 }
