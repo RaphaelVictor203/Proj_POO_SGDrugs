@@ -1,5 +1,9 @@
 package com.curso.entity;
 
+import java.util.ArrayList;
+
+import javafx.scene.control.Button;
+
 public class Fornecedor {
 
 	private long cnpj;
@@ -7,6 +11,23 @@ public class Fornecedor {
 	private Endereco endereco;
 	private long telefone;
 	private int ID;
+	private Farmacia farmacia;
+	
+	private Button btnEditar;
+	private Button btnExcluir;
+	public Fornecedor() {
+		
+		this.btnEditar = new Button("Editar");
+		this.btnExcluir = new Button("Excluir");
+	}
+	
+	public Button getBtnEditar() {
+		return btnEditar;
+	}
+	public Button getBtnExcluir() {
+		return btnExcluir;
+	}
+	
 	
 	public int getID() {
 		return ID;
@@ -37,6 +58,14 @@ public class Fornecedor {
 	}
 	public void setTelefone(long telefone) {
 		this.telefone = telefone;
+	}
+
+	public Farmacia getFarmacia() {
+		return farmacia;
+	}
+
+	public void setFarmacia(Farmacia farmacia) {
+		this.farmacia = farmacia;
 	}
 	
 }

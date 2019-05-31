@@ -8,6 +8,8 @@ import javax.swing.JOptionPane;
 
 import com.curso.control.ControlFornecedores;
 import com.curso.entity.Fornecedor;
+import com.curso.entity.Fornecedor;
+import com.curso.entity.Fornecedor;
 import com.curso.entity.Endereco;
 import com.curso.entity.Farmacia;
 import com.curso.entity.Fornecedor;
@@ -16,6 +18,7 @@ import com.curso.entity.ProblemaSaude;
 import javafx.application.Application;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyLongWrapper;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.event.EventHandler;
@@ -206,7 +209,6 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 		stage.show();
 		
 		btnCadFornec.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
-		
 		btnCadastrar.addEventFilter(MouseEvent.MOUSE_CLICKED, this);
 		btnAddPFornec.addEventFilter(MouseEvent.MOUSE_CLICKED, this);
 		btnLimpaCampos.addEventFilter(MouseEvent.MOUSE_CLICKED, this);
@@ -256,26 +258,71 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 					+ "-fx-border-radius: 8px;"
 					+ "-fx-background-radius: 8px;");
 		});
+		cmbFarmacia.focusedProperty().addListener(e -> {
+			cmbFarmacia.setStyle(cmbFarmacia.getStyle() + "-fx-border-color: none;"
+					+ "-fx-border-radius: 8px;"
+					+ "-fx-background-radius: 8px;");
+		});
 	}
 	
 
 	@SuppressWarnings("unchecked")
 	public void createTableColumnsFornec() {	
+
+		TableColumn<Fornecedor, String> name = new TableColumn<>("Nome");
+		name.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getNome_fantasia()));
 		
-		TableColumn<Fornecedor, Number> id_fornecedor = new TableColumn<>("ID");
-		id_fornecedor.setCellValueFactory(item -> new ReadOnlyIntegerWrapper(item.getValue().getID()));
-		
-		TableColumn<Fornecedor, String> tipo = new TableColumn<>("Nome");
-		tipo.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getNome_fantasia()));
-		
-		TableColumn<Fornecedor, Number> desc = new TableColumn<>("CNPJ");
-		desc.setCellValueFactory(item -> new ReadOnlyLongWrapper(item.getValue().getCnpj()));
+		TableColumn<Fornecedor, Number> cnpj = new TableColumn<>("CNPJ");
+		cnpj.setCellValueFactory(item -> new ReadOnlyLongWrapper(item.getValue().getCnpj()));
 		
 		TableColumn<Fornecedor, Number> tel = new TableColumn<>("Telefone");
 		tel.setCellValueFactory(item -> new ReadOnlyLongWrapper(item.getValue().getTelefone()));
 		
-		tblFornec.getColumns().addAll(id_fornecedor,tipo,desc,tel);
+		TableColumn<Fornecedor, String> frm = new TableColumn<>("Farmacia");
+		frm.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getFarmacia().toString()));
 		
+		TableColumn<Fornecedor, Button> columnEditar = new TableColumn<>("Editar");
+		columnEditar.setPrefWidth(81);
+		columnEditar.setStyle("-fx-alignment: CENTER;");
+		columnEditar.setCellValueFactory(item -> new ReadOnlyObjectWrapper<>(item.getValue().getBtnEditar()));
+		
+		TableColumn<Fornecedor, Button> columnExcluir = new TableColumn<>("Excluir");
+		columnExcluir.setPrefWidth(81);
+		columnExcluir.setStyle("-fx-alignment: CENTER;");
+		columnExcluir.setCellValueFactory(item -> new ReadOnlyObjectWrapper<>(item.getValue().getBtnExcluir()));
+		
+		tblFornec.getColumns().addAll(name,cnpj,tel,frm,columnEditar,columnExcluir);
+		tblFornec.setItems(ff.getDataListFornecedores());
+		setFunctionForButtons();
+		
+	}
+	
+	private void setFunctionForButtons() {
+		for(int i=0; i<tblFornec.getItems().size(); i++) {		
+			
+			final int l = i;
+			
+			tblFornec.getItems().get(i).getBtnEditar().setOnAction(e -> {
+				limparCampos();
+				Fornecedor f = ff.pesquisarFornecedor((long) tblFornec.getItems().get(l).getCnpj());
+				ControlFornecedores.fornecSel = f;
+				btnSelected(0);
+				FornecedorToBoundary(f);
+				tblFornec.refresh();
+				setFunctionForButtons();
+				btnCadastrar.setText("ALTERAR");
+				btnLimpaCampos.setText("CANCELAR ALTERAÇÃO");
+			});
+			
+			tblFornec.getItems().get(i).getBtnExcluir().setOnAction(e -> {
+				limparCampos();
+				Fornecedor f = ff.pesquisarFornecedor((long) tblFornec.getItems().get(l).getCnpj());
+				ControlFornecedores.fornecSel = f;
+				ff.removerFornecedor();
+				setFunctionForButtons();
+				btnSelected(1);
+			});
+		}
 	}
 	
 	
@@ -283,13 +330,13 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 		this.txtNome.setText(f.getNome_fantasia());
 		this.txtCNPJ.setText(Long.toString(f.getCnpj()));
 		this.txtTelefone.setText(Long.toString(f.getTelefone()));
-
 		Endereco ed = f.getEndereco();
 		this.txtCEP.setText(ed.getCep());
 		this.txtRua.setText(ed.getRua());
 		this.txtNum.setText(Integer.toString(ed.getNumero()));
 		this.cmbCid.getSelectionModel().select(ed.getCidade());
 		this.cmbUF.getSelectionModel().select(ed.getUf());
+		this.cmbFarmacia.getSelectionModel().select(f.getFarmacia());
 	}
 	
 	
@@ -302,6 +349,7 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 		if(!this.txtTelefone.getText().equals("")) {
 			f.setTelefone(Long.parseLong(this.txtTelefone.getText()));
 		}
+		f.setFarmacia(this.cmbFarmacia.getSelectionModel().getSelectedItem());
 		Endereco ed = new Endereco();
 		ed.setCep(this.txtCEP.getText());
 		ed.setRua(this.txtRua.getText());
@@ -429,15 +477,17 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 				JOptionPane.showMessageDialog(null, "Cadastro realizado !!!", "Cadastro", JOptionPane.INFORMATION_MESSAGE);
 				if(ff.cadFornecedor(boundaryToFornecedor())) {
 					limparCampos();
+					tblFornec.refresh();
+					setFunctionForButtons();
 				}
 				
 			}else 
 			if(btnCadastrar.getText().equals("ALTERAR") && camposValidos()){
 				ff.attFornecedor(boundaryToFornecedor());
 				JOptionPane.showMessageDialog(null, "Alterações realizadas com sucesso", "Alteração concluida", JOptionPane.INFORMATION_MESSAGE);
-				
 				limparCampos();
-				
+				tblFornec.refresh();
+				setFunctionForButtons();
 			}
 		}else
 		if(e.getSource() == btnLimpaCampos) {
@@ -446,11 +496,13 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 		if(e.getSource() == btnPesquisa) {
 			if(txtCNPJPesquisa.getText().equals("")) {
 				ff.attTableFornecedor();
+				setFunctionForButtons();
 			}else {
 				long CNPJ = Long.parseLong(txtCNPJPesquisa.getText());
 				Fornecedor cl = ff.pesquisarFornecedor(CNPJ);
 				if(cl != null) {
 					ff.attTableFornecedor(cl);
+					setFunctionForButtons();
 				}else {
 					JOptionPane.showMessageDialog(null, "FORNECEDOR não encontrado", "Erro", JOptionPane.ERROR_MESSAGE);
 				}
@@ -464,13 +516,12 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 		btnCadFornec.setText("CADASTRO");
 		btnLimpaCampos.setText("LIMPAR CAMPOS");
 		this.txtNome.setText("");
-		this.cmbFarmacia.getSelectionModel().select(-1);
 		this.txtCNPJ.setText("");
 		this.txtTelefone.setText("");
-	
 		this.txtCEP.setText("");
 		this.txtRua.setText("");
 		this.txtNum.setText("");
+		this.cmbFarmacia.getSelectionModel().select(-1);
 		this.cmbCid.getSelectionModel().select(-1);
 		this.cmbUF.getSelectionModel().select(-1);
 		this.txtPesquisa.setText("");

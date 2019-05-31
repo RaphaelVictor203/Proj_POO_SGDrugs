@@ -9,6 +9,7 @@ import javax.swing.JOptionPane;
 
 import com.curso.entity.Fornecedor;
 import com.curso.entity.Endereco;
+import com.curso.entity.Farmacia;
 import com.curso.entity.ProblemaSaude;
 
 import javafx.collections.FXCollections;
@@ -16,13 +17,13 @@ import javafx.collections.ObservableList;
 
 public class ControlFornecedores {
 	
-	private List<Fornecedor> FornecedorsCadastrados;
+	private List<Fornecedor> FornecedoresCadastrados;
 	private List<Endereco> enderecoCadastrados;
 	private ObservableList<Fornecedor> dataList = FXCollections.observableArrayList();
 	public static Fornecedor fornecSel = new Fornecedor();
 	
 	public ControlFornecedores() {
-		this.FornecedorsCadastrados = new ArrayList<Fornecedor>();
+		this.FornecedoresCadastrados = new ArrayList<Fornecedor>();
 		this.enderecoCadastrados = new ArrayList<Endereco>();
 		
 		/*Endereco ed = new Endereco();
@@ -43,7 +44,7 @@ public class ControlFornecedores {
 		cl.setCartaoSUS(123124124124L);
 		cl.setEnd(ed);
 		cl.setProblemasSaude(listPS);
-		FornecedorsCadastrados.add(cl);
+		FornecedoresCadastrados.add(cl);
 		this.dataList.add(cl);
 		
 		ed = new Endereco();
@@ -64,11 +65,11 @@ public class ControlFornecedores {
 		cl.setCartaoSUS(123124124124L);
 		cl.setEnd(ed);
 		cl.setProblemasSaude(listPS);
-		FornecedorsCadastrados.add(cl);
+		FornecedoresCadastrados.add(cl);
 		this.dataList.add(cl);*/
 	}
 	
-	public ObservableList<Fornecedor> getDataListFornecedors(){
+	public ObservableList<Fornecedor> getDataListFornecedores(){
 		return this.dataList;
 	}
 	
@@ -76,7 +77,7 @@ public class ControlFornecedores {
 	
 	public boolean cadFornecedor(Fornecedor cl) {
 		if(!existFornecedor(cl.getCnpj())) {
-			this.FornecedorsCadastrados.add(cl);
+			this.FornecedoresCadastrados.add(cl);
 			attTableFornecedor();
 			return true;
 		}else {
@@ -88,7 +89,7 @@ public class ControlFornecedores {
 	public void pesquisarFornecedor(String nome, long Cnpj, String uf, String cidade) {
 		dataList.clear();
 		if(!nome.equals("")) {
-			for(Fornecedor f : FornecedorsCadastrados) {
+			for(Fornecedor f : FornecedoresCadastrados) {
 				if(f.getCnpj() == Cnpj) {
 					dataList.add(f);
 				}
@@ -97,7 +98,7 @@ public class ControlFornecedores {
 	}
 	
 	public Fornecedor pesquisarFornecedor(long Cnpj) {
-		for(Fornecedor f : FornecedorsCadastrados) {
+		for(Fornecedor f : FornecedoresCadastrados) {
 			if(f.getCnpj() == Cnpj) {
 				return f;
 			}
@@ -106,7 +107,7 @@ public class ControlFornecedores {
 	}
 	
 	private boolean existFornecedor(long Cnpj) {
-		for(Fornecedor f : FornecedorsCadastrados) {
+		for(Fornecedor f : FornecedoresCadastrados) {
 			if(f.getCnpj() == Cnpj) {
 				return true;
 			}
@@ -115,16 +116,17 @@ public class ControlFornecedores {
 	}
 	
 	public void removerFornecedor() {
-		this.FornecedorsCadastrados.remove(pesquisarFornecedor(fornecSel.getCnpj()));
+		this.FornecedoresCadastrados.remove(pesquisarFornecedor(fornecSel.getCnpj()));
 		this.attTableFornecedor();
 	}
 	
 	public void attFornecedor(Fornecedor cl) {
-		for(Fornecedor f : FornecedorsCadastrados) {
+		for(Fornecedor f : FornecedoresCadastrados) {
 			if(f.getCnpj() == fornecSel.getCnpj()) {
 				f.setNome_fantasia(cl.getNome_fantasia());
 				f.setCnpj(cl.getCnpj());
 				f.setTelefone(cl.getTelefone());
+				f.getFarmacia().setUnidade(cl.getFarmacia().getUnidade());
 				f.getEndereco().setCep(cl.getEndereco().getCep());
 				f.getEndereco().setRua(cl.getEndereco().getRua());
 				f.getEndereco().setNumero(cl.getEndereco().getNumero());
@@ -141,7 +143,8 @@ public class ControlFornecedores {
 
 	public void attTableFornecedor() {
 		this.dataList.clear();
-		this.dataList.addAll(FornecedorsCadastrados);
+		this.dataList.addAll(FornecedoresCadastrados);
+		
 	}
 	
 	public void attTableFornecedor(Fornecedor cl) {
