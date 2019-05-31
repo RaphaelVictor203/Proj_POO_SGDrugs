@@ -9,9 +9,11 @@ public class Venda {
 	private Cliente cliente;
 	private Funcionario funcionario;
 	private List<ItemVenda> items;
+	private List<FormaPagto> formasPagto;
 	
 	public Venda() {
 		this.items = new ArrayList<ItemVenda>();
+		this.formasPagto = new ArrayList<FormaPagto>();
 	}
 	
 	public int getId_venda() {
@@ -46,14 +48,31 @@ public class Venda {
 		return items;
 	}
 
-	/*public void setItems(List<ItemVenda> items) {
-		this.items = items;
-	}*/
+	public List<FormaPagto> getFormasPagto(){
+		return this.formasPagto;
+	}
+	
+	public void resetListFormasPagto() {
+		this.formasPagto = new ArrayList<FormaPagto>();
+	}
+	
+	public void addFormaPagto(FormaPagto fp) {
+		this.formasPagto.add(fp);
+	}
 
+	public boolean existItem(Produto p) {
+		for(ItemVenda i : items) {
+			if(i.getProduto().getProduto().getId_produto() == p.getId_produto()) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public double returnPrecoTotal() {
 		double total = 0;
 		for(ItemVenda item : items) {
-			total += (item.getQntd() * item.getProduto().getPreco());
+			total += item.getSubtotal();
 		}
 		return total;
 	}

@@ -4,12 +4,19 @@ import java.text.DecimalFormat;
 
 import javax.swing.JOptionPane;
 
+import com.curso.control.ControlClientes;
 import com.curso.control.ControlVendas;
+import com.curso.entity.Cliente;
 import com.curso.entity.FarmaciaProduto;
+import com.curso.entity.FormaPagto;
+import com.curso.entity.Funcionario;
 import com.curso.entity.ItemVenda;
+import com.curso.entity.Venda;
+
 import javafx.application.Application;
 import javafx.beans.property.ReadOnlyDoubleWrapper;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -40,6 +47,7 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 	private Button btnFinalizar;
 	private Label lblValorUnt;
 	private Label lblQuantidade;
+	private Label lblNomeProd;
 	private Label lblTotal;
 	private Label lblVenda;
 	private Label lblCompra;
@@ -62,12 +70,19 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 	private TextField txtCardDebito;
 	private TextField txtDinheiro;
 	private Button btnFinalizaPOS;
-	
+	DecimalFormat df = new DecimalFormat("#,##0.00");
 	
 	ControlVendas cv;
+	
+	//TESTE
+	Cliente cl = new Cliente();
+	Funcionario func = new Funcionario();
 
 	@Override
 	public void start(Stage stage) throws Exception {
+		
+		cl.setPrimeiroNome("Raphael");
+		func.setPrimeiroNome("Adalberto");
 
 		cv = new ControlVendas();
 		
@@ -94,9 +109,10 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 		lblTotal = new Label("TOTAL: R$0,00");
 		lblTotal.setMaxSize(500, 40);
 		lblTotal.setStyle("-fx-font-size: 30px;");
-		lblTotal.relocate(270, 600);
+		lblTotal.relocate(20, 600);
 
-		lblValorUnt = new Label("preço unitáro: R$: 0,00");
+		lblNomeProd = new Label("Nome produto: Nenhum produto selecionado");
+		lblValorUnt = new Label("preço unitáro: R$0,00");
 		lblQuantidade = new Label("Qtd. total no estoque: 0");
 		
 		ImageView iv = new ImageView(new Image(new FileInputStream("imgs\\search.png")));
@@ -135,6 +151,7 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 		VBox vbEntradaProduto = new VBox(new Label("Adicionar Produto"), new Separator(),
 				new HBox(10, txtPesquisa, btnPesquisar), 
 				new HBox(10, txtQuantidade, btnAdicionar),
+				new HBox(10, lblNomeProd),
 				new HBox(10, lblValorUnt), 
 				new HBox(10, lblQuantidade));
 		vbEntradaProduto.setPadding(new Insets(130, 60, 50, 20));
@@ -244,7 +261,7 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 		hbEfetuarPagamento.setPadding(new Insets(40, 0, 0, 0));
 		hbEfetuarPagamento.relocate(850, 0);
 
-		painelPosVenda.setStyle("-fx-background-color: rgba(105,105,105, 0.3)");
+		painelPosVenda.setStyle("-fx-background-color: rgba(105,105,105, 0.6)");
 		painelPosVenda.getChildren().addAll(hbInforsGerais, lblInformacoesGerais, hbEfetuarPagamento, lblPagamento);
 		
 		Scene scene = new Scene(pane, 1360, 700);
@@ -258,6 +275,7 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 		btnVoltar.addEventFilter(MouseEvent.MOUSE_CLICKED, this);
 		btnFinalizaPOS.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
 		btnAdicionar.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
+		btnPesquisar.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
 		
 		createTableColumnsItensVenda();
 		loadStyles();
@@ -337,33 +355,62 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 		TableColumn<ItemVenda, Number> quant_produto = new TableColumn<>("Quant.");
 		quant_produto.setCellValueFactory(item -> new ReadOnlyIntegerWrapper(item.getValue().getQntd()));
 
-		TableColumn<ItemVenda, Number> sub_total = new TableColumn<>("Subtotal");
+		TableColumn<ItemVenda, String> sub_total = new TableColumn<>("Subtotal");
 		sub_total.setCellValueFactory(
-				item -> new ReadOnlyDoubleWrapper(item.getValue().getProduto().getPreco() * item.getValue().getQntd()));
+				item -> new ReadOnlyStringWrapper(df.format(item.getValue().getSubtotal())));
+		
+		TableColumn<ItemVenda, Button> btnIsencao = new TableColumn<>("Isenção");
+		btnIsencao.setCellValueFactory(item -> new ReadOnlyObjectWrapper<>(item.getValue().getProduto().getBtnIsencao()));
+		btnIsencao.setStyle("-fx-alignment: CENTER");
+		
+		TableColumn<ItemVenda, Button> btnExcluir = new TableColumn<>("Excluir");
+		btnExcluir.setCellValueFactory(item -> new ReadOnlyObjectWrapper<>(item.getValue().getProduto().getBtnExcluir()));
+		btnExcluir.setStyle("-fx-alignment: CENTER");
 
-		tblItens.getColumns().addAll(id_produto, desc_produto, valor_produto, quant_produto, sub_total);
+		tblItens.getColumns().addAll(id_produto, desc_produto, valor_produto, quant_produto, sub_total, btnIsencao, btnExcluir);
+		setFunctionItensButtons();
+		
 	}
 
+	private void setFunctionItensButtons() {
+		for(int i=0; i<tblItens.getItems().size(); i++) {		
+			
+			final int l = i;
+			
+			if(tblItens.getItems().get(i).getProduto().getProduto().getCategoria().equals("genérico")) {
+				tblItens.getItems().get(i).getProduto().getBtnIsencao().setOnAction(e -> {
+					if(tblItens.getItems().get(l).getProduto().getBtnIsencao().getText().equals("SUS")) {
+						tblItens.getItems().get(l).aplicarIsencao();
+						tblItens.getItems().get(l).getProduto().getBtnIsencao().setText("X");
+					}else {
+						tblItens.getItems().get(l).removerIsencao();
+						tblItens.getItems().get(l).getProduto().getBtnIsencao().setText("SUS");
+					}
+					atualizarTotal();
+					setFunctionItensButtons();
+					cv.attDataItens();
+				});
+			}else {
+				tblItens.getItems().get(i).getProduto().getBtnIsencao().setVisible(false);
+			}
+			
+			tblItens.getItems().get(i).getProduto().getBtnExcluir().setOnAction(e -> {
+				cv.resetFarmaciaProdutos();
+				cv.delItemVenda(tblItens.getItems().get(l));
+				atualizarTotal();
+				setFunctionItensButtons();
+			});
+		}
+	}
+	
 	public void btnSelected(int btn) {
 		String SelectVENDA = "";
-		String SelectPOS = "";
-		if(btn == 0) {
-			SelectVENDA = "rgb(242, 242, 242);";
-			SelectPOS = "rgb(237, 237, 237);";
-		} else {
-			SelectPOS = "rgb(242, 242, 242);";
-			SelectVENDA = "rgb(237, 237, 237);";	
-		}
+		SelectVENDA = "rgb(242, 242, 242);";
 		btnVenda.setStyle("-fx-background-color: " + SelectVENDA + ";"
-						+ "-fx-background-radius: none;"
-						+ "-fx-min-width: 140px;"
-						+ "-fx-min-height: 40px;"
-						+ "-fx-cursor: hand;");
-		/*btnPOSVenda.setStyle("-fx-background-color: " + SelectPOS + ";"
-						   + "-fx-background-radius: none;"
-						   + "-fx-min-width: 140px;"
-						   + "-fx-min-height: 40px;"
-						   + "-fx-cursor: hand;");*/
+				+ "-fx-background-radius: none;"
+				+ "-fx-min-width: 140px;"
+				+ "-fx-min-height: 40px;"
+				+ "-fx-cursor: hand;");
 	}
 
 	public static void main(String[] args) {
@@ -371,8 +418,8 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 		Application.launch(args);
 	}
 
-	public void finalizarCompra() {
-
+	public void atualizarTotal() {
+		lblTotal.setText("TOTAL: R$" + df.format(cv.getVendaAtual().returnPrecoTotal()));
 	}
 
 	@Override
@@ -383,24 +430,42 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 			btnSelected(0);
 		}else
 		if (event.getSource() == btnPesquisar) {
-
+			FarmaciaProduto fp = cv.pesquisaProd(Integer.parseInt(txtPesquisa.getText()));
+			if(fp != null) {
+				this.lblValorUnt.setText("preço unitáro: R$" + df.format(fp.getPreco()));
+				this.lblQuantidade.setText("Qtd. total no estoque:" + fp.getQntdEstoque());
+				this.lblNomeProd.setText("Nome produto: " + fp.getProduto().getNome());
+			}else {
+				JOptionPane.showMessageDialog(null, "Produto não encontrado !!!", "Ops...", JOptionPane.ERROR_MESSAGE);
+				limparCamposPesquisa();
+			}
 		}else
 		if (event.getSource() == btnAdicionar) {
 			FarmaciaProduto fp = cv.pesquisaProd(Integer.parseInt(txtPesquisa.getText()));
-			ItemVenda iv = new ItemVenda();
-			iv.setProduto(fp);
-			iv.setQntd(Integer.parseInt(txtQuantidade.getText()));
-			cv.addItemVenda(iv);
-			lblTotal.setText("TOTAL: R$" + cv.getVendaAtual().returnPrecoTotal());
+			if(!cv.getVendaAtual().existItem(fp.getProduto())) {
+				ItemVenda iv = new ItemVenda();
+				iv.setProduto(fp);
+				iv.setQntd(Integer.parseInt(txtQuantidade.getText()));
+				iv.calcSubTotal();
+				cv.addItemVenda(iv);
+				atualizarTotal();
+				setFunctionItensButtons();
+				limparCamposPesquisa();
+			}
 		}
 		else
 		if (event.getSource() == btnFinalizar) {
-			if(cbCartaoCredito.isSelected() || cbCartaoDebito.isSelected() || cbDinheiro.isSelected()) {
+			if((cbCartaoCredito.isSelected() || cbCartaoDebito.isSelected() || cbDinheiro.isSelected())
+					&& cv.getVendaAtual().getItems().size() != 0) {
 				painelPosVenda.toFront();
 				configEntradaFormaPagamento();
 				
 			}else {
-				JOptionPane.showMessageDialog(null, "Selecione ao menos uma forma de pagamento", "Problema na transação", JOptionPane.ERROR_MESSAGE);
+				if(cv.getVendaAtual().getItems().size() == 0) {
+					JOptionPane.showMessageDialog(null, "Não é possivel realizar a transação pois nenhum produto\nfoi adicionado.", "Problema na transação", JOptionPane.ERROR_MESSAGE);
+				}else {
+					JOptionPane.showMessageDialog(null, "Selecione ao menos uma forma de pagamento", "Problema na transação", JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		}else
 		if(event.getSource() == btnVoltar) {
@@ -408,6 +473,13 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 		}else
 		if(event.getSource() == btnFinalizaPOS) {
 			//finalizar a compra tela pos venda
+			cv.getVendaAtual().setCliente(cl);
+			cv.getVendaAtual().setFuncionario(func);
+			cv.addVenda();
+			JOptionPane.showMessageDialog(null, "Compra realiza com sucesso !!!", "Transação finalizada", JOptionPane.INFORMATION_MESSAGE);
+			painelVenda.toFront();
+			limparCampos();
+			cv.resetFarmaciaProdutos();
 		}
 
 	}
@@ -437,44 +509,71 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 	}
 	
 	private void distribuiValor(boolean cred, boolean deb, boolean din) {
-		DecimalFormat df = new DecimalFormat("#,###.00");
+		cv.getVendaAtual().resetListFormasPagto();
+		double vl = 0;
 		txtCardCredito.setText("");
 		txtCardDebito.setText("");
 		txtDinheiro.setText("");
 		if(cred && deb && din) {
-			double vl = cv.getVendaAtual().returnPrecoTotal() / 3;
+			vl = cv.getVendaAtual().returnPrecoTotal() / 3;
 			txtCardCredito.setText(df.format(vl));
 			txtCardDebito.setText(df.format(vl));
 			txtDinheiro.setText(df.format(vl));
 		}else
 		if(cred && deb) {
-			double vl = cv.getVendaAtual().returnPrecoTotal() / 2;
+			vl = cv.getVendaAtual().returnPrecoTotal() / 2;
 			txtCardCredito.setText(df.format(vl));
 			txtCardDebito.setText(df.format(vl));
 		}else 
 		if(cred && din){
-			double vl = cv.getVendaAtual().returnPrecoTotal() / 2;
+			vl = cv.getVendaAtual().returnPrecoTotal() / 2;
 			txtCardCredito.setText(df.format(vl));
 			txtDinheiro.setText(df.format(vl));
 		}else
 		if(deb && din) {
-			double vl = cv.getVendaAtual().returnPrecoTotal() / 2;
+			vl = cv.getVendaAtual().returnPrecoTotal() / 2;
 			txtCardDebito.setText(df.format(vl));
 			txtDinheiro.setText(df.format(vl));
 		}else
 		if(cred) {
-			double vl = cv.getVendaAtual().returnPrecoTotal();
+			vl = cv.getVendaAtual().returnPrecoTotal();
 			txtCardCredito.setText(df.format(vl));
 		}else
 		if(deb) {
-			double vl = cv.getVendaAtual().returnPrecoTotal();
+			vl = cv.getVendaAtual().returnPrecoTotal();
 			txtCardDebito.setText(df.format(vl));
 		}else
 		if(din) {
-			double vl = cv.getVendaAtual().returnPrecoTotal();
+			vl = cv.getVendaAtual().returnPrecoTotal();
 			txtDinheiro.setText(df.format(vl));
 		}
+		
+		if(cred) {
+			cv.getVendaAtual().getFormasPagto().add(new FormaPagto("Crédito", vl));
+		}
+		if(deb) {
+			cv.getVendaAtual().getFormasPagto().add(new FormaPagto("Dédito", vl));
+		}
+		if(din) {
+			cv.getVendaAtual().getFormasPagto().add(new FormaPagto("Dinheiro", vl));
+		}
 			
+	}
+	
+	public void limparCampos(){
+		this.txtPesquisa.setText("");
+		this.txtQuantidade.setText("");
+		this.cbCartaoCredito.setSelected(false);
+		this.cbCartaoDebito.setSelected(false);
+		this.cbDinheiro.setSelected(false);
+		limparCamposPesquisa();
+		atualizarTotal();
+	}
+	
+	public void limparCamposPesquisa() {
+		this.lblValorUnt.setText("preço unitáro: R$0,00");
+		this.lblQuantidade.setText("Qtd. total no estoque: 0");
+		this.lblNomeProd.setText("Nome produto: Nenhum produto selecionado");
 	}
 
 }

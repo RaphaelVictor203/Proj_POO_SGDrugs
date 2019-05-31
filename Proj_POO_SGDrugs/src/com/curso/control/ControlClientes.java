@@ -109,11 +109,11 @@ public class ControlClientes {
 		if(!cont.equals("")) {
 			for(Cliente c : clientesCadastrados) {
 				if(tipo.equals("CIDADE")) {
-					if(c.getEnd().getCidade().equals(cont)) {
+					if(c.getEnd().getCidade().contains(cont)) {
 						dataList.add(c);
 					}
 				}else {
-					if(c.getPrimeiroNome().equals(cont)) {
+					if(c.getPrimeiroNome().contains(cont)) {
 						dataList.add(c);
 					}
 				}

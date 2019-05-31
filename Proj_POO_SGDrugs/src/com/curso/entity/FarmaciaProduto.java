@@ -1,5 +1,7 @@
 package com.curso.entity;
 
+import javafx.scene.control.Button;
+
 public class FarmaciaProduto {
 
 	private Produto produto;
@@ -8,9 +10,22 @@ public class FarmaciaProduto {
 	private double preco;
 	private Farmacia farmacia;
 	
+	private Button btnIsencao;
+	private Button btnExcluir;
+	
 	public FarmaciaProduto() {
 		this.produto = new Produto();
 		this.farmacia = new Farmacia();
+		this.btnExcluir = new Button("Excluir");
+		this.btnIsencao = new Button("SUS");
+	}
+	
+	public Button getBtnIsencao() {
+		return btnIsencao;
+	}
+
+	public Button getBtnExcluir() {
+		return btnExcluir;
 	}
 	
 	public Farmacia getFarmacia() {
