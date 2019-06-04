@@ -1,17 +1,15 @@
 package com.curso.control;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
+
+import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.JOptionPane;
-
 import com.curso.entity.Produto;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -19,7 +17,19 @@ public class ControlProdutos {
 
 	private List<Produto> ltProdutos = new ArrayList<>();
 	private ObservableList<Produto> obsProdutos = FXCollections.observableArrayList();
-	private String arquivo = "regProdutos.txt";
+
+	
+	public ControlProdutos() {
+		try {
+			obsProdutos.clear();
+			selecionarProduto(ltProdutos);
+			obsProdutos.addAll(ltProdutos);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private String arquivo = "Produtos.txt";
 
 	public ObservableList<Produto> getGetListProdutos() {
 		return obsProdutos;
@@ -29,53 +39,43 @@ public class ControlProdutos {
 		this.obsProdutos = getListProdutos;
 	}
 
-	public void inserirProduto(Produto produto) throws IOException {
+	public void gravarProduto(Produto produto) throws IOException {
 
-		BufferedWriter write = new BufferedWriter(new FileWriter(arquivo));
+		PrintStream write = new PrintStream(new FileOutputStream(arquivo, true));
 
-		for (Produto p : ltProdutos) {
-
-			write.write(Integer.toString(p.getId_produto()));
-			write.newLine();
-			write.write(p.getNome());
-			write.newLine();
-			write.write(p.getCategoria());
-			write.newLine();
-			write.write(p.getFornecedor().getNome_fantasia());
-			write.newLine();
-		}
-
+		write.println(Integer.toString(produto.getId_produto()) + "\n" 
+									 + produto.getNome() + "\n" 
+									 + produto.getCategoria() + "\n"
+									 + produto.getFornecedor().getNome_fantasia());
 		write.close();
-		addNaLista();
+
 
 	}
+	public List<Produto> selecionarProduto(List<Produto> produtos) throws IOException{
+		   
+		BufferedReader read = new BufferedReader(new FileReader(arquivo));	
+		for(Produto p : produtos) {
+			
+			p.setId_produto(Integer.parseInt(read.readLine()));
+			p.setNome(read.readLine());
+			p.setCategoria(read.readLine());
+			p.getFornecedor().setNome_fantasia((read.readLine()));
+		}
+		read.close();
+		return produtos;
 
+	}
+	
 	public void adicionarProduto(Produto produto) {
 
 		ltProdutos.add(produto);
 	}
 
-	public List<Produto> lerProduto(List<Produto> produto) throws IOException {
-
-		BufferedReader read = new BufferedReader(new FileReader(arquivo));
-
-		for (Produto p : ltProdutos) {
-			
-			p.setId_produto(Integer.parseInt(read.readLine()));
-			p.setNome(read.readLine());
-			p.setCategoria(read.readLine());
-			p.getFornecedor().setNome_fantasia(read.readLine());
-		}
-		read.close();
-		return produto;
-	}
-
 	public void addNaLista() {
 		try {
 			obsProdutos.clear();
-			lerProduto(ltProdutos);
 			obsProdutos.addAll(ltProdutos);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, e.getMessage());
 		}
 	}

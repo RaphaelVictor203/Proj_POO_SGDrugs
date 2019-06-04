@@ -65,7 +65,7 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 
 	@Override
 	public void start(Stage stage) throws Exception {
-
+				
 		CAD_painelProdutos = new Pane();		
 		CAD_btnProdutos = new Button("INCLUSÃO");
 		CAD_btnProdutos.setPrefWidth(680);
@@ -113,10 +113,10 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 
 		CAD_tblProdutos = new TableView<Produto>();
 		CAD_tblProdutos.setPrefWidth(600);
-		CAD_tblProdutos.setPrefHeight(400);
-		 
-		loadtableInsert();
+		CAD_tblProdutos.setPrefHeight(400); 
+	    loadtableInsert();
 
+	    
 		BorderPane pane = new BorderPane();
 
 		VBox vbCadastro = new VBox(new Label("ADICIONAR PRODUTOS"), new Separator(),
@@ -159,6 +159,7 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 		CTR_tblProdutos = new TableView<Produto>();
 		CTR_tblProdutos.setPrefWidth(980);
 		CTR_tblProdutos.setPrefHeight(430);
+		loadtableControl(); 
 		
 		ImageView search2 = new ImageView(new Image(new FileInputStream("imgs\\search.png")));
 		search2.setFitWidth(20);
@@ -188,9 +189,7 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 		btnProximo.setPrefSize(60, 25);
 		btnUltimo = new Button("", last);
 		btnUltimo.setPrefSize(60, 25);
-		
-		loadtableControl(); 
-			
+				
 		CTR_txtPesquisar.setPromptText("ID ou Descrição");
 		CTR_btnPesquisar = new Button("",search2);
 		CTR_btnPesquisar.setPrefSize(30, 20);
@@ -233,7 +232,7 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 		CAD_btnCancelar.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
 		CAD_btnProdutos.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
 		CTR_btnProdutos.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
-
+		
 		loadstyles();
 		btnSelected(0);
 
@@ -242,6 +241,8 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 	@SuppressWarnings("unchecked")
 	public void loadtableInsert() {
 
+		cp = new ControlProdutos(); 
+		
 		TableColumn<Produto, Number> id_produto = new TableColumn<>("ID");
 		id_produto.setCellValueFactory(item -> new ReadOnlyIntegerWrapper(item.getValue().getId_produto()));
 
@@ -258,8 +259,10 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 				.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getFornecedor().toString()));
 		fornecedor_produto.setPrefWidth(150);
 
-		CAD_tblProdutos.getColumns().addAll(id_produto, desc_produto, categoria_produto, fornecedor_produto);
 		CAD_tblProdutos.setItems(cp.getGetListProdutos());
+		CAD_tblProdutos.getColumns().addAll(id_produto, desc_produto, categoria_produto, fornecedor_produto);
+		
+	    
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -279,10 +282,12 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 		TableColumn<Produto, String> fornecedor_produto = new TableColumn<>("Fornecedor");
 		fornecedor_produto.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getFornecedor().toString()));
 		fornecedor_produto.setPrefWidth(230);
-		//TableColumn<S, T>
-		CTR_tblProdutos.getColumns().addAll(id_produto, desc_produto, categoria_produto, fornecedor_produto);
-		CTR_tblProdutos.setItems(cp.getGetListProdutos());
+	
 		
+		CTR_tblProdutos.setItems(cp.getGetListProdutos());
+		CTR_tblProdutos.getColumns().addAll(id_produto, desc_produto, categoria_produto, fornecedor_produto);
+		
+
 	}
 
 	public void loadstyles() {
@@ -428,7 +433,7 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 					try {
 
 						cp.adicionarProduto(produto);
-						cp.inserirProduto(produto);
+						cp.gravarProduto(produto);
 						JOptionPane.showMessageDialog(null, 
 								"Um Novo Produto foi adicionado: " 
 								+ "\nID: " + produto.getId_produto()
