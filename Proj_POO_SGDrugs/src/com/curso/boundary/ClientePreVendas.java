@@ -1,22 +1,12 @@
 package com.curso.boundary;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-
 import javax.swing.JOptionPane;
-
-import com.curso.control.ControlClientes;
-import com.curso.entity.Cliente;
 
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
@@ -29,7 +19,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class ClientePreVendas extends Application implements EventHandler<MouseEvent>{
-	ControlClientes cc;
 	// Paineis Realizar Vendas(RV) InfoCliente(IC), Grid
 	private Pane PaneRV,PaneIC;
 	private GridPane panegrid;
@@ -43,17 +32,16 @@ public class ClientePreVendas extends Application implements EventHandler<MouseE
 	private Label RealVendas,InfoAvancar;
 	// info cliente
 	private Label InfoCliente,nameClient,cpfClient,idadeClient,sexClient;
-	private Label ruaClient,nClient,cidadeClient;
+	private Label ruaClient,nClient,bairroClient;
 	private Button btnAvancarSDef;
 	@Override
 	public void start(Stage stgPreV) throws Exception {
 		// Box REALIZAR VENDA
-		cc					= new ControlClientes();
 		RealVendas 			= new Label("REALIZAR VENDA");
 		cpfCliente 			= new TextField();
 		cpfCliente.setPromptText("Insira o CPF do Cliente");//Funciona como um placeholder
 		btnPesquisar 		= new Button("PESQUISAR");
-		btnAvancar 			= new Button("AVANÇAR");
+		btnAvancar 			= new Button("AVANÃ‡AR");
 		InfoAvancar 		= new Label("Necessario definir um cliente");
 		// Box Info Cliente
 		InfoCliente 		= new Label("INFO. CLIENTE");
@@ -63,8 +51,8 @@ public class ClientePreVendas extends Application implements EventHandler<MouseE
 		sexClient 			= new Label();
 		ruaClient 			= new Label();
 		nClient 			= new Label();
-		cidadeClient 		= new Label();
-		btnAvancarSDef 		= new Button("AVANÇAR SEM DEFINIR CLIENTE");
+		bairroClient 		= new Label();
+		btnAvancarSDef 		= new Button("AVANÃ‡AR SEM DEFINIR CLIENTE");
 		// Paineis Realizar Venda, InformaÃ§Ã£o Cliente e o grid
 		panegrid 			= new GridPane();
 		PaneRV 				= new Pane();
@@ -92,9 +80,9 @@ public class ClientePreVendas extends Application implements EventHandler<MouseE
 				        	 ,new HBox(10,new Label("CPF: "),cpfClient)
 				  	         ,new HBox(10,new Label("Idade: "),idadeClient
 				  				         ,new Label(" Sexo: "),sexClient)
-				  	         ,new HBox(10,new Label("Endereço: "))
-				  	         ,new HBox(10,ruaClient)
-				  	         ,new HBox(10,new Label("N°"),nClient,new Label(", "),cidadeClient));
+				  	         ,new HBox(10,new Label("EndereÃ§o: "),ruaClient
+				  	         ,new Label(", nÂ°"),nClient
+				  	         ,new Label(" "),bairroClient));
 		//IC 					= new VBox(InfoCliente,Infos,btnAvancarSDef);
 		IC 					= new GridPane();
 		IC.add(InfoCliente, 0, 0);
@@ -106,13 +94,11 @@ public class ClientePreVendas extends Application implements EventHandler<MouseE
 		panegrid.add(IC, 1, 0);
 		
 //													FIM INFORMAÃ‡ÃƒO CLIENTE
-		btnPesquisar.addEventFilter(MouseEvent.MOUSE_CLICKED, this);
-		btnAvancar.addEventFilter(MouseEvent.MOUSE_CLICKED, this);
-		btnAvancarSDef.addEventFilter(MouseEvent.MOUSE_CLICKED, this);
+		
 		Styles();
 		Scene mainScene = new Scene(panegrid, 1360, 700);
 		stgPreV.setScene(mainScene);
-		stgPreV.setTitle("Seleção de Cliente - Pré Tela de Vendas");
+		stgPreV.setTitle("SeleÃ§Ã£o de Cliente - PrÃ© Tela de Vendas");
 		stgPreV.show();
 		
 		RV.setPrefHeight(panegrid.getHeight());
@@ -185,111 +171,10 @@ public class ClientePreVendas extends Application implements EventHandler<MouseE
 	public static void main(String[]args) {
 		Application.launch(args);
 	}
-	@SuppressWarnings("deprecation")
-	public String Idade(Date dt_nasc) {//yyyy-MM-dd
-        Calendar calHoje = GregorianCalendar.getInstance();
-        int diah = calHoje.get(Calendar.DAY_OF_MONTH);
-        int mesh = calHoje.get(Calendar.MONTH) + 1;
-        int anoh = calHoje.get(Calendar.YEAR);
-        // Data do nascimento.
-        int dian = dt_nasc.getDay();
-        int mesn = dt_nasc.getMonth();
-        int anon = dt_nasc.getYear();
-        
-        String strNiver = anoh+"-"+mesn+"-"+dian;        
-        Calendar calNiver = Calendar.getInstance();
-        try {
-            calNiver.setTime(new SimpleDateFormat("yyyy-MM-dd").parse(strNiver));
-        } catch (ParseException e) {
-        	e.printStackTrace();
-        }
-        
-        int anos = (calHoje.getTimeInMillis() < calNiver.getTimeInMillis())? (anoh-anon-1):anoh-anon ;
-        int meses;
-        int dias;
-        
-        meses = mesh - mesn;
-        if (meses > 0) {//Verificando se já fez aniversário ou não
-            if (diah < dian) {
-                meses--;
-            }
-        } else if (meses < 0) {//Se o mês atual for menor que o mês do aniversário
-            meses = 12 + meses;//Lembrar que meses está negativo, por isso a soma;
-            //Da mesma forma, vamos comparar o dia atual com o dia do aniversário, para sabermos se o mês está completo ou não:
-            if (diah < dian) {
-                meses--;
-            }
-        } else {//Se o mês atual for o mês do aniversário:
-            if (diah<dian) {
-                meses = 11;
-            } 
-        }
-        
-        dias = diah - dian;
-        if (dias < 0) {//Se dia hoje menor que dia do niver, somar os dias desde o mês anterior:
-            if (mesh==5||mesh==7||mesh==8||mesh==10||mesh==12) {
-                dias = 30-dian+diah;
-            } else if (mesh==1||mesh==2||mesh==4||mesh==6||mesh==9||mesh==11) {
-                dias = 31-dian+diah;
-            } else {//Verificando se o ano é bissexto ou não: Esse else é para o mês 3, cujo anterior é fevereiro:
-                if (anoh%4 == 0) {
-                    dias = 29-dian+diah;
-                } else {
-                    dias = 28-dian+diah;
-                }
-            }
-        }
-        return anos+" anos";
-    }
 	@Override
 	public void handle(MouseEvent event) {
-		
-		if(event.getSource() == btnPesquisar) {
-			JOptionPane.showMessageDialog(null,"Entrou");
-			if(cpfCliente.getText() != null) {
-				Cliente cli = cc.pesquisarCliente(Long.parseLong(cpfCliente.getText()));
-				if(cli != null) {
-					this.nameClient.setText(cli.getPrimeiroNome());
-					this.cpfClient.setText(String.valueOf(cli.getCpf()));
-					this.idadeClient.setText(Idade(cli.getDt_nasc()));
-					this.sexClient.setText(String.valueOf(cli.getSexo()));
-					this.ruaClient.setText(cli.getEnd().getRua());
-					this.nClient.setText(String.valueOf(cli.getEnd().getNumero()));
-					this.cidadeClient.setText(cli.getEnd().getCidade());
-				}else {
-					JOptionPane.showMessageDialog(null, "Cliente Não Existe.", "Cliente inexistente.", JOptionPane.INFORMATION_MESSAGE);
-				}
-			}else {
-				JOptionPane.showMessageDialog(null, "Para pesquisar é necessario digitar o CPF.", "Cpf nulo.", JOptionPane.INFORMATION_MESSAGE);
-			}
-		}
-		if(event.getSource()==btnAvancarSDef) {
-			TelaVendas tv = new TelaVendas();
-			try {
-				tv.start(new Stage());
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		if(event.getSource() == btnAvancar) {
-			if(cpfCliente.getText().equals("") || cpfCliente.getText().equals(null)) {
-				Alert msgAlert = new Alert(Alert.AlertType.ERROR);
-				msgAlert.setHeaderText("CPF EMPTY OR NULL !");
-				msgAlert.setTitle("CPF DO CLIENTE VAZIO OU NULO!");
-				msgAlert.setContentText("Para avançar é necessario digitar o cpf.");
-				msgAlert.show();
-			}else {
-				TelaVendas tv = new TelaVendas();
-				try {
-					tv.start(new Stage());
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			
+		if(event.getSource()==btnAvancar) {
+			JOptionPane.showMessageDialog(null, "AvanÃ§ar teste!");
 		}
 	}
-
 }

@@ -2,15 +2,14 @@ package com.curso.boundary;
 
 import java.io.FileInputStream;
 import java.io.IOException;
- 
 import java.util.ArrayList;
 import java.util.List;
- 
+import java.util.Random;
 
+import javax.swing.JOptionPane;
 import com.curso.control.ControlProdutos;
 import com.curso.entity.Fornecedor;
 import com.curso.entity.Produto;
-
 import javafx.application.Application;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -20,7 +19,6 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -40,66 +38,65 @@ import javafx.stage.Stage;
 
 public class ManterProduto extends Application implements EventHandler<MouseEvent> {
 
-	private Pane painelCADProdutos;
-	private Pane painelCTRProdutos;
-	private Button btnCADProdutos;
-	private Button btnCTRProdutos;
+	private Pane CAD_painelProdutos;
+	private Pane CTR_painelProdutos;
+	private Button CAD_btnProdutos;
+	private Button CTR_btnProdutos;
 	private HBox menuTop;
-
-	private TextField txtDescricao;
-	private ComboBox<String> cmbCategoria;
+	private TextField CAD_txtDescricao;
+	private ComboBox<String> CAD_cmbCategoria;
 	private List<String> ltCategorias;
 	private ObservableList<String> obsCategorias;
-	private ComboBox<String> cmbFornecedor;
-	private List<String> ltFornecedores;
-	private ObservableList<String> obsFornecedores;
-	private Button btnInserir;
-	private Button btnCancelar;
-	private Button btnPesquisar;
-	private TextField txtPesquisar;
-	private TableView<Produto> tblProdutos;
+	private ComboBox<Fornecedor> CAD_cmbFornecedor;
+	private List<Fornecedor> ltFornecedores;
+	private ObservableList<Fornecedor> obsFornecedores;
+	private Button CAD_btnInserir;
+	private Button CAD_btnCancelar;
+	private Button CAD_btnPesquisar;
+	private TextField CAD_txtPesquisar;
+	private Button CTR_btnPesquisar;
+	private TextField CTR_txtPesquisar;
+	private TableView<Produto> CAD_tblProdutos;
 	private Produto produto;
-
-	private Button btnInfo = new Button("Mostrar diálogo de informação");
-	private Button btnErro = new Button("Mostrar diálogo de error");
+	private TableView<Produto > CTR_tblProdutos; 
+	private Button btnPrimeiro, btnAnterior, btnProximo, btnUltimo; 
 
 	ControlProdutos cp = new ControlProdutos();
-
+	
 	@Override
 	public void start(Stage stage) throws Exception {
+				
+		CAD_painelProdutos = new Pane();		
+		CAD_btnProdutos = new Button("INCLUSÃO");
+		CAD_btnProdutos.setPrefWidth(680);
+		
+		CAD_txtDescricao = new TextField();
+		CAD_txtDescricao.setPrefSize(280, 20);
+		CAD_txtDescricao.setPromptText("Nome do Produto");
+		
+		CAD_txtPesquisar = new TextField();
+		CAD_txtPesquisar.setPrefSize(280, 20);
+		CAD_txtPesquisar.setPromptText("ID ou Nome do Produto");
+		
+		CAD_cmbCategoria = new ComboBox<>();
+		CAD_cmbCategoria.setPromptText("Selecione");
+		CAD_cmbCategoria.setPrefSize(280, 20);
+		
+		CAD_cmbFornecedor = new ComboBox<>();
+		CAD_cmbFornecedor.setPrefSize(270, 20);
+		CAD_cmbFornecedor.setPromptText("Selecione");
+		
+		CAD_btnInserir = new Button("Inserir");
+		CAD_btnInserir.setPrefSize(220, 40);
+		CAD_btnCancelar = new Button("Cancelar");
 
-		painelCADProdutos = new Pane();
-		painelCTRProdutos = new Pane();
+		ImageView search1 = new ImageView(new Image(new FileInputStream("imgs\\search.png")));
+		search1.setFitWidth(20);
+		search1.setFitHeight(20);
 
-		btnCADProdutos = new Button("INCLUSÃO");
-		btnCTRProdutos = new Button("CONTROLE");
-
-		menuTop = new HBox(btnCADProdutos, btnCTRProdutos);
-		menuTop.setSpacing(1);
-
-		txtDescricao = new TextField();
-		txtDescricao.setPrefSize(280, 20);
-		txtDescricao.setPromptText("Nome do Produto");
-		txtPesquisar = new TextField();
-		txtPesquisar.setPrefSize(280, 20);
-		txtPesquisar.setPromptText("ID ou Nome do Produto");
-		cmbCategoria = new ComboBox<>();
-		cmbCategoria.setPromptText("Selecione");
-		cmbCategoria.setPrefSize(280, 20);
-		cmbFornecedor = new ComboBox<>();
-		cmbFornecedor.setPrefSize(270, 20);
-		cmbFornecedor.setPromptText("Selecione");
-		btnInserir = new Button("Inserir");
-		btnInserir.setPrefSize(220, 40);
-		btnCancelar = new Button("Cancelar");
-
-		ImageView img = new ImageView(new Image(new FileInputStream("imgs\\search.png")));
-		img.setFitWidth(20);
-		img.setFitHeight(20);
-
-		btnCancelar.setPrefSize(220, 40);
-		btnPesquisar = new Button("", img);
-		btnPesquisar.setPrefSize(35, 20);
+		CAD_btnCancelar.setPrefSize(220, 40);
+		CAD_btnPesquisar = new Button("", search1);
+		CAD_btnPesquisar.setPrefSize(35, 20);
 
 		ltCategorias = new ArrayList<>();
 		obsCategorias = FXCollections.observableArrayList();
@@ -108,71 +105,144 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 
 		adicionarCategoria(ltCategorias);
 		obsCategorias.addAll(ltCategorias);
-		cmbCategoria.setItems(obsCategorias);
+		CAD_cmbCategoria.setItems(obsCategorias);
 
 		adicionarFornecedor(ltFornecedores);
 		obsFornecedores.addAll(ltFornecedores);
-		cmbFornecedor.setItems(obsFornecedores);
+		CAD_cmbFornecedor.setItems(obsFornecedores);
 
-		tblProdutos = new TableView<Produto>();
-		tblProdutos.setPrefWidth(600);
-		tblProdutos.setPrefHeight(400);
+		CAD_tblProdutos = new TableView<Produto>();
+		CAD_tblProdutos.setPrefWidth(600);
+		CAD_tblProdutos.setPrefHeight(400); 
+	    loadtableInsert();
 
-		loadtable();
-
+	    
 		BorderPane pane = new BorderPane();
 
 		VBox vbCadastro = new VBox(new Label("ADICIONAR PRODUTOS"), new Separator(),
-				new HBox(10, new Label("Descrição: "), txtDescricao),
-				new HBox(10, new Label("Categoria: "), cmbCategoria),
-				new HBox(10, new Label("Fornecedor: "), cmbFornecedor));
+				new HBox(10, new Label("Descrição: "), CAD_txtDescricao),
+				new HBox(10, new Label("Categoria: "), CAD_cmbCategoria),
+				new HBox(10, new Label("Fornecedor: "), CAD_cmbFornecedor));
 		vbCadastro.setSpacing(8);
 		vbCadastro.setPadding(new Insets(39, 40, 40, 80));
 		vbCadastro.setStyle("-fx-font-size: 15px;");
 
-		VBox vbPesquisa = new VBox(new Label("PESQUISA"), new Separator(), new HBox(txtPesquisar, btnPesquisar));
-		vbPesquisa.setSpacing(8);
-		vbPesquisa.setPadding(new Insets(39, 0, 20, 0));
-		vbPesquisa.setStyle("-fx-font-size: 15px;");
+		VBox vbPesquisaCAD = new VBox(new Label("PESQUISA"), new Separator(), new HBox(5, CAD_txtPesquisar, CAD_btnPesquisar));
+		vbPesquisaCAD.setSpacing(8);
+		vbPesquisaCAD.setPadding(new Insets(39, 0, 20, 0));
+		vbPesquisaCAD.setStyle("-fx-font-size: 15px;");
 
-		VBox vbTabela = new VBox(new HBox(new Label("LISTA DE PRODUTOS")), new Separator(), new HBox(tblProdutos));
+		VBox vbTabela = new VBox(new HBox(new Label("LISTA DE PRODUTOS")), new Separator(), new HBox(CAD_tblProdutos));
 		vbTabela.setPadding(new Insets(20, 0, 0, 0));
 		vbTabela.setSpacing(10);
 		vbTabela.setStyle("-fx-font-size: 15px;");
 
-		HBox hbButtons = new HBox(btnInserir, btnCancelar);
+		HBox hbButtons = new HBox(CAD_btnInserir, CAD_btnCancelar);
 		hbButtons.setSpacing(20);
 		hbButtons.setPadding(new Insets(7, 0, 0, 40));
 		hbButtons.setAlignment(Pos.BASELINE_CENTER);
 
-		HBox hbGeral = new HBox();
-		hbGeral.setStyle("-fx-background-color: rgb(237,237,237);");
-		hbGeral.setSpacing(80);
-		hbGeral.setPadding(new Insets(40, 1000, 80, 40));
-		hbGeral.getChildren().addAll(new VBox(vbCadastro, hbButtons), new VBox(vbPesquisa, vbTabela));
-		painelCADProdutos.getChildren().add(hbGeral);
+		HBox hbGeralCAD = new HBox();
+		hbGeralCAD.setStyle("-fx-background-color: rgb(237,237,237);");
+		hbGeralCAD.setSpacing(80);
+		hbGeralCAD.setPadding(new Insets(40, 1000, 80, 40));
+		hbGeralCAD.getChildren().addAll(new VBox(vbCadastro, hbButtons), new VBox(vbPesquisaCAD, vbTabela));
+		CAD_painelProdutos.getChildren().add(hbGeralCAD);
 
+		//-----------------------------------------------------------------------------------------------------//
+		
+		CTR_painelProdutos = new Pane();
+		CTR_btnProdutos = new Button("CONTROLE");
+		CTR_btnProdutos.setPrefWidth(680);
+		CTR_txtPesquisar = new TextField();
+		CTR_txtPesquisar.setPrefSize(280, 20);
+		CTR_tblProdutos = new TableView<Produto>();
+		CTR_tblProdutos.setPrefWidth(980);
+		CTR_tblProdutos.setPrefHeight(430);
+		loadtableControl(); 
+		
+		ImageView search2 = new ImageView(new Image(new FileInputStream("imgs\\search.png")));
+		search2.setFitWidth(20);
+		search2.setFitHeight(20);
+		
+		ImageView first = new ImageView(new Image(new FileInputStream("imgs\\first.png")));
+		first.setFitWidth(25);
+		first.setFitHeight(15);
+		
+		ImageView previous = new ImageView(new Image(new FileInputStream("imgs\\previous.png")));
+		previous.setFitWidth(25);
+		previous.setFitHeight(15);
+		
+		ImageView next = new ImageView(new Image(new FileInputStream("imgs\\next.png")));
+		next.setFitWidth(25);
+		next.setFitHeight(15);
+		
+		ImageView last = new ImageView(new Image(new FileInputStream("imgs\\last.png")));
+		last.setFitWidth(25);
+		last.setFitHeight(15);
+		
+		btnPrimeiro = new Button("", first);
+		btnPrimeiro.setPrefSize(60, 25);
+		btnAnterior = new Button("", previous);
+		btnAnterior.setPrefSize(60, 25);
+		btnProximo = new Button("", next);
+		btnProximo.setPrefSize(60, 25);
+		btnUltimo = new Button("", last);
+		btnUltimo.setPrefSize(60, 25);
+				
+		CTR_txtPesquisar.setPromptText("ID ou Descrição");
+		CTR_btnPesquisar = new Button("",search2);
+		CTR_btnPesquisar.setPrefSize(30, 20);
+		
+		VBox vbPesquisaCTR = new VBox(new Label("PESQUISA"), new Separator(),
+		new HBox(5, CTR_txtPesquisar, CTR_btnPesquisar)); 
+		vbPesquisaCTR.setSpacing(10);
+		vbPesquisaCTR.setPadding(new Insets(15, 40, 0, 40));
+		vbPesquisaCTR.setStyle("-fx-font-size: 15px;");
+		
+		VBox vbTabProdutosCTR = new VBox(new HBox(new Label("LISTA DE PRODUTOS DISPONÍVEIS")), new Separator(),
+		new HBox(5, btnPrimeiro, btnAnterior, btnProximo, btnUltimo),
+		new HBox(CTR_tblProdutos));
+		vbTabProdutosCTR.setSpacing(10);
+		vbTabProdutosCTR.setPadding(new Insets(25, 40, 40, 40));
+		vbTabProdutosCTR.setStyle("-fx-font-size: 15px");
+		
+		HBox hbGeralCTR = new HBox(new VBox(vbPesquisaCTR, vbTabProdutosCTR));
+		hbGeralCTR.setStyle("-fx-background-color: rgb(237, 237, 237);");
+		hbGeralCTR.setSpacing(80);
+		hbGeralCTR.setPadding(new Insets(20, 300, 20, 100));
+		CTR_painelProdutos.getChildren().add(hbGeralCTR);
+
+		
+		//------------------------------------------------------------------------------------------------------------------------
+	
+		menuTop = new HBox(CAD_btnProdutos, CTR_btnProdutos);
+		menuTop.setSpacing(1);
 		pane.setTop(menuTop);
-		StackPane painels = new StackPane(painelCTRProdutos, painelCADProdutos);
+		StackPane painels = new StackPane(CTR_painelProdutos, CAD_painelProdutos);
 		pane.setCenter(painels);
-
+		
+		
 		Scene cena = new Scene(pane, 1250, 700);
 		stage.setScene(cena);
 		stage.setTitle("Produtos");
 		stage.show();
 
-		btnInserir.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
-		btnCADProdutos.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
-		btnCTRProdutos.addEventFilter(MouseEvent.MOUSE_CLICKED, this);
-
+		CAD_btnInserir.addEventHandler (MouseEvent.MOUSE_CLICKED, this);
+		CAD_btnCancelar.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
+		CAD_btnProdutos.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
+		CTR_btnProdutos.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
+		
 		loadstyles();
 		btnSelected(0);
 
 	}
 
 	@SuppressWarnings("unchecked")
-	public void loadtable() {
+	public void loadtableInsert() {
 
+		cp = new ControlProdutos(); 
+		
 		TableColumn<Produto, Number> id_produto = new TableColumn<>("ID");
 		id_produto.setCellValueFactory(item -> new ReadOnlyIntegerWrapper(item.getValue().getId_produto()));
 
@@ -182,42 +252,85 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 
 		TableColumn<Produto, String> categoria_produto = new TableColumn<>("Categoria");
 		categoria_produto.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getCategoria()));
-		categoria_produto.setPrefWidth(160);
+		categoria_produto.setPrefWidth(180);
 
 		TableColumn<Produto, String> fornecedor_produto = new TableColumn<>("Fornecedor");
-		fornecedor_produto.setCellValueFactory(
-				item -> new ReadOnlyStringWrapper(item.getValue().getFornecedor().getNome_fantasia()));
+		fornecedor_produto
+				.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getFornecedor().toString()));
 		fornecedor_produto.setPrefWidth(150);
 
-		// tblProdutos.setStyle("-fx-background-color:#0095FE;");
-		tblProdutos.getColumns().addAll(id_produto, desc_produto, categoria_produto, fornecedor_produto);
+		CAD_tblProdutos.setItems(cp.getGetListProdutos());
+		CAD_tblProdutos.getColumns().addAll(id_produto, desc_produto, categoria_produto, fornecedor_produto);
+		
+	    
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void loadtableControl() {
+		
+		TableColumn<Produto, Number> id_produto = new TableColumn<>("ID");
+		id_produto.setCellValueFactory(item -> new ReadOnlyIntegerWrapper(item.getValue().getId_produto()));
+		
+		TableColumn<Produto, String> desc_produto = new TableColumn<>("Descrição");
+		desc_produto.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getNome()));
+		desc_produto.setPrefWidth(230);
+		
+		TableColumn<Produto, String> categoria_produto = new TableColumn<>("Categoria");
+		categoria_produto.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getCategoria()));
+		categoria_produto.setPrefWidth(230);
+		
+		TableColumn<Produto, String> fornecedor_produto = new TableColumn<>("Fornecedor");
+		fornecedor_produto.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getFornecedor().toString()));
+		fornecedor_produto.setPrefWidth(230);
+	
+		
+		CTR_tblProdutos.setItems(cp.getGetListProdutos());
+		CTR_tblProdutos.getColumns().addAll(id_produto, desc_produto, categoria_produto, fornecedor_produto);
+		
+
 	}
 
 	public void loadstyles() {
 
-		String styleButtons = "-fx-background-radius: 7;" + "-fx-font-size: 15px;" + "-fx-text-fill: white;"
-				+ "-fx-background-color: #0095FE;"
-				+ "-fx-cursor: hand;";
+		String styleButtons = "-fx-background-radius: 7;" 
+							+ "-fx-font-size: 15px;" 
+							+ "-fx-text-fill: white;"
+							+ "-fx-background-color: #0095FE;" 
+							+ "-fx-cursor: hand;";
 
-		String styleBtnPesquisa = "-fx-background-radius: 8;" + "-fx-background-color: #0095FE;";
+		String styleBtnPesquisa = "-fx-background-radius: 8;" 
+							+ "-fx-background-color: #0095FE;"
+							+ "-fx-cursor: hand;";
 
-		String styleEntradas = "-fx-background-radius: 8;" + "-fx-right: 20px;";
+		String styleEntradas = "-fx-background-radius: 8;" 
+						     + "-fx-right: 20px;";
 
 		String styleMenuTop = "-fx-background-color: rgb(242, 242, 242);";
 
-		String styleMeuBtn = "-fx-background-radius: none;" + "-fx-min-width: 130px;" + "-fx-min-height: 40px;"
-				+ "-fx-cursor: hand;" + "-fx-font-size: 15px;";
+		String styleMeuBtn = "-fx-background-radius: none;" 
+						   + "-fx-min-width: 130px;" 
+						   + "-fx-min-height: 40px;"
+						   + "-fx-cursor: hand;" 
+						   + "-fx-font-size: 15px;";
 
 		menuTop.setStyle(styleMenuTop);
-		txtDescricao.setStyle(styleEntradas);
-		txtPesquisar.setStyle(styleEntradas);
-		cmbCategoria.setStyle(styleEntradas);
-		cmbFornecedor.setStyle(styleEntradas);
-		btnInserir.setStyle(styleButtons);
-		btnCancelar.setStyle(styleButtons);
-		btnPesquisar.setStyle(styleBtnPesquisa);
-		btnCADProdutos.setStyle(styleMeuBtn);
-		btnCTRProdutos.setStyle(styleMeuBtn);
+		CAD_txtDescricao.setStyle(styleEntradas);
+		CAD_txtPesquisar.setStyle(styleEntradas);
+		CAD_cmbCategoria.setStyle(styleEntradas);
+		CAD_cmbFornecedor.setStyle(styleEntradas);
+		CAD_btnInserir.setStyle(styleButtons);
+		CAD_btnCancelar.setStyle(styleButtons);
+		CAD_btnPesquisar.setStyle(styleBtnPesquisa);
+		CAD_btnProdutos.setStyle(styleMeuBtn);
+		
+		CTR_txtPesquisar.setStyle(styleEntradas);
+		CTR_btnProdutos.setStyle(styleMeuBtn);
+		CTR_btnPesquisar.setStyle(styleBtnPesquisa);
+		
+		btnPrimeiro.setStyle(styleButtons);
+		btnAnterior.setStyle(styleButtons);
+		btnProximo.setStyle(styleButtons);
+		btnUltimo.setStyle(styleButtons);
 	}
 
 	public void btnSelected(int btn) {
@@ -231,26 +344,34 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 			SelectCAD = "rgb(242, 242, 242)";
 			SelectCTR = "rgb(237, 237, 237)";
 		}
-		btnCADProdutos.setStyle("-fx-background-color: " + SelectCAD + ";" + "-fx-background-radius: none;"
-				+ "-fx-min-width: 140px;" + "-fx-min-height: 40px;" + "-fx-cursor: hand;");
+		CAD_btnProdutos.setStyle("-fx-background-color: " + SelectCAD + ";" 
+								+ "-fx-background-radius: none;"
+								+ "-fx-min-width: 140px;" 
+								+ "-fx-min-height: 40px;" 
+								+ "-fx-cursor: hand;");
 
-		btnCTRProdutos.setStyle("-fx-background-color: " + SelectCTR + ";" + "-fx-background-redius: none;"
-				+ "-fx-min-width: 140px;" + "-fx-min-height: 40px;" + "-fx-cursor: hand;");
+		CTR_btnProdutos.setStyle("-fx-background-color: " + SelectCTR + ";" 
+								+ "-fx-background-redius: none;"
+								+ "-fx-min-width: 140px;" 
+								+ "-fx-min-height: 40px;" 
+								+ "-fx-cursor: hand;");
 	}
 
 	public List<String> adicionarCategoria(List<String> categoria) {
 
-		categoria.add("Cosméticos");
-		categoria.add("Equipamentos Médicos");
-		categoria.add("Medicamentos Genéricos");
-		categoria.add("Medicamentos de Referência");
-		categoria.add("Medicamenros Similares");
-		categoria.add("Suplementos e Vitaminas");
-
+		categoria.add(0, "Cosméticos");
+		categoria.add(1, "Equipamentos Médicos");
+		categoria.add(2, "Medicamentos Genéricos");
+		categoria.add(3, "Medicamentos de Referência");
+		categoria.add(4, "Medicamentos Similares");
+		categoria.add(5, "Produtos de Higiene");
+		categoria.add(6, "Suplementos e Vitaminas");
+		
+	
 		return categoria;
 	}
 
-	public List<String> adicionarFornecedor(List<String> fornecedores) {
+	public List<Fornecedor> adicionarFornecedor(List<Fornecedor> fornecedores) {
 
 		Fornecedor fornecedor1 = new Fornecedor();
 		fornecedor1.setNome_fantasia("Jequiti");
@@ -264,10 +385,10 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 		Fornecedor fornecedor4 = new Fornecedor();
 		fornecedor4.setNome_fantasia("Drogasil");
 
-		fornecedores.add(fornecedor1.getNome_fantasia());
-		fornecedores.add(fornecedor2.getNome_fantasia());
-		fornecedores.add(fornecedor3.getNome_fantasia());
-		fornecedores.add(fornecedor4.getNome_fantasia());
+		fornecedores.add(0, fornecedor1);
+		fornecedores.add(1, fornecedor2);
+		fornecedores.add(2, fornecedor3);
+		fornecedores.add(3, fornecedor4);
 
 		return fornecedores;
 	}
@@ -280,58 +401,63 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 	@Override
 	public void handle(MouseEvent event) {
 
-		if (event.getSource() == btnCADProdutos) {
-			painelCADProdutos.toFront();
+		if (event.getSource() == CAD_btnProdutos) {
+			CAD_painelProdutos.toFront();
 			btnSelected(0);
-		} else if (event.getSource() == btnCTRProdutos) {
-			painelCTRProdutos.toFront();
+		} else if (event.getSource() == CTR_btnProdutos) {
+			CTR_painelProdutos.toFront();
 			btnSelected(1);
 		}
-		
-		if (event.getSource() == btnInserir) {
-			
+		if(event.getSource() == CAD_btnCancelar) {
+			resetarCampos();
+		}
+
+		if (event.getSource() == CAD_btnInserir) {
+
 			produto = new Produto();
-			produto.setNome(txtDescricao.getText());
-			
+			Random r = new Random();
+
+			produto.setId_produto(r.nextInt(98)+1);
+			produto.setNome(CAD_txtDescricao.getText());
+
 			try {
-				produto.setCategoria(cmbCategoria.getSelectionModel().getSelectedItem().toString());
-				//produto.getFornecedor().setNome_fantasia((cmbFornecedor.getSelectionModel().getSelectedItem().toString()));	
-				
-				if (txtDescricao.getText().isEmpty() || cmbCategoria.getSelectionModel().getSelectedIndex() == -1
-						|| cmbFornecedor.getSelectionModel().getSelectedIndex() == -1) {
 
-					btnErro.setOnAction(e -> {
-						Alert dialogoErro = new Alert(Alert.AlertType.ERROR);
-						dialogoErro.setTitle("Cadastro Não Efetuado");
-						dialogoErro.setHeaderText("Erro de Entrada");
-						dialogoErro.setContentText("Complete todos os Campos");
-						dialogoErro.showAndWait();
-					});
+				produto.setCategoria(CAD_cmbCategoria.getSelectionModel().getSelectedItem().toString());
+				produto.setFornecedor(CAD_cmbFornecedor.getSelectionModel().getSelectedItem());
 
+				if (CAD_txtDescricao.getText() == "" || CAD_cmbCategoria.getSelectionModel().getSelectedIndex() == -1
+						|| CAD_cmbFornecedor.getSelectionModel().getSelectedIndex() == -1) {
+					JOptionPane.showMessageDialog(null, "Complete todos os Campos", "Erro", JOptionPane.ERROR_MESSAGE);
 				} else {
 
 					try {
 
 						cp.adicionarProduto(produto);
-						cp.inserirProduto(produto);
-						
-						btnInfo.setOnAction(e -> {
-							Alert dialogoInfo = new Alert(Alert.AlertType.INFORMATION);
-							dialogoInfo.setTitle("Cadastro Efetuado com Sucesso");
-							dialogoInfo.setHeaderText("Um Novo Produto foi Inserido");
-							dialogoInfo.setContentText(
-									"\nNome: " + produto.getNome() + "\nCategoria: " + produto.getCategoria()
-											+ "\nFornecedor: " + produto.getFornecedor().getNome_fantasia());
-							dialogoInfo.showAndWait();
-						});
+						cp.gravarProduto(produto);
+						JOptionPane.showMessageDialog(null, 
+								"Um Novo Produto foi adicionado: " 
+								+ "\nID: " + produto.getId_produto()
+								+ "\nDescrição: " + produto.getNome() 
+								+ "\nCategoria: " + produto.getCategoria()
+							    + "\nFornecedor: " + produto.getFornecedor(),
+								"Opração Efetuada com Exito!", JOptionPane.INFORMATION_MESSAGE);
+								resetarCampos();
 
 					} catch (IOException e) {
 
 						e.printStackTrace();
 					}
 				}
-				
-			} catch (Exception erro) {}
+			} catch (Exception erro) {
+			}
 		}
+	}
+
+	public void resetarCampos() {
+		CAD_txtDescricao.setText(null);
+		CAD_txtPesquisar.setText(null);
+		CAD_cmbCategoria.getSelectionModel().clearAndSelect(-1);
+		CAD_cmbFornecedor.getSelectionModel().clearAndSelect(-1);
+		CAD_txtDescricao.requestFocus();
 	}
 }

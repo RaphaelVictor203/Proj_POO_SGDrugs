@@ -1,19 +1,13 @@
 package com.curso.entity;
 
-public class Funcionario extends Pessoa {
+public class Funcionario {
 	
-	
+	private long cpf;
+	private String nome;
+	private String sobrenome;
 	//private Funcao funcao;
 	private Farmacia farmacia;
 	private Endereco endereco;
-	private String cargo;
-	
-	public String getCargo() {
-		return cargo;
-	}
-	public void setCargo(String cargo) {
-		this.cargo = cargo;
-	}
 	private double salario;
 	
 	public Endereco getEndereco() {
@@ -28,7 +22,24 @@ public class Funcionario extends Pessoa {
 	public void setSalario(double salario) {
 		this.salario = salario;
 	}
-
+	public long getCpf() {
+		return cpf;
+	}
+	public void setCpf(long cpf) {
+		this.cpf = cpf;
+	}
+	public String getNome() {
+		return nome;
+	}
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+	public String getSobrenome() {
+		return sobrenome;
+	}
+	public void setSobrenome(String sobrenome) {
+		this.sobrenome = sobrenome;
+	}
 	public Farmacia getFarmacia() {
 		return farmacia;
 	}
