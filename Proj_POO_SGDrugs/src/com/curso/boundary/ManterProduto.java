@@ -62,7 +62,7 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 	private Button btnPrimeiro, btnAnterior, btnProximo, btnUltimo; 
 
 	ControlProdutos cp = new ControlProdutos();
-
+	
 	@Override
 	public void start(Stage stage) throws Exception {
 				
