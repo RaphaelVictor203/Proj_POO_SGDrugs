@@ -63,11 +63,16 @@ public class ClienteDAOImpl implements ClienteDAO{
 	}
 
 	@Override
-	public List<Cliente> pesquisarPorCliente(String nome) throws DAOException {
+	public List<Cliente> pesquisarPorCliente(String nome, String tipo) throws DAOException {
 		List<Cliente> lista = new ArrayList<>();
+		String sql = "";
+		if(tipo.equals("CIDADE")) {
+			sql = "SELECT * from tbcliente where cidade like ?";
+		}else {
+			sql = "SELECT * from tbcliente where nome like ?";
+		}
 		try {
 			Connection con = ConnectionManager.getInstance().getConnection();
-			String sql = "SELECT * from tbcliente where nome like ?";
 			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setString(1, "%" + nome + "%");
 			ResultSet  rs = stmt.executeQuery();		
