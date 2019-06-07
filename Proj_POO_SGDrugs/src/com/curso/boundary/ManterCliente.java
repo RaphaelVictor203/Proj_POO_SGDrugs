@@ -553,6 +553,7 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 			setFunctionProbButtons();
 		} else if (e.getSource() == btnLimpaCampos) {
 			limparCampos();
+			btnSelected(0);
 		} else if (e.getSource() == btnPesquisaProb) {
 			ProblemaSaude ps1 = cc.pesquisarProb(this.txtPesquisa.getText());
 			if (ps1 != null) {
@@ -623,7 +624,6 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 		cc.attTableProb(new ArrayList<ProblemaSaude>());
 		ControlClientes.clientSel = new Cliente();
 		startStyle();
-		btnSelected(0);
 	}
 
 	private boolean camposValidos() {
