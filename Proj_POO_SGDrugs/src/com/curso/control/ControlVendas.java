@@ -1,10 +1,7 @@
 package com.curso.control;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.List;
 import com.curso.entity.Cliente;
 import com.curso.entity.FarmaciaProduto;
-import com.curso.entity.FormaPagto;
 import com.curso.entity.ItemVenda;
 import com.curso.entity.Venda;
 import javafx.collections.FXCollections;
@@ -14,16 +11,12 @@ public class ControlVendas {
 
 	private Venda vendaAtual;
 	private List<FarmaciaProduto> produtos;
+	private List<Cliente> clientes;
+	private List<ItemVenda> itensVenda;
 	private ObservableList<ItemVenda> dataItens = FXCollections.observableArrayList();
-	private List<Venda> vendasRealizadas;
 	
 	public ControlVendas() {
-	   
-	   vendaAtual = new Venda();
-
-	   this.produtos = new ArrayList<FarmaciaProduto>();
-	   this.vendasRealizadas = new ArrayList<Venda>();
-	   
+		
 	   FarmaciaProduto produto1 = new FarmaciaProduto();
 	   produto1.getProduto().setId_produto(1);
 	   produto1.getProduto().setNome("Diporona Sódica 10ml");
@@ -32,26 +25,17 @@ public class ControlVendas {
 	   produto1.getFarmacia().setId(10);
 	   produto1.setQntdEstoque(150);
 	   
-	   FarmaciaProduto produto2 = new FarmaciaProduto();
-	   produto2.getProduto().setId_produto(2);
-	   produto2.getProduto().setNome("Xarope");
-	   produto2.getProduto().setCategoria("controlado");
-	   produto2.setPreco(0.99);
-	   produto2.getFarmacia().setId(11);
-	   produto2.setQntdEstoque(50);
+
 	   
-	   FarmaciaProduto produto3 = new FarmaciaProduto();
-	   produto3.getProduto().setId_produto(3);
-	   produto3.getProduto().setNome("Antialergico");
-	   produto3.getProduto().setCategoria("genérico");
-	   produto3.setPreco(1.99);
-	   produto3.getFarmacia().setId(11);
-	   produto3.setQntdEstoque(50);
-	   
-	   produtos.add(produto1);
-	   produtos.add(produto2);
-	   produtos.add(produto3);
-	   
+	}
+	
+	
+	
+	public List<ItemVenda> getItensVenda() {
+		return itensVenda;
+	}
+	public void setItensVenda(List<ItemVenda> itensVenda) {
+		this.itensVenda = itensVenda;
 	}
 	
 	public ObservableList<ItemVenda> getDataItens() {
@@ -64,64 +48,20 @@ public class ControlVendas {
 	public Venda getVendaAtual() {
 		return vendaAtual;
 	}
-	
 	public void setVendaAtual(Venda vendaAtual) {
 		this.vendaAtual = vendaAtual;
 	}
-	
-	public FarmaciaProduto pesquisaProd(int cod) {
-		for(FarmaciaProduto prod : produtos) {
-			if(prod.getProduto().getId_produto() == cod) {
-				return prod;
-			}
-		}
-		return null;
+	public List<FarmaciaProduto> getProdutos() {
+		return produtos;
 	}
-	
-	public void addItemVenda(ItemVenda iv) {
-		this.vendaAtual.addItem(iv);
-		attDataItens();
+	public void setProdutos(List<FarmaciaProduto> produtos) {
+		this.produtos = produtos;
 	}
-	
-	public void delItemVenda(ItemVenda iv) {
-		this.vendaAtual.getItems().remove(iv);
-		attDataItens();
+	public List<Cliente> getClientes() {
+		return clientes;
 	}
-	
-	public void attDataItens() {
-		this.dataItens.clear();
-		this.dataItens.addAll(this.vendaAtual.getItems());
-	}
-	
-	public void addVenda() {
-		this.vendasRealizadas.add(this.getVendaAtual());
-		this.vendaAtual = new Venda();
-		this.vendaAtual.setId_venda(this.vendasRealizadas.size());
-		printVendas();
-		attDataItens();
-	}
-	
-	public void resetFarmaciaProdutos() {
-		for(FarmaciaProduto fp : produtos) {
-			fp.getBtnIsencao().setText("SUS");
-		}
-	}
-	
-	public void printVendas() {
-		DecimalFormat df = new DecimalFormat("#,##0.00");
-		System.out.println("Venda: -------------------------------------------------");
-		for(Venda v : vendasRealizadas) {
-			System.out.println("NUM.:" + v.getId_venda() + " - CLIENTE:" + v.getCliente().getPrimeiroNome() + " - FUNCIONARIO:" + v.getFuncionario().getPrimeiroNome() + "\n");
-				for(ItemVenda iv : v.getItems()) {
-					System.out.println("        " + iv.getProduto().getProduto().getNome() + " - " + iv.getProduto().getPreco() + " - " + iv.getSubtotal());
-				}
-				System.out.println("\nTOTAL:R$" + df.format(v.returnPrecoTotal()));
-				System.out.println("FORMAS DE PAGAMENTO------------------------------------");
-				for(FormaPagto fp : v.getFormasPagto()) {
-					System.out.println("        " + fp.getFormaPagamento() + " - " + fp.getValor());
-				}
-			System.out.println("-----------------------------------------------------------");
-		}
+	public void setClientes(List<Cliente> clientes) {
+		this.clientes = clientes;
 	}
 	
 }

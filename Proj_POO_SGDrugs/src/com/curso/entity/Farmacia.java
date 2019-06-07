@@ -1,25 +1,10 @@
 package com.curso.entity;
 
 public class Farmacia {
-	private String Unidade;
+
+	private int id;
 	private Endereco endereco;
 	private boolean status;
-	private int id;
-	
-	public Farmacia() {
-		this("");
-	}
-	
-	public Farmacia(String _unidade) {
-		this.Unidade = _unidade;
-	}
-	
-	public String getUnidade() {
-		return Unidade;
-	}
-	public void setUnidade(String unidade) {
-		Unidade = unidade;
-	}
 	
 	public int getId() {
 		return id;

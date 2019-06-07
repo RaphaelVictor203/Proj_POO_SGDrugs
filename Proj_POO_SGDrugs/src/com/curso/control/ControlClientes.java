@@ -104,18 +104,12 @@ public class ControlClientes {
 		}
 	}
 	
-	public void pesquisarCliente(String cont, String tipo) {
+	public void pesquisarCliente(String nome, long cpf, String uf, String cidade) {
 		dataList.clear();
-		if(!cont.equals("")) {
+		if(!nome.equals("")) {
 			for(Cliente c : clientesCadastrados) {
-				if(tipo.equals("CIDADE")) {
-					if(c.getEnd().getCidade().contains(cont)) {
-						dataList.add(c);
-					}
-				}else {
-					if(c.getPrimeiroNome().contains(cont)) {
-						dataList.add(c);
-					}
+				if(c.getCpf() == cpf) {
+					dataList.add(c);
 				}
 			}
 		}
@@ -127,7 +121,7 @@ public class ControlClientes {
 				return c;
 			}
 		}
-		return null;
+		return new Cliente();
 	}
 	
 	private boolean existCliente(long cpf) {
@@ -157,8 +151,7 @@ public class ControlClientes {
 				c.getEnd().setCep(cl.getEnd().getCep());
 				c.getEnd().setRua(cl.getEnd().getRua());
 				c.getEnd().setNumero(cl.getEnd().getNumero());
-				c.getEnd().setCidade(cl.getEnd().getCidade());
-				c.getEnd().setUf(cl.getEnd().getUf());
+				c.getEnd().setCidade(cl.getEnd().getUf());
 				c.setProblemasSaude(cl.getProblemasSaude());
 				c.setSexo(cl.getSexo());
 			}
@@ -237,19 +230,9 @@ public class ControlClientes {
 	
 //MANTER TABELAS---------------------------------------------------------------------
 
-	public void attTableCliente() {
+	private void attTableCliente() {
 		this.dataList.clear();
 		this.dataList.addAll(clientesCadastrados);
-	}
-	
-	public void attTableCliente(Cliente cl) {
-		this.dataList.clear();
-		this.dataList.add(cl);
-	}
-	
-	public void attTableCliente(List<Cliente> cls) {
-		this.dataList.clear();
-		this.dataList.addAll(cls);
 	}
 	
 	public void attTableProb(List<ProblemaSaude> list) {
@@ -287,16 +270,5 @@ public class ControlClientes {
 	}
 
 //FIM MANTER ENDEREÇO----------------------------------------------------------------
-	
-	public String[] gerarArrayNum(int init, int fim) {
-		int tam = (fim-init) + 1;
-		int vl = init;
-		String[] arrayNum = new String[tam];
-		for(int i=0; i<tam; i++) {
-			arrayNum[i] = Integer.toString(vl);
-			vl++;
-		}
-		return arrayNum;
-	}
 	
 }

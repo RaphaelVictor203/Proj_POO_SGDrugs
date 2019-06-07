@@ -1,14 +1,21 @@
 package com.curso.control;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import com.curso.entity.Cliente;
 import com.curso.entity.Fornecedor;
+
 import com.curso.entity.Produto;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,48 +23,66 @@ import javafx.collections.ObservableList;
 public class ControlProdutos {
 
 	private List<Produto> ltProdutos = new ArrayList<>();
-	private String arquivo = "regProdutos.txt";
+
+	private ObservableList<Produto> obsProdutos = FXCollections.observableArrayList();
+
 	private ObservableList<Produto> dataListProds = FXCollections.observableArrayList();
-	
-	public ControlProdutos() {
-		Produto p = new Produto();
-		p.setId_produto(1);
-		p.setNome("Remedio");
-		p.setCategoria("Rem");
-		Fornecedor f = new Fornecedor();
-		f.setNome_fantasia("Fornecedor202");
-		p.setFornecedor(f);
-		ltProdutos.add(p);
+
+	private String arquivo = "Produtos.txt";
+
+	public ObservableList<Produto> getGetListProdutos() {
+		return obsProdutos;
 	}
 
-	public void inserirProduto(Produto produto) throws IOException {
+	public void setGetListProdutos(ObservableList<Produto> getListProdutos) {
+		this.obsProdutos = getListProdutos;
+	}
 
-		BufferedWriter write = new BufferedWriter(new FileWriter(arquivo));
+	public void gravarProduto(Produto produto) throws IOException {
 
-		for (Produto p : ltProdutos) {
-			
-			write.write(p.getNome());
-			write.newLine();
-			write.write(p.getCategoria());
-			write.newLine();
-		}
+		PrintStream write = new PrintStream(new FileOutputStream(arquivo, true));
 
+		write.println(Integer.toString(produto.getId_produto()) + "\n" + produto.getNome() + "\n"
+				+ produto.getCategoria() + "\n" + produto.getFornecedor().getNome_fantasia());
 		write.close();
+		addNaLista();
 
 	}
+	/*
+	 * public Produto selecionarProduto(Produto p) throws IOException{
+	 * 
+	 * BufferedReader read = new BufferedReader(new FileReader(arquivo));
+	 * 
+	 * p.setId_produto(Integer.parseInt(read.readLine()));
+	 * p.setNome(read.readLine()); p.setCategoria(read.readLine());
+	 * p.getFornecedor().setNome_fantasia((read.readLine()));
+	 * 
+	 * read.close(); return p;
+	 * 
+	 * }
+	 */
 
-	public void adicionarProduto(Produto p) {
-			ltProdutos.add(p);
+	public void addNaLista() {
+		try {
+			obsProdutos.clear();
+			obsProdutos.addAll(ltProdutos);
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, e.getMessage());
+		}
+	}
+
+	public void adicionarProduto(Produto p) throws IOException {
+
+		ltProdutos.add(p);
 	}
 
 	public ObservableList<Produto> getDataListProds() {
 		return this.dataListProds;
 	}
-	
+
 	public void attTableProds() {
 		this.dataListProds.clear();
 		this.dataListProds.addAll(ltProdutos);
 	}
-	
 
 }
