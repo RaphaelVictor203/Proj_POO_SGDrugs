@@ -426,7 +426,7 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 		DropShadow dp = new DropShadow(4, 0, 0, Color.GRAY);
 		
 		String styleBtnPesquisa = "-fx-background-color: #0095FE;" + "-fx-text-fill: white;"
-				+ "-fx-background-radius: 7;" + "-fx-min-width: 240px;" + "-fx-min-height: 30px;" + "-fx-cursor: hand;";
+				+ "-fx-background-radius: 0px 8px 8px 0px;" + "-fx-min-width: 240px;" + "-fx-max-height: 30px;" + "-fx-cursor: hand;";
 
 		String styleBtns = "-fx-background-color: #0095FE;" + "-fx-text-fill: white;" + "-fx-background-radius: 7;"
 				+ "-fx-min-width: 275px;" + "-fx-min-height: 40px;" + "-fx-cursor: hand;";
@@ -450,7 +450,7 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 		String stylePesquisaProb = "-fx-min-height: 30px;" + "-fx-min-width: 30px;"
 				+ "-fx-background-radius: 0px 8px 8px 0px;" + "-fx-background-color: #0095FE;" + "-fx-cursor: hand;";
 
-		String comboStyle = "-fx-background-radius: 8;" + "-fx-background-color: #FEFFFA;" + "-fx-cursor: hand";
+		String comboStyle = "-fx-background-radius: 8;" + "-fx-background-color: #FEFFFA;" + "-fx-cursor: hand;";
 
 		btnCadCli.setStyle(styleBtn);
 		btnMantCli.setStyle(styleBtn);
@@ -478,14 +478,14 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 		btnCadastrar.setStyle(styleBtns);
 		btnPesquisaProb.setStyle(stylePesquisaProb);
 		cmbPesquisa.setStyle("-fx-min-width: 200px;" + styleEntradas);
-		btnPesquisa.setStyle(styleBtnPesquisa);
+		btnPesquisa.setStyle(styleBtnPesquisa + "-fx-font-size: 14px;");
 		cmbSexo.setStyle(comboStyle);
 		cmbSexo.setEffect(new DropShadow(4, 0, 0, Color.GRAY));
 		cmbCid.setStyle("-fx-min-width: 207px; " + styleEntradas + comboStyle);
 		cmbCid.setEffect(dp);
 		cmbUF.setStyle("-fx-min-width: 259px; " + styleEntradas + comboStyle);
 		cmbUF.setEffect(dp);
-		cmbPesquisa.setStyle(comboStyle + "-fx-min-width: 700px;");
+		cmbPesquisa.setStyle(comboStyle + "-fx-min-width: 100px;");
 		cmbPesquisa.setEffect(dp);
 		txtClientePesquisa.setStyle(styleEntradaPesquisa + "-fx-min-width: 920px;");
 	}
