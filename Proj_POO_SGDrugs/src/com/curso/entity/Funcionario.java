@@ -1,6 +1,6 @@
 package com.curso.entity;
 
-public class Funcionario {
+public class Funcionario extends Pessoa{
 	
 	private long cpf;
 	private String nome;
