@@ -8,7 +8,7 @@ public class ConnectionManager {
 	
 	private static ConnectionManager instancia;
 	private Connection con;
-	private String connectionURL = "jdbc:mariadb://localhost:3306/pizzaria?allowMultiQueries=true";
+	private String connectionURL = "jdbc:mariadb://localhost:3306/bdFarmacia?allowMultiQueries=true";
 	private String user = "root";
 	private String pass = "";
 	
