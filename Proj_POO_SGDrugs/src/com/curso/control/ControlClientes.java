@@ -7,6 +7,8 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import com.curso.dao.ClienteDAOImpl;
+import com.curso.dao.DAOException;
 import com.curso.entity.Cliente;
 import com.curso.entity.Endereco;
 import com.curso.entity.ProblemaSaude;
@@ -22,6 +24,7 @@ public class ControlClientes {
 	private ObservableList<Cliente> dataList = FXCollections.observableArrayList();
 	private ObservableList<ProblemaSaude> dataListPS = FXCollections.observableArrayList();
 	public static Cliente clientSel = new Cliente();
+	private ClienteDAOImpl cdi = new ClienteDAOImpl();
 	
 	public ControlClientes() {
 		this.clientesCadastrados = new ArrayList<Cliente>();
@@ -96,6 +99,12 @@ public class ControlClientes {
 	public boolean cadCliente(Cliente cl) {
 		if(!existCliente(cl.getCpf())) {
 			this.clientesCadastrados.add(cl);
+			try {
+				this.cdi.inserir(cl);
+			} catch (DAOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			attTableCliente();
 			return true;
 		}else {

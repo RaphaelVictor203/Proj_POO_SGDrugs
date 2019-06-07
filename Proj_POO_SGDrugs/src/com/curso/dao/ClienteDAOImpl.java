@@ -18,8 +18,8 @@ public class ClienteDAOImpl implements ClienteDAO{
 			int idEndereco = 0;
 			Connection con = ConnectionManager.getInstance().getConnection();
 			String sql = "INSERT INTO tbcliente "
-					+ "(nome, cpf, rg, sexo, telefone, idEndereco, email, cartaoSus) "
-					+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+					+ "(nome, cpf, rg, sexo, telefone, email, cartaoSus) "
+					+ " VALUES (?, ?, ?, ?, ?, ?, ?)";
 			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setString(1, cl.getPrimeiroNome());
 			stmt.setLong(2, cl.getCpf());
@@ -27,7 +27,7 @@ public class ClienteDAOImpl implements ClienteDAO{
 			stmt.setString(4, Character.toString(cl.getSexo()));
 			stmt.setInt(5, idEndereco);
 			stmt.setString(6, cl.getEmail());
-			stmt.setLong(6, cl.getCartaoSUS());
+			stmt.setLong(7, cl.getCartaoSUS());
 			stmt.executeUpdate();
 			con.close();
 		} catch (SQLException e) {
