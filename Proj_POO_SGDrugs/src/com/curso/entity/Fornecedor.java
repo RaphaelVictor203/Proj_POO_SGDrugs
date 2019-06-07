@@ -68,4 +68,10 @@ public class Fornecedor {
 		this.farmacia = farmacia;
 	}
 	
+	@Override
+	public String toString() {
+		
+		return getNome_fantasia();
+	}
+	
 }

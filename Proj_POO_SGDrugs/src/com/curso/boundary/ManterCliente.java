@@ -555,6 +555,8 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 			limparCampos();
 			btnSelected(0);
 		} else if (e.getSource() == btnPesquisaProb) {
+			String prob = txtPesquisa.getText();
+			System.out.println(prob.toLowerCase());
 			ProblemaSaude ps1 = cc.pesquisarProb(this.txtPesquisa.getText());
 			if (ps1 != null) {
 				if (ControlClientes.clientSel == null) {

@@ -72,6 +72,7 @@ public class ControlProdutos {
 	}
 
 	public void adicionarProduto(Produto p) throws IOException {
+		System.out.println(p.getCategoria()+" "+p.getCategoria()+" "+p.getFornecedor());
 
 		ltProdutos.add(p);
 	}

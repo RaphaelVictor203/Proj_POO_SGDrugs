@@ -100,6 +100,7 @@ public class ControlClientes {
 		if(!existCliente(cl.getCpf())) {
 			this.clientesCadastrados.add(cl);
 			try {
+				this.dataList.add(cl);
 				this.cdi.inserir(cl);
 			} catch (DAOException e) {
 				// TODO Auto-generated catch block
@@ -116,48 +117,66 @@ public class ControlClientes {
 	public void pesquisarCliente(String cont, String tipo) {
 		dataList.clear();
 		if(!cont.equals("")) {
-			try {
-				dataList.addAll(cdi.pesquisarPorCliente(cont, tipo));
-			} catch (DAOException e) {
+			//try {
+				if(tipo.equals("CIDADE")) {
+					for(Cliente c : clientesCadastrados) {
+						if(c.getEnd().getCidade().contains(cont)) {
+							this.dataList.add(c);
+						}
+					}
+				}else {
+					for(Cliente c : clientesCadastrados) {
+						if(c.getPrimeiroNome().contains(cont)) {
+							this.dataList.add(c);
+						}
+					}
+				}
+				//dataList.addAll(cdi.pesquisarPorCliente(cont, tipo));
+			/*} catch (DAOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
+			}*/
 		}
 	}
 	
 	public Cliente pesquisarCliente(long cpf) {
-		try {
-			return cdi.pesquisarPorCliente(cpf);
-		} catch (DAOException e) {
+		//try {
+			//return cdi.pesquisarPorCliente(cpf);
+			for(Cliente c : clientesCadastrados) {
+				if(c.getCpf() == cpf) {
+					return c;
+				}
+			}
+		/*} catch (DAOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 		return null;
 	}
 	
 	private boolean existCliente(long cpf) {
-		/*for(Cliente c : clientesCadastrados) {
+		for(Cliente c : clientesCadastrados) {
 			if(c.getCpf() == cpf) {
 				return true;
 			}
-		}*/
-		try {
+		}
+		/*try {
 			return (cdi.pesquisarPorCliente(cpf) != null) ? true : false;
 		} catch (DAOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 		return false;
 	}
 	
 	public void removerCliente() {
-		//this.clientesCadastrados.remove(pesquisarCliente(clientSel.getCpf()));
-		try {
+		this.clientesCadastrados.remove(pesquisarCliente(clientSel.getCpf()));
+		/*try {
 			cdi.remover(clientSel.getCpf());
 		} catch (DAOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 		this.attTableCliente();
 	}
 	
@@ -219,6 +238,7 @@ public class ControlClientes {
 	}
 	
 	public void procurarProblema(ProblemaSaude ps) {
+		
 		boolean addPrb = true;
 		for(ProblemaSaude p : problemasCadastrados) {
 			if(p.getDesc_problema() == ps.getDesc_problema()) {
