@@ -108,6 +108,14 @@ public class ControlClientes {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			//BANCO------------------------------
+			try {
+				cdi.inserir(cl);
+			} catch (DAOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			//FIM BANCO------------------------------
 			attTableCliente();
 			return true;
 		}else {

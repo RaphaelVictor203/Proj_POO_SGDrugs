@@ -11,6 +11,7 @@ import java.util.List;
 import javax.swing.JOptionPane;
 
 import com.curso.entity.Cliente;
+import com.curso.entity.FarmaciaProduto;
 import com.curso.entity.Fornecedor;
 
 import com.curso.entity.Produto;
@@ -30,6 +31,26 @@ public class ControlProdutos {
 
 	private String arquivo = "Produtos.txt";
 
+	public ControlProdutos() {
+		
+		Produto prod = new Produto();
+		prod.setCategoria("Perecivel");
+		prod.setFornecedor(new Fornecedor());
+		prod.setId_produto(1);
+		prod.setNome("Coca-cola");
+		
+		Produto prod1 = new Produto();
+		prod1.setCategoria("Genérico");
+		prod1.setFornecedor(new Fornecedor());
+		prod1.setId_produto(2);
+		prod1.setNome("Aspirina");
+		
+		ltProdutos.add(prod);
+		ltProdutos.add(prod1);
+		attTableProds();
+		
+	}
+	
 	public ObservableList<Produto> getGetListProdutos() {
 		return obsProdutos;
 	}
@@ -37,7 +58,7 @@ public class ControlProdutos {
 	public void setGetListProdutos(ObservableList<Produto> getListProdutos) {
 		this.obsProdutos = getListProdutos;
 	}
-
+	
 	public void gravarProduto(Produto produto) throws IOException {
 
 		PrintStream write = new PrintStream(new FileOutputStream(arquivo, true));
@@ -48,20 +69,29 @@ public class ControlProdutos {
 		addNaLista();
 
 	}
-	/*
-	 * public Produto selecionarProduto(Produto p) throws IOException{
-	 * 
-	 * BufferedReader read = new BufferedReader(new FileReader(arquivo));
-	 * 
-	 * p.setId_produto(Integer.parseInt(read.readLine()));
-	 * p.setNome(read.readLine()); p.setCategoria(read.readLine());
-	 * p.getFornecedor().setNome_fantasia((read.readLine()));
-	 * 
-	 * read.close(); return p;
-	 * 
-	 * }
-	 */
-
+	
+	/*public Produto selecionarProduto(Produto p) throws IOException{
+	  
+	  BufferedReader read = new BufferedReader(new FileReader(arquivo));
+	  
+	  p.setId_produto(Integer.parseInt(read.readLine()));
+	  p.setNome(read.readLine()); p.setCategoria(read.readLine());
+	  p.getFornecedor().setNome_fantasia((read.readLine()));
+	  
+	  read.close(); 
+	  return p;
+	  
+	}*/
+	 
+	public Produto selecionarProduto(int id) {
+		for(Produto p : ltProdutos) {
+			if(p.getId_produto() == id) {
+				return p;
+			}
+		}
+		return null;
+	}
+	
 	public void addNaLista() {
 		try {
 			obsProdutos.clear();

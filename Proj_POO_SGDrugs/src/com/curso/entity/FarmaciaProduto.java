@@ -5,21 +5,38 @@ import javafx.scene.control.Button;
 public class FarmaciaProduto {
 
 	private Produto produto;
-	//private Grupo grupo;
+	private Grupo grupo;
+	private Sessao sessao;
 	private int qntdEstoque;
 	private double preco;
 	private Farmacia farmacia;
 	
 	private Button btnIsencao;
 	private Button btnExcluir;
-	
+
 	public FarmaciaProduto() {
 		this.produto = new Produto();
 		this.farmacia = new Farmacia(null);
 		this.btnExcluir = new Button("Excluir");
 		this.btnIsencao = new Button("SUS");
+	}	
+	
+	public Sessao getSessao() {
+		return sessao;
+	}
+
+	public void setSessao(Sessao sessao) {
+		this.sessao = sessao;
+	}
+
+	public Grupo getGrupo() {
+		return grupo;
 	}
 	
+	public void setGrupo(Grupo g) {
+		this.grupo = g;
+	}
+
 	public Button getBtnIsencao() {
 		return btnIsencao;
 	}

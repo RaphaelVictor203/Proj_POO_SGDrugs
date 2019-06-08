@@ -1,24 +1,37 @@
 package com.curso.boundary;
 
 import java.io.FileInputStream;
+import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
 import javax.xml.ws.handler.Handler;
 import javax.xml.ws.handler.MessageContext;
 
+import com.curso.control.ControlClientes;
+import com.curso.control.ControlFarmaciaProduto;
 import com.curso.control.ControlProdutos;
+import com.curso.entity.Cliente;
+import com.curso.entity.Farmacia;
+import com.curso.entity.FarmaciaProduto;
 import com.curso.entity.Fornecedor;
+import com.curso.entity.Grupo;
 import com.curso.entity.ProblemaSaude;
 import com.curso.entity.Produto;
+import com.curso.entity.Sessao;
 
 import javafx.application.Application;
+import javafx.beans.property.ReadOnlyDoubleWrapper;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -47,13 +60,17 @@ public class TelaFarmaciaProduto extends Application implements EventHandler<Mou
 	private TextField txtQntd;
 	private TextField txtPrecoUnit;
 	private TextField txtPesquisaProd;
-	private ComboBox<String> cmbGrupo;
-	private ComboBox<String> cmbSessao;
+	private ComboBox<Grupo> cmbGrupo;
+	private ComboBox<Sessao> cmbSessao;
 	private ComboBox<String> cmbTipoPesquisa;
 	private TableView<Produto> tblProduto;
+	private TableView<com.curso.entity.FarmaciaProduto> tblFarmaciaProd;
 	private Label lblNomeProduto, lblFornecedor;
 	private HBox menuTop;
 	private ControlProdutos cp;
+	private ControlFarmaciaProduto cfp;
+	
+	private int idProdSel;
 	
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -64,20 +81,22 @@ public class TelaFarmaciaProduto extends Application implements EventHandler<Mou
 		txtQntd.setPromptText("Qntd");
 		txtPrecoUnit = new TextField();
 		txtPrecoUnit.setPromptText("Preço unitario");
-		cmbGrupo = new ComboBox<String>();
+		ObservableList<Grupo> obs = FXCollections.observableArrayList();
+		obs.addAll(new Grupo(1, "Utilitarios"), new Grupo(2, "Genericos"), new Grupo(3, "Pereciveis"), new Grupo(4, "Comestiveis"));
+		cmbGrupo = new ComboBox<Grupo>(obs);
 		cmbGrupo.setPromptText("Grupo");
-		cmbSessao = new ComboBox<String>();
+		ObservableList<Sessao> obs1 = FXCollections.observableArrayList();
+		obs1.addAll(new Sessao(1, "A"), new Sessao(2, "B"), new Sessao(3, "C"), new Sessao(4, "D"));
+		cmbSessao = new ComboBox<Sessao>(obs1);
 		cmbSessao.setPromptText("Sessão");
 		btnCadastro = new Button("CADASTRAR");
-		ImageView iv = new ImageView(new Image(new FileInputStream("imgs\\icon.png")));
-		iv.setFitHeight(22);
-		iv.setFitWidth(22);
-		btnPesquisaProd = new Button("", iv);
+		btnPesquisaProd = new Button("PESQUISAR");
 		txtPesquisaProd = new TextField();
 		cmbTipoPesquisa = new ComboBox<String>(FXCollections.observableArrayList(new String[] {"ID", "NOME", "CATEGORIA", "FORNECEDOR"}));
 		cmbTipoPesquisa.setPromptText("Tipo");
 		tblProduto = new TableView<Produto>();
 		cp = new ControlProdutos();
+		cfp = new ControlFarmaciaProduto();
 		lblNomeProduto = new Label();
 		lblFornecedor = new Label();
 		
@@ -102,9 +121,11 @@ public class TelaFarmaciaProduto extends Application implements EventHandler<Mou
 
 //INICIO TELA GERENCIMENTO----------------------------------------------------------
 		
-		VBox vb = new VBox(
-				new HBox(new ComboBox(), new TextField(), new Button()),
-				new TableView<>()
+		tblFarmaciaProd = new TableView<com.curso.entity.FarmaciaProduto>();
+		
+		VBox vb = new VBox(10,
+				new HBox(10, cmbTipoPesquisa, new HBox(txtPesquisaProd, btnPesquisaProd)),
+				tblFarmaciaProd
 		);
 		
 		
@@ -123,6 +144,7 @@ public class TelaFarmaciaProduto extends Application implements EventHandler<Mou
 		pane.setCenter(painels);
 		
 		createTableColumnsProds();
+		createTableColumnsProdsFarm();
 		cp.attTableProds();
 		
 		Scene scene = new Scene(pane, 1100,600);
@@ -135,6 +157,8 @@ public class TelaFarmaciaProduto extends Application implements EventHandler<Mou
 		
 		btnCadProd.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
 		btnMantProd.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
+		btnCadastro.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
+		
 		
 	}
 	
@@ -142,13 +166,9 @@ public class TelaFarmaciaProduto extends Application implements EventHandler<Mou
 		
 		DropShadow dp = new DropShadow(4, 0, 0, Color.GRAY);
 		
-		String styleBtnPesquisa = 
-				"-fx-background-color: #0095FE;"
-				+ "-fx-text-fill: white;"
-				+ "-fx-background-radius: 7;"
-				+ "-fx-min-width: 240px;"
-				+ "-fx-min-height: 30px;"
-				+ "-fx-cursor: hand;";
+		String styleBtnPesquisa = "-fx-background-color: #0095FE;" + "-fx-text-fill: white;"
+				+ "-fx-background-radius: 0px 8px 8px 0px;" + "-fx-min-width: 240px;" + "-fx-max-height: 31.5px;" + "-fx-cursor: hand;";
+		
 		
 		String styleBtns = 
 				"-fx-background-color: #0095FE;"
@@ -158,13 +178,6 @@ public class TelaFarmaciaProduto extends Application implements EventHandler<Mou
 				+ "-fx-min-height: 40px;"
 				+ "-fx-cursor: hand;";
 		
-		String styleBtnAddProb =
-				"-fx-min-width: 625px;"
-				+ "-fx-background-color: #007F0E;"
-				+ "-fx-text-fill: white;"
-				+ "-fx-font-size: 15px;"
-				+ "-fx-background-radius: 8;"
-				+ "-fx-cursor: hand;";
 		
 		String styleBtn =
 				"-fx-background-radius: none;"
@@ -180,18 +193,11 @@ public class TelaFarmaciaProduto extends Application implements EventHandler<Mou
 		
 		String styleMenuTop = "-fx-background-color: #E0DACE";
 		
-		String styleEntradaDataNasc = "-fx-min-width: 130px;";
 		
 		String styleEntradas = "-fx-background-radius: 8;";
 		
 		String styleEntradaPesquisa = "-fx-background-radius: 8px 0px 0px 8px;"
 				+ "-fx-min-width: 537px;";
-		
-		String stylePesquisaProb = "-fx-min-height: 30px;"
-				+ "-fx-min-width: 30px;"
-				+ "-fx-background-radius: 0px 8px 8px 0px;"
-				+ "-fx-background-color: #0095FE;"
-				+ "-fx-cursor: hand;";
 		
 		String comboStyle = "-fx-background-radius: 8;"
 				+ "-fx-background-color: #FEFFFA;"
@@ -202,9 +208,9 @@ public class TelaFarmaciaProduto extends Application implements EventHandler<Mou
 		painelCad.setStyle(stylePainel);
 		painelMant.setStyle(stylePainel);
 		menuTop.setStyle(styleMenuTop);
-		txtPesquisaProd.setStyle(styleEntradaPesquisa + "-fx-font-size: 15.1px");
-		btnPesquisaProd.setStyle(stylePesquisaProb);
-		cmbTipoPesquisa.setStyle(comboStyle + "-fx-font-size: 15.1px");
+		txtPesquisaProd.setStyle(styleEntradaPesquisa + "-fx-font-size: 15.1px; -fx-min-width: 920px;");
+		btnPesquisaProd.setStyle(styleBtnPesquisa);
+		cmbTipoPesquisa.setStyle(comboStyle + "-fx-font-size: 15.1px; -fx-min-width: 100px;");
 		cmbTipoPesquisa.setEffect(dp);
 		cmbGrupo.setStyle(comboStyle + "-fx-font-size: 20px; -fx-min-width: 248px;");
 		cmbGrupo.setEffect(dp);
@@ -255,6 +261,42 @@ public class TelaFarmaciaProduto extends Application implements EventHandler<Mou
 		if(e.getSource() == btnMantProd) {
 			btnSelected(1);
 			painelMant.toFront();
+		}else
+		if(e.getSource() == btnCadastro) {
+			cfp.inserir(boundaryToFarmaciaProd());
+			setFunctionProdFarmButtons();
+			Alert a = new Alert(AlertType.INFORMATION, "Cadastro realizado com sucesso !!!");
+			a.show();
+			limparcampos();
+		}else
+		if(e.getSource() == btnPesquisaProd) {
+			if(txtPesquisaProd.getText().equals("")) {
+				cfp.attTableProdutoFarm();
+			}else {
+				Cliente cl = null;
+				if(cmbTipoPesquisa.getSelectionModel().getSelectedItem() != null) {
+					switch(cmbTipoPesquisa.getSelectionModel().getSelectedItem()) {
+						case "ID":
+							FarmaciaProduto fp = cfp.pesquisarFarmaciaProd(Integer.parseInt(txtPesquisaProd.getText()));
+							if(fp != null) {
+								cfp.attTableProdutoFarm(fp);
+							}
+							break;
+						case "NOME":
+							cfp.pesquisarFarmaciaProd(txtPesquisaProd.getText(), "NOME");
+							break;
+						case "CATEGORIA":
+							cfp.pesquisarFarmaciaProd(txtPesquisaProd.getText(), "CATEGORIA");
+							break;		
+						case "FORNECEDOR":
+							cfp.pesquisarFarmaciaProd(txtPesquisaProd.getText(), "FORNECEDOR");
+							break;
+					}
+				}else {
+					JOptionPane.showMessageDialog(null, "Atenção, é preciso determinar o tipo de pesquisa que sera realizada", "Erro", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+			setFunctionProdFarmButtons();
 		}
 	}
 
@@ -288,9 +330,70 @@ public class TelaFarmaciaProduto extends Application implements EventHandler<Mou
 		
 	}
 	
+	@SuppressWarnings("unchecked")
+	public void createTableColumnsProdsFarm() {
+
+		tblFarmaciaProd.setItems(cfp.getDataListProdFarm());
+		
+		TableColumn<FarmaciaProduto, Number> id_produto = new TableColumn<>("ID produto");
+		id_produto.setCellValueFactory(item -> new ReadOnlyIntegerWrapper(item.getValue().getProduto().getId_produto()));
+		
+		TableColumn<FarmaciaProduto, String> categoria = new TableColumn<>("Categoria");
+		categoria.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getProduto().getCategoria()));
+		
+		TableColumn<FarmaciaProduto, String> nome = new TableColumn<>("Produto");
+		nome.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getProduto().getNome()));
+		
+		TableColumn<FarmaciaProduto, Number> qntdEstoque = new TableColumn<>("Qntd. Estoque");
+		qntdEstoque.setCellValueFactory(item -> new ReadOnlyIntegerWrapper(item.getValue().getQntdEstoque()));
+		
+		TableColumn<FarmaciaProduto, Number> preco = new TableColumn<>("Preco Unit.");
+		preco.setCellValueFactory(item -> new ReadOnlyDoubleWrapper(item.getValue().getPreco()));
+		
+		TableColumn<FarmaciaProduto, Button> excluir = new TableColumn<>("Excluir");
+		excluir.setCellValueFactory(item -> new ReadOnlyObjectWrapper(item.getValue().getBtnExcluir()));
+		
+		tblFarmaciaProd.getColumns().addAll(id_produto, categoria, nome, qntdEstoque, preco, excluir);
+		setFunctionProdFarmButtons();
+		
+	}
+	
+	private void setFunctionProdFarmButtons() {
+		for (int i = 0; i < tblFarmaciaProd.getItems().size(); i++) {
+			
+			final int l = i;
+
+			tblFarmaciaProd.getItems().get(i).getBtnExcluir().setOnAction(e -> {
+				cfp.removerProdutoFarm(cfp.pesquisarFarmaciaProd(tblFarmaciaProd.getItems().get(l).getProduto().getId_produto()));
+				setFunctionProdFarmButtons();
+			});
+		}
+	}
+	
 	public void produtoToBoundary(Produto p) {
+		this.idProdSel = p.getId_produto();
 		this.lblNomeProduto.setText(p.getNome());
 		this.lblFornecedor.setText(p.getFornecedor().getNome_fantasia());
+	}
+	
+	public FarmaciaProduto boundaryToFarmaciaProd(){
+		FarmaciaProduto fp = new FarmaciaProduto();
+		fp.setProduto(cp.selecionarProduto(idProdSel));
+		fp.setFarmacia(new Farmacia("Unidade Leste"));
+		fp.setPreco(Double.parseDouble(txtPrecoUnit.getText()));
+		fp.setQntdEstoque(Integer.parseInt(txtQntd.getText()));
+		fp.setGrupo(cmbGrupo.getValue());
+		fp.setSessao(cmbSessao.getValue());
+		return fp;
+	}
+	
+	public void limparcampos() {
+		this.txtPrecoUnit.setText("");
+		this.txtQntd.setText("");
+		this.lblFornecedor.setText("");
+		this.lblNomeProduto.setText("");
+		this.cmbGrupo.getSelectionModel().select(-1);
+		this.cmbSessao.getSelectionModel().select(-1);
 	}
 	
 }

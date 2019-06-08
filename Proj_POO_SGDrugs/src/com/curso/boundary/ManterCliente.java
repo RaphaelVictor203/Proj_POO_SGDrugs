@@ -1,6 +1,7 @@
 package com.curso.boundary;
 
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -34,6 +35,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -534,8 +536,8 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 		if (e.getSource() == btnCadastrar) {
 			if (btnCadastrar.getText().equals("CADASTRAR") && camposValidos()) {
 				cc.attClienteToCad(boundaryToCliente());
-				JOptionPane.showMessageDialog(null, "cadastro realizado !!!", "Cadastro",
-						JOptionPane.INFORMATION_MESSAGE);
+				Alert a = new Alert(AlertType.INFORMATION, "Cadastro realizado com sucesso !!!");
+				a.show();
 				if (cc.cadCliente(boundaryToCliente())) {
 					cc.cadProbCliente();
 					limparCampos();
@@ -544,9 +546,8 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 				setFunctionCliButtons();
 			} else if (btnCadastrar.getText().equals("ALTERAR") && camposValidos()) {
 				cc.attCliente(boundaryToCliente());
-				JOptionPane.showMessageDialog(null, "Alterações realizadas com sucesso", "Alteração concluida", JOptionPane.INFORMATION_MESSAGE);
-				JOptionPane.showMessageDialog(null, "Alterações realizadas com sucesso", "Alteração concluida",
-						JOptionPane.INFORMATION_MESSAGE);
+				Alert a = new Alert(AlertType.INFORMATION, "Alterações realizadas com sucesso !!!");
+				a.show();
 				tblCli.refresh();
 				limparCampos();
 				setFunctionCliButtons();
@@ -567,7 +568,6 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 			btnSelected(0);
 		} else if (e.getSource() == btnPesquisaProb) {
 			String prob = txtPesquisa.getText();
-			System.out.println(prob.toLowerCase());
 			ProblemaSaude ps1 = cc.pesquisarProb(this.txtPesquisa.getText());
 			if (ps1 != null) {
 				if (ControlClientes.clientSel == null) {
