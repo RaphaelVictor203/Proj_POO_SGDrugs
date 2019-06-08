@@ -9,6 +9,7 @@ import javax.swing.JOptionPane;
 
 import com.curso.dao.ClienteDAOImpl;
 import com.curso.dao.DAOException;
+import com.curso.dao.ProblemaSaudeDAOImpl;
 import com.curso.entity.Cliente;
 import com.curso.entity.Endereco;
 import com.curso.entity.ProblemaSaude;
@@ -25,6 +26,7 @@ public class ControlClientes {
 	private ObservableList<ProblemaSaude> dataListPS = FXCollections.observableArrayList();
 	public static Cliente clientSel = new Cliente();
 	private ClienteDAOImpl cdi = new ClienteDAOImpl();
+	private ProblemaSaudeDAOImpl psdi = new ProblemaSaudeDAOImpl();
 	
 	public ControlClientes() {
 		this.clientesCadastrados = new ArrayList<Cliente>();
@@ -192,6 +194,7 @@ public class ControlClientes {
 				c.setCartaoSUS(cl.getCartaoSUS());
 				c.getEnd().setCep(cl.getEnd().getCep());
 				c.getEnd().setRua(cl.getEnd().getRua());
+				c.getEnd().setBairro(cl.getEnd().getBairro());
 				c.getEnd().setNumero(cl.getEnd().getNumero());
 				c.getEnd().setCidade(cl.getEnd().getCidade());
 				c.getEnd().setUf(cl.getEnd().getUf());
@@ -199,18 +202,47 @@ public class ControlClientes {
 				c.setSexo(cl.getSexo());
 			}
 		}
+		/*try {
+			cdi.alterar(cl);
+		} catch (DAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
+	}
+	
+	public void attClienteToCad(Cliente cl) {
+		clientSel.setPrimeiroNome(cl.getPrimeiroNome());
+		clientSel.setDt_nasc(cl.getDt_nasc());
+		clientSel.setRg(cl.getRg());
+		clientSel.setCpf(cl.getCpf());
+		clientSel.setTelefone(cl.getTelefone());
+		clientSel.setEmail(cl.getEmail());
+		clientSel.setCartaoSUS(cl.getCartaoSUS());
+		clientSel.getEnd().setCep(cl.getEnd().getCep());
+		clientSel.getEnd().setRua(cl.getEnd().getRua());
+		clientSel.getEnd().setBairro(cl.getEnd().getBairro());
+		clientSel.getEnd().setNumero(cl.getEnd().getNumero());
+		clientSel.getEnd().setCidade(cl.getEnd().getCidade());
+		clientSel.getEnd().setUf(cl.getEnd().getUf());
+		clientSel.setProblemasSaude(cl.getProblemasSaude());
+		clientSel.setSexo(cl.getSexo());
 	}
 	
 //FIM MANTER CLIENTE-----------------------------------------------------------------
 	
 //MANTER PROBLEMA--------------------------------------------------------------------
 	
-	public void cadProb(ProblemaSaude ps) {
-		if(!existProb(ps.getId_problema())) {
+	public void cadProbCliente() {
+		//if(!existProb(ps.getId_problema())) {
+			try {
+				psdi.inserirProbCliente(this.clientSel);
+			} catch (DAOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		//}else {
 			
-		}else {
-			
-		}
+		//}
 	}
 	
 	private boolean existProb(int id) {
@@ -258,6 +290,12 @@ public class ControlClientes {
 				if(ps.getId_problema() == id) {
 					ControlClientes.clientSel.getProblemasSaude().remove(ps);
 				}
+			}
+			try {
+				psdi.removerProblemaCliente(ControlClientes.clientSel.getCpf(), id);
+			} catch (DAOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 			attTableProb();	
 		}catch(ConcurrentModificationException ex) {

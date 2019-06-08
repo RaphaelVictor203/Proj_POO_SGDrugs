@@ -24,6 +24,7 @@ public class Cliente {
 		this.btnEditar = new Button("Editar");
 		this.btnExcluir = new Button("Excluir");
 		this.problemasSaude = new ArrayList<ProblemaSaude>();
+		this.end = new Endereco();
 	}
 	
 	public char getSexo() {

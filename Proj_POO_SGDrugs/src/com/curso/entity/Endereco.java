@@ -3,9 +3,21 @@ package com.curso.entity;
 public class Endereco {
 	
 	private String cep;
-	private int numero;
-	private String rua, cidade, uf;
+	private int numero, idEndereco;
+	private String rua, bairro, cidade, uf;
 	
+	public int getIdEndereco() {
+		return idEndereco;
+	}
+	public void setIdEndereco(int idEndereco) {
+		this.idEndereco = idEndereco;
+	}
+	public String getBairro() {
+		return bairro;
+	}
+	public void setBairro(String bairro) {
+		this.bairro = bairro;
+	}
 	public String getCep() {
 		return cep;
 	}

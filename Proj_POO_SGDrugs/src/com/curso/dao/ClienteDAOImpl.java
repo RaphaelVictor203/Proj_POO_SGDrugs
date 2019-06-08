@@ -66,16 +66,16 @@ public class ClienteDAOImpl implements ClienteDAO{
 	public List<Cliente> pesquisarPorCliente(String nome, String tipo) throws DAOException {
 		List<Cliente> lista = new ArrayList<>();
 		String sql = "";
+		
 		if(tipo.equals("CIDADE")) {
 			sql = "SELECT * from tbcliente where cidade like ?";
 		}else {
 			sql = "SELECT * from tbcliente where nome like ?";
 		}
-		try {
+		try {		
 			Connection con = ConnectionManager.getInstance().getConnection();
 			PreparedStatement stmt = con.prepareStatement(sql);
-			stmt.setString(1, "%" + nome + "%");
-			ResultSet  rs = stmt.executeQuery();		
+			ResultSet  rs = stmt.executeQuery();
 			while (rs.next()) { 
 				Cliente cl = new Cliente();
 				cl.setPrimeiroNome(rs.getString("nome"));
@@ -109,9 +109,11 @@ public class ClienteDAOImpl implements ClienteDAO{
 			stmt.setLong(2, cliente.getCpf());
 			stmt.setLong(3, cliente.getRg());
 			stmt.setString(4, Character.toString(cliente.getSexo()));
-			stmt.setInt(5, idEndereco);
-			stmt.setString(6, cliente.getEmail());
-			stmt.setLong(6, cliente.getCartaoSUS());
+			stmt.setLong(5, cliente.getTelefone());
+			stmt.setInt(6, cliente.getEnd().getIdEndereco());
+			stmt.setString(7, cliente.getEmail());
+			stmt.setLong(8, cliente.getCartaoSUS());
+			stmt.setLong(9, cliente.getCpf());
 			stmt.executeUpdate();
 			con.close();
 		} catch (SQLException e) {
