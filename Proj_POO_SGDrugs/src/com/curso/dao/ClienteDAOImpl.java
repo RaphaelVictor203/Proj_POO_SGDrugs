@@ -9,9 +9,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.curso.entity.Cliente;
+import com.curso.entity.Endereco;
+import com.curso.entity.ProblemaSaude;
 
 public class ClienteDAOImpl implements ClienteDAO{
 
+	EnderecoDAOImpl edi = new EnderecoDAOImpl();
+	ProblemaSaudeDAOImpl psdi = new ProblemaSaudeDAOImpl();
+	
 	@Override
 	public void inserir(Cliente cl) throws DAOException {
 		try {
@@ -29,6 +34,8 @@ public class ClienteDAOImpl implements ClienteDAO{
 			stmt.setString(6, cl.getEmail());
 			stmt.setLong(7, cl.getCartaoSUS());
 			stmt.executeUpdate();
+			edi.inserir(cl.getEnd());
+			psdi.inserirProbCliente(cl);
 			con.close();
 		} catch (SQLException e) {
 			System.out.println("Erro de conexão no banco de dados");
@@ -43,7 +50,10 @@ public class ClienteDAOImpl implements ClienteDAO{
 		Cliente cl = new Cliente();
 		try {
 			Connection con = ConnectionManager.getInstance().getConnection();
-			String sql = "SELECT * from tbcliente where cpf like ?";
+			//String sql = "SELECT * from tbcliente where cpf like ?";
+			String sql = "SELECT c.nome, c.cpf, c.rg, c.sexo, c.telefone, c.email, c.cartaoSus, e.idEndereco, e.CEP, e.numero,"
+					+ "e.rua, e.bairro, e.cidade, e.UF from tbcliente as c "
+					+ "inner join tbendereco as e on e.idEndereco=c.idEndereco where c.cpf like ?";
 			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setString(1, "%" + cpf + "%");
 			ResultSet  rs = stmt.executeQuery();		 
@@ -54,6 +64,16 @@ public class ClienteDAOImpl implements ClienteDAO{
 			cl.setTelefone(rs.getInt("telefone"));
 			cl.setEmail(rs.getString("email"));
 			cl.setCartaoSUS(rs.getLong("cartaoSus"));
+			Endereco end = new Endereco();
+			end.setIdEndereco(rs.getInt("idEndereco"));
+			end.setCep(rs.getString("cep"));
+			end.setNumero(rs.getInt("numero"));
+			end.setRua(rs.getString("rua"));
+			end.setBairro(rs.getString("bairro"));
+			end.setCidade(rs.getString("cidade"));
+			end.setUf(rs.getString("UF"));
+			cl.setEnd(end);
+			cl.setProblemasSaude(psdi.pesquisarPorProblemas(cl.getCpf()));
 		} catch (SQLException e) {
 			System.out.println("Erro de conexão no banco de dados");
 			e.printStackTrace();
@@ -68,9 +88,14 @@ public class ClienteDAOImpl implements ClienteDAO{
 		String sql = "";
 		
 		if(tipo.equals("CIDADE")) {
-			sql = "SELECT * from tbcliente where cidade like ?";
+			sql = "SELECT c.nome, c.cpf, c.rg, c.sexo, c.telefone, c.email, c.cartaoSus, e.idEndereco, e.CEP, e.numero,"
+					+ "e.rua, e.bairro, e.cidade, e.UF from tbcliente as c "
+					+ "inner join tbendereco as e on e.idEndereco=c.idEndereco where e.cidade like ?";
+			
 		}else {
-			sql = "SELECT * from tbcliente where nome like ?";
+			sql = "SELECT c.nome, c.cpf, c.rg, c.sexo, c.telefone, c.email, c.cartaoSus, e.idEndereco, e.CEP, e.numero,"
+					+ "e.rua, e.bairro, e.cidade, e.UF from tbcliente as c "
+					+ "inner join tbendereco as e on e.idEndereco=c.idEndereco where c.nome like ?";
 		}
 		try {		
 			Connection con = ConnectionManager.getInstance().getConnection();
@@ -85,6 +110,16 @@ public class ClienteDAOImpl implements ClienteDAO{
 				cl.setTelefone(rs.getInt("telefone"));
 				cl.setEmail(rs.getString("email"));
 				cl.setCartaoSUS(rs.getLong("cartaoSus"));
+				Endereco end = new Endereco();
+				end.setIdEndereco(rs.getInt("idEndereco"));
+				end.setCep(rs.getString("cep"));
+				end.setNumero(rs.getInt("numero"));
+				end.setRua(rs.getString("rua"));
+				end.setBairro(rs.getString("bairro"));
+				end.setCidade(rs.getString("cidade"));
+				end.setUf(rs.getString("UF"));
+				cl.setEnd(end);
+				cl.setProblemasSaude(psdi.pesquisarPorProblemas(cl.getCpf()));
 				lista.add(cl);
 			}
 		} catch (SQLException e) {
@@ -99,10 +134,9 @@ public class ClienteDAOImpl implements ClienteDAO{
 	@Override
 	public void alterar(Cliente cliente) throws DAOException {
 		try {
-			int idEndereco = 0;
 			Connection con = ConnectionManager.getInstance().getConnection();
 			String sql = "update tbcliente "
-					+ "set nome=?, cpf=?, rg=?, sexo=?, telefone=?, idEndereco=?, email=?, cartaoSus=? "
+					+ "set nome=?, cpf=?, rg=?, sexo=?, telefone=?, email=?, cartaoSus=? "
 					+ " where cpf=?";
 			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setString(1, cliente.getPrimeiroNome());
@@ -110,12 +144,15 @@ public class ClienteDAOImpl implements ClienteDAO{
 			stmt.setLong(3, cliente.getRg());
 			stmt.setString(4, Character.toString(cliente.getSexo()));
 			stmt.setLong(5, cliente.getTelefone());
-			stmt.setInt(6, cliente.getEnd().getIdEndereco());
 			stmt.setString(7, cliente.getEmail());
 			stmt.setLong(8, cliente.getCartaoSUS());
 			stmt.setLong(9, cliente.getCpf());
 			stmt.executeUpdate();
 			con.close();
+			edi.alterar(cliente.getEnd());
+			for(ProblemaSaude ps : cliente.getProblemasSaude()) {
+				psdi.alterar(ps);
+			}
 		} catch (SQLException e) {
 			System.out.println("Erro de conexão no banco de dados");
 			e.printStackTrace();
@@ -127,6 +164,11 @@ public class ClienteDAOImpl implements ClienteDAO{
 	@Override
 	public void remover(long cpf) throws DAOException {
 		try {
+			Cliente cl = pesquisarPorCliente(cpf);
+			for(ProblemaSaude ps : cl.getProblemasSaude()) {
+				psdi.removerProblemaCliente(cpf, ps.getId_problema());
+			}
+			edi.remover(cl.getEnd());
 			Connection con = ConnectionManager.getInstance().getConnection();
 			String sql = "delete from tbcliente "
 					+ " where cpf=?";
