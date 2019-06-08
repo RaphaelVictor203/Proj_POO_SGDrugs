@@ -75,9 +75,9 @@ public class ControlFornecedores {
 	
 //MANTER Fornecedor ------------------------------------------------------
 	
-	public boolean cadFornecedor(Fornecedor cl) {
-		if(!existFornecedor(cl.getCnpj())) {
-			this.FornecedoresCadastrados.add(cl);
+	public boolean cadFornecedor(Fornecedor fr) {
+		if(!existFornecedor(fr.getCnpj())) {
+			this.FornecedoresCadastrados.add(fr);
 			attTableFornecedor();
 			return true;
 		}else {
@@ -120,18 +120,18 @@ public class ControlFornecedores {
 		this.attTableFornecedor();
 	}
 	
-	public void attFornecedor(Fornecedor cl) {
+	public void attFornecedor(Fornecedor fr) {
 		for(Fornecedor f : FornecedoresCadastrados) {
 			if(f.getCnpj() == fornecSel.getCnpj()) {
-				f.setNome_fantasia(cl.getNome_fantasia());
-				f.setCnpj(cl.getCnpj());
-				f.setTelefone(cl.getTelefone());
-				f.getFarmacia().setUnidade(cl.getFarmacia().getUnidade());
-				f.getEndereco().setCep(cl.getEndereco().getCep());
-				f.getEndereco().setRua(cl.getEndereco().getRua());
-				f.getEndereco().setNumero(cl.getEndereco().getNumero());
-				f.getEndereco().setCidade(cl.getEndereco().getCidade());
-				f.getEndereco().setUf(cl.getEndereco().getUf());
+				f.setNome_fantasia(fr.getNome_fantasia());
+				f.setCnpj(fr.getCnpj());
+				f.setTelefone(fr.getTelefone());
+				f.getFarmacia().setUnidade(fr.getFarmacia().getUnidade());
+				f.getEndereco().setCep(fr.getEndereco().getCep());
+				f.getEndereco().setRua(fr.getEndereco().getRua());
+				f.getEndereco().setNumero(fr.getEndereco().getNumero());
+				f.getEndereco().setCidade(fr.getEndereco().getCidade());
+				f.getEndereco().setUf(fr.getEndereco().getUf());
 			}
 		}
 	}
