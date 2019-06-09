@@ -208,7 +208,9 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 		StackPane painels = new StackPane(painelMant, painelCad);
 		pane.setCenter(painels);
 
-		Scene scene = new Scene(pane, 1100, 600);
+		stage.setMaximized(true);
+		Scene scene = new Scene(pane, stage.getWidth(),stage.getHeight());
+		//Scene scene = new Scene(pane, 1100, 600);
 		stage.setScene(scene);
 		stage.setTitle("Manter Clientes");
 		stage.show();

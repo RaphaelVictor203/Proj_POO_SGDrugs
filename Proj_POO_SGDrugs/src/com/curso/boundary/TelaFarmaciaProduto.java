@@ -151,9 +151,10 @@ public class TelaFarmaciaProduto extends Application implements EventHandler<Mou
 		createTableColumnsProdsFarm();
 		cp.attTableProds();
 		
-		Scene scene = new Scene(pane, 1100,600);
+		stage.setMaximized(true);
+		Scene scene = new Scene(pane, stage.getWidth(),stage.getHeight());
 		stage.setScene(scene);
-		stage.setTitle("Manter Clientes");
+		stage.setTitle("Manter Produtos da farmacia");
 		stage.show();
 		
 		startStyle();
