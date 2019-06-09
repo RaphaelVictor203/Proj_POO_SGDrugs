@@ -24,7 +24,7 @@ public class TelaPrincipal extends Application{
 
 	StackPane painelPrincipal = new StackPane();
 	MenuBar menuTop = new MenuBar();
-	Menu menu = new Menu("Menu");
+	Menu menu = new Menu();
 	Menu subMenuCadastro = new Menu("Cadastros");
 	MenuItem venda = new MenuItem("Venda");
 	MenuItem cadCli = new MenuItem("cadastro cliente");
@@ -45,7 +45,12 @@ public class TelaPrincipal extends Application{
 		
 		menuTop.getMenus().add(menu);
 		pane.setTop(menuTop);
+		
 		menu.getItems().add(venda);
+		ImageView iconMenu = new ImageView(new Image(new FileInputStream("imgs\\icon_menu.png")));  
+		iconMenu.setFitWidth(30);
+		iconMenu.setFitHeight(30);
+		menu.setGraphic(iconMenu);
 		subMenuCadastro.getItems().add(cadCli);
 		subMenuCadastro.getItems().add(cadFarmProd);
 		subMenuCadastro.getItems().add(cadProduto);
@@ -116,10 +121,10 @@ public class TelaPrincipal extends Application{
 		painelPrincipal.setStyle(""
 				+ " -fx-min-width: 100%; -fx-min-height: 100%;");
 		menuTop.setStyle("-fx-min-width: 100%; -fx-min-height: 40px; -fx-background-color: #FEFFFA;");
-		menu.setStyle("-fx-min-height: 40px; -fx-min-width: 100px; -fx-font-size: 20px");
+		menu.setStyle("-fx-min-height: 40px; -fx-min-width: 50px; -fx-font-size: 20px; -fx-cursor: hand;");
 		//imgView.setStyle("-fx-max-width: 1100; -fx-max-height: 600;"); 
 		painelSubPrincipal.setStyle("-fx-background-color: rgba(0, 0, 0, .7); -fx-min-width: 100%; -fx-min-height: 100%;");
-		lblBoasVindas.setStyle("-fx-text-fill: white; -fx-font-size: 90");
+		lblBoasVindas.setStyle("-fx-text-fill: white; -fx-font-size: 70");
 	}
 	
 	public static void main(String[] args) {
