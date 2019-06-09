@@ -3,6 +3,9 @@ package com.curso.control;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.curso.dao.DAOException;
+import com.curso.dao.FarmaciaProdutoDAO;
+import com.curso.dao.FarmaciaProdutoDAOImpl;
 import com.curso.entity.FarmaciaProduto;
 
 import javafx.collections.FXCollections;
@@ -10,6 +13,7 @@ import javafx.collections.ObservableList;
 
 public class ControlFarmaciaProduto {
 
+	private FarmaciaProdutoDAO fpdi = new FarmaciaProdutoDAOImpl();
 	private ObservableList<FarmaciaProduto> dataListProdFarm = FXCollections.observableArrayList();
 	private List<FarmaciaProduto> listaProdFarm;
 
@@ -53,6 +57,12 @@ public class ControlFarmaciaProduto {
 				return fp;
 			}
 		}
+		try {
+			fpdi.pesquisarFarmaciaProduto(id_prod);
+		} catch (DAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return null;
 	}
 	
@@ -74,11 +84,23 @@ public class ControlFarmaciaProduto {
 				}
 			}
 		}
+		try {
+			fpdi.pesquisarFarmaciaProduto(cont, tipo);
+		} catch (DAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void removerProdutoFarm(FarmaciaProduto fp) {
 		this.listaProdFarm.remove(fp);
 		this.attTableProdutoFarm();
+		try {
+			fpdi.remover(fp.getProduto().getId_produto());
+		} catch (DAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void attProdutoFarm(FarmaciaProduto f) {
@@ -88,12 +110,24 @@ public class ControlFarmaciaProduto {
 				this.attTableProdutoFarm();
 			}
 		}
+		try {
+			fpdi.alterar(f);
+		} catch (DAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void inserir(FarmaciaProduto fp) {
 		if(pesquisarFarmaciaProd(fp.getProduto().getId_produto()) == null) {
 			this.listaProdFarm.add(fp);
 			this.attTableProdutoFarm();
+			try {
+				fpdi.inserir(fp);
+			} catch (DAOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 	
