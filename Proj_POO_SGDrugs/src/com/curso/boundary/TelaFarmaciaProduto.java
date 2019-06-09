@@ -383,7 +383,7 @@ public class TelaFarmaciaProduto extends Application implements EventHandler<Mou
 	public FarmaciaProduto boundaryToFarmaciaProd(){
 		FarmaciaProduto fp = new FarmaciaProduto();
 		fp.setProduto(cp.selecionarProduto(idProdSel));
-		fp.setFarmacia(new Farmacia("Unidade Leste"));
+		fp.setFarmacia(new Farmacia());
 		fp.setPreco(Double.parseDouble(txtPrecoUnit.getText()));
 		fp.setQntdEstoque(Integer.parseInt(txtQntd.getText()));
 		fp.setGrupo(cmbGrupo.getValue());

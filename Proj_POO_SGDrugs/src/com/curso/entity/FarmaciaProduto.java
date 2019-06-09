@@ -16,7 +16,7 @@ public class FarmaciaProduto {
 
 	public FarmaciaProduto() {
 		this.produto = new Produto();
-		this.farmacia = new Farmacia(null);
+		this.farmacia = new Farmacia();
 		this.btnExcluir = new Button("Excluir");
 		this.btnIsencao = new Button("SUS");
 	}	
