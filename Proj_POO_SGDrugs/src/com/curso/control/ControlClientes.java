@@ -86,6 +86,12 @@ public class ControlClientes {
 		cl.setProblemasSaude(listPS);
 		clientesCadastrados.add(cl);
 		this.dataList.add(cl);*/
+		try {
+			this.dataList.addAll(cdi.pesquisarPorClientes());
+		} catch (DAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public ObservableList<Cliente> getDataListClientes(){
@@ -108,14 +114,6 @@ public class ControlClientes {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			//BANCO------------------------------
-			try {
-				cdi.inserir(cl);
-			} catch (DAOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			//FIM BANCO------------------------------
 			attTableCliente();
 			return true;
 		}else {
@@ -127,7 +125,7 @@ public class ControlClientes {
 	public void pesquisarCliente(String cont, String tipo) {
 		dataList.clear();
 		if(!cont.equals("")) {
-			//try {
+			try {
 				if(tipo.equals("CIDADE")) {
 					for(Cliente c : clientesCadastrados) {
 						if(c.getEnd().getCidade().contains(cont)) {
@@ -141,26 +139,26 @@ public class ControlClientes {
 						}
 					}
 				}
-				//dataList.addAll(cdi.pesquisarPorCliente(cont, tipo));
-			/*} catch (DAOException e) {
+				dataList.addAll(cdi.pesquisarPorCliente(cont, tipo));
+			} catch (DAOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}*/
+			}
 		}
 	}
 	
 	public Cliente pesquisarCliente(long cpf) {
-		//try {
-			//return cdi.pesquisarPorCliente(cpf);
-			for(Cliente c : clientesCadastrados) {
+		try {
+			return cdi.pesquisarPorCliente(cpf);
+			/*for(Cliente c : clientesCadastrados) {
 				if(c.getCpf() == cpf) {
 					return c;
 				}
-			}
-		/*} catch (DAOException e) {
+			}*/
+		} catch (DAOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/
+		}
 		return null;
 	}
 	
@@ -181,12 +179,12 @@ public class ControlClientes {
 	
 	public void removerCliente() {
 		this.clientesCadastrados.remove(pesquisarCliente(clientSel.getCpf()));
-		/*try {
+		try {
 			cdi.remover(clientSel.getCpf());
 		} catch (DAOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/
+		}
 		this.attTableCliente();
 	}
 	
@@ -210,12 +208,12 @@ public class ControlClientes {
 				c.setSexo(cl.getSexo());
 			}
 		}
-		/*try {
-			cdi.alterar(cl);
+		try {
+			cdi.alterar(cl);			
 		} catch (DAOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/
+		}
 	}
 	
 	public void attClienteToCad(Cliente cl) {
@@ -242,12 +240,12 @@ public class ControlClientes {
 	
 	public void cadProbCliente() {
 		//if(!existProb(ps.getId_problema())) {
-			try {
+			/*try {
 				psdi.inserirProbCliente(this.clientSel);
 			} catch (DAOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
+			}*/
 		//}else {
 			
 		//}
@@ -265,10 +263,16 @@ public class ControlClientes {
 	
 	
 	public ProblemaSaude pesquisarProb(String desc) {
-		for(ProblemaSaude ps : problemasCadastrados) {
+		/*for(ProblemaSaude ps : problemasCadastrados) {
 			if(ps.getDesc_problema().equals(desc)) {
 				return ps;
 			}
+		}*/
+		try {
+			return psdi.pesquisarPorProblemas(desc);
+		} catch (DAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return null;
 	}
@@ -312,6 +316,12 @@ public class ControlClientes {
 					ControlClientes.clientSel.getProblemasSaude().remove(ps);
 				}
 			}
+			try {
+				psdi.removerProblemaCliente(ControlClientes.clientSel.getCpf(), id);
+			} catch (DAOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			attTableProb();
 		}
 	}
@@ -322,7 +332,13 @@ public class ControlClientes {
 
 	public void attTableCliente() {
 		this.dataList.clear();
-		this.dataList.addAll(clientesCadastrados);
+		//this.dataList.addAll(clientesCadastrados);
+		try {
+			this.dataList.addAll(cdi.pesquisarPorClientes());
+		} catch (DAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void attTableCliente(Cliente cl) {

@@ -372,6 +372,7 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 				Cliente c = cc.pesquisarCliente((long) tblCli.getItems().get(l).getCpf());
 				ControlClientes.clientSel = c;
 				cc.removerCliente();
+				cc.attTableCliente();
 				setFunctionCliButtons();
 				btnSelected(1);
 			});
@@ -405,7 +406,7 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 
 		Cliente c = new Cliente();
 		c.setPrimeiroNome(this.txtNome.getText());
-		c.setDt_nasc(new Date(Integer.parseInt(this.cmbAno.getSelectionModel().getSelectedItem()), Integer.parseInt(this.cmbMes.getSelectionModel().getSelectedItem()), Integer.parseInt(this.cmbDia.getSelectionModel().getSelectedItem())));
+		c.setDt_nasc(new java.sql.Date(Integer.parseInt(this.cmbAno.getSelectionModel().getSelectedItem()), Integer.parseInt(this.cmbMes.getSelectionModel().getSelectedItem()), Integer.parseInt(this.cmbDia.getSelectionModel().getSelectedItem())));
 		c.setRg(Long.parseLong(this.txtRG.getText()));
 		c.setCpf(Long.parseLong(this.txtCPF.getText()));
 		if (!this.txtTelefone.getText().equals("")) {
@@ -425,6 +426,7 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 		ed.setCidade(this.cmbCid.getSelectionModel().getSelectedItem());
 		ed.setUf(this.cmbUF.getSelectionModel().getSelectedItem());
 		ed.setBairro(this.txtBairro.getText());
+		ed.setIdEndereco(ControlClientes.clientSel.getEnd().getIdEndereco());
 		c.setEnd(ed);
 
 		c.setProblemasSaude(ControlClientes.clientSel.getProblemasSaude());

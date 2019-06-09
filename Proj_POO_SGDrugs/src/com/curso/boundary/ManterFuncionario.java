@@ -345,7 +345,7 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 		
 		Cliente c = new Cliente();
 		c.setPrimeiroNome(this.txtNome.getText());
-		c.setDt_nasc(new Date(Integer.parseInt(this.cmbAno.getSelectionModel().getSelectedItem()), Integer.parseInt(this.cmbMes.getSelectionModel().getSelectedItem()), Integer.parseInt(this.cmbDia.getSelectionModel().getSelectedItem())));
+		c.setDt_nasc(new java.sql.Date(Integer.parseInt(this.cmbAno.getSelectionModel().getSelectedItem()), Integer.parseInt(this.cmbMes.getSelectionModel().getSelectedItem()), Integer.parseInt(this.cmbDia.getSelectionModel().getSelectedItem())));
 		c.setRg(Long.parseLong(this.txtRG.getText()));
 		c.setCpf(Long.parseLong(this.txtCPF.getText()));
 		if(!this.txtTelefone.getText().equals("")) {

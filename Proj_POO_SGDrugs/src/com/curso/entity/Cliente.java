@@ -1,9 +1,8 @@
 package com.curso.entity;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-
+import java.sql.Date;
 import javafx.scene.control.Button;
 
 public class Cliente {

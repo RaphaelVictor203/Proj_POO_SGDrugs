@@ -12,21 +12,26 @@ import com.curso.entity.Endereco;
 public class EnderecoDAOImpl implements EnderecoDAO{
 
 	@Override
-	public void inserir(Endereco end) throws DAOException {
+	public boolean inserir(Endereco end) throws DAOException {
 		try {
 			Connection con = ConnectionManager.getInstance().getConnection();
 			String sql = "INSERT INTO tbendereco "
-					+ "(cidade, UF, CEP, numero, rua, bairro) "
+					+ "(cidade, estado, CEP, numero, rua, bairro) "
 					+ " VALUES (?, ?, ?, ?, ?, ?)";
 			PreparedStatement stmt = con.prepareStatement(sql);
-			stmt.setString(1, end.getCidade());
-			stmt.setString(2, end.getUf());
+			stmt.setString(2, end.getCidade());
+			stmt.setString(1, end.getUf());
 			stmt.setString(3, end.getCep());
 			stmt.setInt(4, end.getNumero());
 			stmt.setString(5, end.getRua());
 			stmt.setString(6, end.getBairro());
-			stmt.executeUpdate();
-			con.close();
+			if(stmt.executeUpdate() == 1) {
+				con.close();
+				return true;
+			}else {
+				con.close();
+				return false;
+			}
 		} catch (SQLException e) {
 			System.out.println("Erro de conexão no banco de dados");
 			e.printStackTrace();
@@ -39,8 +44,8 @@ public class EnderecoDAOImpl implements EnderecoDAO{
 		Endereco end = new Endereco();
 		try {
 			Connection con = ConnectionManager.getInstance().getConnection();
-			String sql = "SELECT e.CEP, e.rua, e.numero, e.bairro, e.cidade, e.UF from tbendereco as e"
-					+ "inner join tbcliente as c on c.idEndereco=e.idEndereco where cpf like ?";
+			String sql = "SELECT e.CEP, e.rua, e.numero, e.bairro, e.cidade, e.estado from tbendereco as e"
+					+ "inner join tbcliente as c on c.idEndereco=e.idEndereco where c.cpf like ?";
 			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setString(1, "%" + cpf + "%");
 			ResultSet  rs = stmt.executeQuery();		
@@ -48,8 +53,8 @@ public class EnderecoDAOImpl implements EnderecoDAO{
 			end.setRua(rs.getString("rua"));
 			end.setNumero(rs.getInt("numero"));
 			end.setBairro(rs.getString("Bairro"));
-			end.setCidade(rs.getString("cidade"));
-			end.setUf(rs.getString("UF"));
+			end.setCidade(rs.getString("estado"));
+			end.setUf(rs.getString("cidade"));
 		} catch (SQLException e) {
 			System.out.println("Erro de conexão no banco de dados");
 			e.printStackTrace();
@@ -59,14 +64,15 @@ public class EnderecoDAOImpl implements EnderecoDAO{
 	}
 
 	@Override
-	public List<Endereco> pesquisarEndereco(long cep, int num, String rua, String bairro) throws DAOException {
+	public List<Endereco> pesquisarEndereco(String cep, int num, String rua, String bairro) throws DAOException {
+		long cp = Long.parseLong(cep);
 		List<Endereco> lista = new ArrayList<Endereco>();
 		try {
 			Connection con = ConnectionManager.getInstance().getConnection();
 			String sql = "SELECT * from tbendereco"
-					+ " where cep like ? and num like ? and rua like ? and bairro like ?";
+					+ " where cep like ? and numero like ? and rua like ? and bairro like ?";
 			PreparedStatement stmt = con.prepareStatement(sql);
-			stmt.setString(1, "%" + cep + "%");
+			stmt.setString(1, "%" + Long.toString(cp) + "%");
 			stmt.setString(2, "%" + num + "%");
 			stmt.setString(3, "%" + rua + "%");
 			stmt.setString(4, "%" + bairro + "%");
@@ -79,8 +85,8 @@ public class EnderecoDAOImpl implements EnderecoDAO{
 				end.setRua(rs.getString("rua"));
 				end.setNumero(rs.getInt("numero"));
 				end.setBairro(rs.getString("Bairro"));
-				end.setCidade(rs.getString("cidade"));
-				end.setUf(rs.getString("UF"));
+				end.setCidade(rs.getString("estado"));
+				end.setUf(rs.getString("cidade"));
 				lista.add(end);
 			}
 		} catch (SQLException e) {
@@ -96,7 +102,7 @@ public class EnderecoDAOImpl implements EnderecoDAO{
 		try {
 			Connection con = ConnectionManager.getInstance().getConnection();
 			String sql = "update tbendereco "
-					+ "set CEP=?, rua=?, numero=?, bairro=?, cidade=?, UF=?"
+					+ "set CEP=?, rua=?, numero=?, bairro=?, cidade=?, estado=?"
 					+ " where idEndereco=?";
 			
 			PreparedStatement stmt = con.prepareStatement(sql);
@@ -104,8 +110,8 @@ public class EnderecoDAOImpl implements EnderecoDAO{
 			stmt.setString(2, end.getRua());
 			stmt.setLong(3, end.getNumero());
 			stmt.setString(4, end.getBairro());
-			stmt.setString(5, end.getCidade());
-			stmt.setString(6, end.getUf());
+			stmt.setString(6, end.getCidade());
+			stmt.setString(5, end.getUf());
 			stmt.setInt(7, end.getIdEndereco());
 			stmt.executeUpdate();
 			con.close();

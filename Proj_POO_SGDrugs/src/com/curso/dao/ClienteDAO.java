@@ -10,4 +10,5 @@ public interface ClienteDAO {
 	List<Cliente> pesquisarPorCliente(String nome, String tipo) throws DAOException;
 	void alterar(Cliente cliente) throws DAOException ;
 	void remover(long cpf) throws DAOException ;
+	public List<Cliente> pesquisarPorClientes() throws DAOException;
 }
