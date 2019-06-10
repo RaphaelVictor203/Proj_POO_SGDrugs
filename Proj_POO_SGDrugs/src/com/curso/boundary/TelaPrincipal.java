@@ -120,7 +120,7 @@ public class TelaPrincipal extends Application{
 	public void startStyle() {
 		painelPrincipal.setStyle(""
 				+ " -fx-min-width: 100%; -fx-min-height: 100%;");
-		menuTop.setStyle("-fx-min-width: 100%; -fx-min-height: 40px; -fx-background-color: #FEFFFA;");
+		menuTop.setStyle("-fx-min-width: 100%; -fx-min-height: 40px; -fx-background-color: #E0DACE;");
 		menu.setStyle("-fx-min-height: 40px; -fx-min-width: 50px; -fx-font-size: 20px; -fx-cursor: hand;");
 		//imgView.setStyle("-fx-max-width: 1100; -fx-max-height: 600;"); 
 		painelSubPrincipal.setStyle("-fx-background-color: rgba(0, 0, 0, .7); -fx-min-width: 100%; -fx-min-height: 100%;");

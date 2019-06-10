@@ -73,7 +73,7 @@ public class ControlProdutos {
 		this.dataListProds.clear();
 		//this.dataListProds.addAll(ltProdutos);
 		try {
-			this.dataListProds.addAll(pdi.consultarProdutosCad());
+			this.dataListProds.addAll(produtoDAO.consultarProdutosCad());
 		} catch (DAOException e) {
 			e.printStackTrace();
 		}

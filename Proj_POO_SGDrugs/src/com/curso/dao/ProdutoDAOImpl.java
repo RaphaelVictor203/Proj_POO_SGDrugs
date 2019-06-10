@@ -74,5 +74,53 @@ public class ProdutoDAOImpl implements ProdutoDAO {
 
 	}
 
+	@Override
+	public Produto consultarProduto(int id) throws DAOException {
+		FornecedorDAOImpl fdi = new FornecedorDAOImpl();
+		Produto p = new Produto();
+		String sql = "select * from tbproduto;";
+		try {		
+			Connection con = ConnectionManager.getInstance().getConnection();
+			PreparedStatement stmt = con.prepareStatement(sql);
+			ResultSet  rs = stmt.executeQuery();
+			while (rs.next()) { 
+				p.setId_produto(rs.getInt("idProduto"));
+				p.setNome(rs.getString("descricao"));
+				p.setFornecedor(fdi.pesquisarPorFornecedor(rs.getInt("idFornecedor")));
+				p.setCategoria("categoria");
+			}
+		} catch (SQLException e) {
+			System.out.println("Erro de conexão no banco de dados");
+			e.printStackTrace();
+			throw new DAOException(e);
+		}
+		return p;
+	}
+
+	@Override
+	public List<Produto> consultarProdutosCad() throws DAOException {
+		FornecedorDAOImpl fdi = new FornecedorDAOImpl();
+		List<Produto> lista = new ArrayList<>();
+		String sql = "select * from tbproduto;";
+		try {		
+			Connection con = ConnectionManager.getInstance().getConnection();
+			PreparedStatement stmt = con.prepareStatement(sql);
+			ResultSet  rs = stmt.executeQuery();
+			while (rs.next()) { 
+				Produto p = new Produto();
+				p.setId_produto(rs.getInt("idProduto"));
+				p.setNome(rs.getString("descricao"));
+				p.setFornecedor(fdi.pesquisarPorFornecedor(rs.getInt("idFornecedor")));
+				p.setCategoria("categoria");
+				lista.add(p);
+			}
+		} catch (SQLException e) {
+			System.out.println("Erro de conexão no banco de dados");
+			e.printStackTrace();
+			throw new DAOException(e);
+		}
+		return lista;
+	}
+
 
 }

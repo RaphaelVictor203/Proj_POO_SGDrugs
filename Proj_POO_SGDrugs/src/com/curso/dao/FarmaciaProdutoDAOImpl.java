@@ -42,7 +42,7 @@ public class FarmaciaProdutoDAOImpl implements FarmaciaProdutoDAO{
 		System.out.println("p - " + id_produto);
 		GrupoDAOImpl gdi = new GrupoDAOImpl();
 		SessaoDAOImpl sdi = new SessaoDAOImpl();
-		ProdutoDAOImp pdi = new ProdutoDAOImp();
+		ProdutoDAOImpl pdi = new ProdutoDAOImpl();
 		FarmaciaDAOImpl fdi = new FarmaciaDAOImpl();
 		FarmaciaProduto fp = new FarmaciaProduto();
 		try {
@@ -74,7 +74,7 @@ public class FarmaciaProdutoDAOImpl implements FarmaciaProdutoDAO{
 	public List<FarmaciaProduto> pesquisarFarmaciaProduto(String cont, String tipo) throws DAOException {
 		GrupoDAOImpl gdi = new GrupoDAOImpl();
 		SessaoDAOImpl sdi = new SessaoDAOImpl();
-		ProdutoDAOImp pdi = new ProdutoDAOImp();
+		ProdutoDAOImpl pdi = new ProdutoDAOImpl();
 		FarmaciaDAOImpl fdi = new FarmaciaDAOImpl();
 		List<FarmaciaProduto> lista = new ArrayList<>();
 		String sql = "";
@@ -119,7 +119,7 @@ public class FarmaciaProdutoDAOImpl implements FarmaciaProdutoDAO{
 	public List<FarmaciaProduto> pesquisarFarmaciaProdutos() throws DAOException {
 		GrupoDAOImpl gdi = new GrupoDAOImpl();
 		SessaoDAOImpl sdi = new SessaoDAOImpl();
-		ProdutoDAOImp pdi = new ProdutoDAOImp();
+		ProdutoDAOImpl pdi = new ProdutoDAOImpl();
 		FarmaciaDAOImpl fdi = new FarmaciaDAOImpl();
 		List<FarmaciaProduto> lista = new ArrayList<>();
 		String sql = "select fp.idFarmaciaProduto, p.idProduto, p.categoria, p.descricao, fp.qntd, fp.precoUnit, fp.idGrupo, fp.idSecao from tbfarmaciaproduto as fp"
