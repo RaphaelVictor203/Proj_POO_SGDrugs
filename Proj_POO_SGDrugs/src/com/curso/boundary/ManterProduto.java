@@ -227,9 +227,10 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 		StackPane painels = new StackPane(CTR_painelProdutos, CAD_painelProdutos);
 		pane.setCenter(painels);
 
-		Scene cena = new Scene(pane, 1250, 700);
+		stage.setMaximized(true);
+		Scene cena = new Scene(pane, stage.getWidth(),stage.getHeight());
 		stage.setScene(cena);
-		stage.setTitle("Produtos");
+		stage.setTitle("Manter Produtos");
 		stage.show();
 
 		CAD_btnInserir.addEventHandler(MouseEvent.MOUSE_CLICKED, this);

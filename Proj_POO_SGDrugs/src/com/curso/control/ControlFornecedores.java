@@ -25,48 +25,6 @@ public class ControlFornecedores {
 	public ControlFornecedores() {
 		this.FornecedoresCadastrados = new ArrayList<Fornecedor>();
 		this.enderecoCadastrados = new ArrayList<Endereco>();
-		
-		/*Endereco ed = new Endereco();
-		ed.setUf("SP");
-		ed.setCep("08370190");
-		ed.setRua("Jardim São Gonçalo, Estrada da Colônia");
-		ed.setNumero(20);
-		ed.setCidade("São Paulo");
-		
-		
-		Fornecedor cl = new Fornecedor();
-		cl.setPrimeiroNome("Gabriel Queiroz");
-		cl.setDt_nasc(new Date(1997, 3, 20));
-		cl.setCnpj(47893115890L);
-		cl.setRg(530734084);
-		cl.setEmail("raphael.victor204@gmail.com");
-		cl.setTelefone(11985188623L);
-		cl.setCartaoSUS(123124124124L);
-		cl.setEnd(ed);
-		cl.setProblemasSaude(listPS);
-		FornecedoresCadastrados.add(cl);
-		this.dataList.add(cl);
-		
-		ed = new Endereco();
-		ed.setUf("SP");
-		ed.setCep("08370190");
-		ed.setRua("Jardim São Gonçalo, Estrada da Colônia");
-		ed.setNumero(20);
-		ed.setCidade("São Paulo");
-		
-		
-		cl = new Fornecedor();
-		cl.setPrimeiroNome("Raphael");
-		cl.setDt_nasc(new Date(1997, 3, 20));
-		cl.setCnpj(38472812990L);
-		cl.setRg(530734084);
-		cl.setEmail("raphael.victor204@gmail.com");
-		cl.setTelefone(11985188623L);
-		cl.setCartaoSUS(123124124124L);
-		cl.setEnd(ed);
-		cl.setProblemasSaude(listPS);
-		FornecedoresCadastrados.add(cl);
-		this.dataList.add(cl);*/
 	}
 	
 	public ObservableList<Fornecedor> getDataListFornecedores(){

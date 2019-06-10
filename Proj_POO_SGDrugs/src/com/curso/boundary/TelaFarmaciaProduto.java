@@ -10,6 +10,8 @@ import javax.xml.ws.handler.MessageContext;
 import com.curso.control.ControlClientes;
 import com.curso.control.ControlFarmaciaProduto;
 import com.curso.control.ControlProdutos;
+import com.curso.dao.GrupoDAOImpl;
+import com.curso.dao.SessaoDAOImpl;
 import com.curso.entity.Cliente;
 import com.curso.entity.Farmacia;
 import com.curso.entity.FarmaciaProduto;
@@ -82,11 +84,13 @@ public class TelaFarmaciaProduto extends Application implements EventHandler<Mou
 		txtPrecoUnit = new TextField();
 		txtPrecoUnit.setPromptText("Preço unitario");
 		ObservableList<Grupo> obs = FXCollections.observableArrayList();
-		obs.addAll(new Grupo(1, "Utilitarios"), new Grupo(2, "Genericos"), new Grupo(3, "Pereciveis"), new Grupo(4, "Comestiveis"));
+		//obs.addAll(new Grupo(1, "Utilitarios"), new Grupo(2, "Genericos"), new Grupo(3, "Pereciveis"), new Grupo(4, "Comestiveis"));
+		obs.addAll(new GrupoDAOImpl().pesquisarPorGrupos());
 		cmbGrupo = new ComboBox<Grupo>(obs);
 		cmbGrupo.setPromptText("Grupo");
 		ObservableList<Sessao> obs1 = FXCollections.observableArrayList();
-		obs1.addAll(new Sessao(1, "A"), new Sessao(2, "B"), new Sessao(3, "C"), new Sessao(4, "D"));
+		//obs1.addAll(new Sessao(1, "A"), new Sessao(2, "B"), new Sessao(3, "C"), new Sessao(4, "D"));
+		obs1.addAll(new SessaoDAOImpl().pesquisarPorSessoes());
 		cmbSessao = new ComboBox<Sessao>(obs1);
 		cmbSessao.setPromptText("Sessão");
 		btnCadastro = new Button("CADASTRAR");
@@ -147,9 +151,10 @@ public class TelaFarmaciaProduto extends Application implements EventHandler<Mou
 		createTableColumnsProdsFarm();
 		cp.attTableProds();
 		
-		Scene scene = new Scene(pane, 1100,600);
+		stage.setMaximized(true);
+		Scene scene = new Scene(pane, stage.getWidth(),stage.getHeight());
 		stage.setScene(scene);
-		stage.setTitle("Manter Clientes");
+		stage.setTitle("Manter Produtos da farmacia");
 		stage.show();
 		
 		startStyle();
@@ -336,7 +341,7 @@ public class TelaFarmaciaProduto extends Application implements EventHandler<Mou
 		tblFarmaciaProd.setItems(cfp.getDataListProdFarm());
 		
 		TableColumn<FarmaciaProduto, Number> id_produto = new TableColumn<>("ID produto");
-		id_produto.setCellValueFactory(item -> new ReadOnlyIntegerWrapper(item.getValue().getProduto().getId_produto()));
+		id_produto.setCellValueFactory(item -> new ReadOnlyIntegerWrapper(item.getValue().getIdFarmaciaProd()));
 		
 		TableColumn<FarmaciaProduto, String> categoria = new TableColumn<>("Categoria");
 		categoria.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getProduto().getCategoria()));
@@ -364,7 +369,8 @@ public class TelaFarmaciaProduto extends Application implements EventHandler<Mou
 			final int l = i;
 
 			tblFarmaciaProd.getItems().get(i).getBtnExcluir().setOnAction(e -> {
-				cfp.removerProdutoFarm(cfp.pesquisarFarmaciaProd(tblFarmaciaProd.getItems().get(l).getProduto().getId_produto()));
+				cfp.removerProdutoFarm(cfp.pesquisarFarmaciaProd(tblFarmaciaProd.getItems().get(l).getIdFarmaciaProd()));
+				cfp.attTableProdutoFarm();
 				setFunctionProdFarmButtons();
 			});
 		}
@@ -379,7 +385,7 @@ public class TelaFarmaciaProduto extends Application implements EventHandler<Mou
 	public FarmaciaProduto boundaryToFarmaciaProd(){
 		FarmaciaProduto fp = new FarmaciaProduto();
 		fp.setProduto(cp.selecionarProduto(idProdSel));
-		fp.setFarmacia(new Farmacia("Unidade Leste"));
+		fp.setFarmacia(new Farmacia());
 		fp.setPreco(Double.parseDouble(txtPrecoUnit.getText()));
 		fp.setQntdEstoque(Integer.parseInt(txtQntd.getText()));
 		fp.setGrupo(cmbGrupo.getValue());

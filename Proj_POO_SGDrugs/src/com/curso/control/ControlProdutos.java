@@ -1,15 +1,13 @@
 package com.curso.control;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.JOptionPane;
-
 import com.curso.dao.DAOException;
 import com.curso.dao.ProdutoDAOImpl;
-
-
+import com.curso.entity.Cliente;
+import com.curso.entity.FarmaciaProduto;
+import com.curso.entity.Fornecedor;
 import com.curso.entity.Produto;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -24,8 +22,7 @@ public class ControlProdutos {
 	private ObservableList<Produto> obsProdutos = FXCollections.observableArrayList();
 
 	private ObservableList<Produto> dataListProds = FXCollections.observableArrayList();
-
-	
+  	
 	public ObservableList<Produto> getGetListProdutos() {
 		return obsProdutos;
 	}
@@ -58,9 +55,7 @@ public class ControlProdutos {
 			obsProdutos.addAll(produtoDAO.consultarProduto(desc));
 	
 	}
-
-	
-	
+  
 	public Produto selecionarProduto(int id) {
 		for(Produto p : ltProdutos) {
 			if(p.getId_produto() == id) {
@@ -76,7 +71,11 @@ public class ControlProdutos {
 
 	public void attTableProds() {
 		this.dataListProds.clear();
-		this.dataListProds.addAll(ltProdutos);
+		//this.dataListProds.addAll(ltProdutos);
+		try {
+			this.dataListProds.addAll(pdi.consultarProdutosCad());
+		} catch (DAOException e) {
+			e.printStackTrace();
+		}
 	}
-
 }

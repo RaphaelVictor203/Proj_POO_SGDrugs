@@ -83,11 +83,11 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 		
 		txtNome = new TextField();
 		cmbFarmacia = new ComboBox<>(FXCollections.observableArrayList(
-				new Farmacia ("Unidade Leste"),
-				new Farmacia ("Unidade Sul"),
-				new Farmacia ("Unidade Norte"),
-				new Farmacia ("Unidade Oeste"),
-				new Farmacia ("Unidade Sudeste")
+				new Farmacia (),
+				new Farmacia (),
+				new Farmacia (),
+				new Farmacia (),
+				new Farmacia ()
 				)) ;
 		txtCNPJ = new TextField();
 		txtTelefone = new TextField();
@@ -206,7 +206,8 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 		StackPane painels = new StackPane(painelMant, painelCad);
 		pane.setCenter(painels);
 		
-		Scene scene = new Scene(pane, 1100,700);
+		stage.setMaximized(true);
+		Scene scene = new Scene(pane, stage.getWidth(),stage.getHeight());
 		stage.setScene(scene);
 		stage.setTitle("Manter Fornecedores");
 		stage.show();
