@@ -163,6 +163,7 @@ public class TelaFarmaciaProduto extends Application implements EventHandler<Mou
 		btnCadProd.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
 		btnMantProd.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
 		btnCadastro.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
+		btnPesquisaProd.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
 		
 		
 	}

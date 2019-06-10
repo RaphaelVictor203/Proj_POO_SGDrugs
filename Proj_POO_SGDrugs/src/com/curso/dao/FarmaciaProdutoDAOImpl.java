@@ -72,6 +72,7 @@ public class FarmaciaProdutoDAOImpl implements FarmaciaProdutoDAO{
 
 	@Override
 	public List<FarmaciaProduto> pesquisarFarmaciaProduto(String cont, String tipo) throws DAOException {
+		System.out.println(cont);
 		GrupoDAOImpl gdi = new GrupoDAOImpl();
 		SessaoDAOImpl sdi = new SessaoDAOImpl();
 		ProdutoDAOImpl pdi = new ProdutoDAOImpl();
@@ -79,15 +80,15 @@ public class FarmaciaProdutoDAOImpl implements FarmaciaProdutoDAO{
 		List<FarmaciaProduto> lista = new ArrayList<>();
 		String sql = "";
 		if(tipo.equals("NOME")) {
-			sql = "select p.idProduto, p.categoria, p.descricao, fp.qntd, fp.precoUnit from tbfarmaciaproduto as fp"
+			sql = "select fp.idFarmaciaProduto, p.idProduto, p.categoria, p.descricao, fp.qntd, fp.precoUnit, fp.idGrupo, fp.idSecao from tbfarmaciaproduto as fp"
 					+ " inner join tbproduto as p on p.idProduto=fp.idProduto where p.descricao=?";
 		}else
 		if(tipo.equals("CATEGORIA")) {
-			sql = "select p.idProduto, p.categoria, p.descricao, fp.qntd, fp.precoUnit from tbfarmaciaproduto as fp"
+			sql = "select fp.idFarmaciaProduto, p.idProduto, p.categoria, p.descricao, fp.qntd, fp.precoUnit, fp.idGrupo, fp.idSecao from tbfarmaciaproduto as fp"
 					+ " inner join tbproduto as p on p.idProduto=fp.idProduto where p.categoria=?";
 		}else
 		if(tipo.equals("FORNECEDOR")) {
-			sql = "select p.idProduto, p.categoria, p.descricao, fp.qntd, fp.precoUnit from tbfarmaciaproduto as fp"
+			sql = "select fp.idFarmaciaProduto, p.idProduto, p.categoria, p.descricao, fp.qntd, fp.precoUnit, fp.idGrupo, fp.idSecao from tbfarmaciaproduto as fp"
 					+ " inner join tbproduto as p on p.idProduto=fp.idProduto inner join tbfornecedor as f"
 					+ " on f.idFornecedor=p.idFornecedor where f.nomeFantasia=?";
 		}
@@ -95,11 +96,13 @@ public class FarmaciaProdutoDAOImpl implements FarmaciaProdutoDAO{
 			Connection con = ConnectionManager.getInstance().getConnection();
 			//String sql = "SELECT * from tbcliente where cpf like ?";
 			PreparedStatement stmt = con.prepareStatement(sql);
-			stmt.setString(1, "%" + cont + "%");
+			//stmt.setString(1, "%" + cont + "%");
+			stmt.setString(1, cont);
 			ResultSet  rs = stmt.executeQuery();		
 			while(rs.next()) {
 				FarmaciaProduto fp = new FarmaciaProduto();
-				fp.setFarmacia(fdi.pesquisarFarmacia(rs.getInt("idFarmacia")));
+				//fp.setFarmacia(fdi.pesquisarFarmacia(rs.getInt("idFarmacia")));
+				fp.setIdFarmaciaProd(rs.getInt("idFarmaciaProduto"));
 				fp.setGrupo(gdi.pesquisarPorGrupo(rs.getInt("idGrupo")));
 				fp.setSessao(sdi.pesquisarPorSessao(rs.getInt("idSecao")));
 				fp.setPreco(rs.getDouble("precoUnit"));
