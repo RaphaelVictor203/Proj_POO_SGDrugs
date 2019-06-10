@@ -203,4 +203,29 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 		}
 	}
 
+
+	@Override
+	public Fornecedor pesquisarPorFornecedor(int id) throws DAOException {
+		Fornecedor fr = new Fornecedor();
+		EnderecoDAOImpl edi = new EnderecoDAOImpl();
+		try {
+			Connection con = ConnectionManager.getInstance().getConnection();
+			String sql = "SELECT * from tbfornecedor where idFornecedor=?";
+			PreparedStatement stmt = con.prepareStatement(sql);
+			stmt.setLong(1, id);
+			ResultSet  rs = stmt.executeQuery();		
+			while(rs.next()) {
+				fr.setNome_fantasia(rs.getString("nomeFantasia"));
+				fr.setCnpj(rs.getLong("cnpj"));
+				fr.setTelefone(rs.getLong("telefone"));
+				fr.setEndereco(edi.pesquisarEnderecoFornecedor(rs.getInt("cnpj")));
+			}
+		} catch (SQLException e) {
+			System.out.println("Erro de conexão no banco de dados");
+			e.printStackTrace();
+			throw new DAOException(e);
+		}
+		return fr;
+	}
+
 }

@@ -109,4 +109,24 @@ public class GrupoDAOImpl implements GrupoDAO {
 		return lista;
 	}
 
+	@Override
+	public Grupo pesquisarPorGrupo(int id) throws DAOException {
+		Grupo g = null;
+		try {
+			Connection con = ConnectionManager.getInstance().getConnection();
+			String sql = "SELECT * from tbgrupo where idGrupo=?";
+			PreparedStatement stmt = con.prepareStatement(sql);
+			stmt.setString(1, "%" + id + "%");
+			ResultSet  rs = stmt.executeQuery();		
+			while(rs.next()) {
+				g = new Grupo(rs.getInt("idSecao"), rs.getString("descSecao"));
+			}
+		} catch (SQLException e) {
+			System.out.println("Erro de conexão no banco de dados");
+			e.printStackTrace();
+			throw new DAOException(e);
+		}
+		return g;
+	}
+
 }

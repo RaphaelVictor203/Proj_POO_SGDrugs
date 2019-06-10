@@ -156,4 +156,28 @@ public class FarmaciaDAOImpl implements FarmaciaDAO{
 		}
 	}
 
+	@Override
+	public Farmacia pesquisarFarmacia(int id) throws DAOException {
+		EnderecoDAOImpl edi = new EnderecoDAOImpl();
+		Farmacia frm = new Farmacia();
+		try {
+			Connection con = ConnectionManager.getInstance().getConnection();
+			String sql = "SELECT * from tbfarmacia where idFarmacia=?";
+			PreparedStatement stmt = con.prepareStatement(sql);
+			stmt.setLong(1, id );
+			ResultSet  rs = stmt.executeQuery();	
+			while(rs.next()) {
+				frm.setId(rs.getInt("idFarmacia"));
+				frm.setUnidade(rs.getString("unidade"));
+				frm.setStatus(rs.getString("statusFarmacia"));
+				frm.setEndereco(edi.pesquisarEnderecoFarmacia(rs.getInt("idFarmacia")));
+			}			
+		} catch (SQLException e) {
+			System.out.println("Erro de conexão no banco de dados");
+			e.printStackTrace();
+			throw new DAOException(e);
+		}
+		return frm;
+	}
+
 }

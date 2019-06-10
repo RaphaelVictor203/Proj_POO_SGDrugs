@@ -4,6 +4,7 @@ import javafx.scene.control.Button;
 
 public class FarmaciaProduto {
 
+	private int idFarmaciaProd;
 	private Produto produto;
 	private Grupo grupo;
 	private Sessao sessao;
@@ -19,8 +20,16 @@ public class FarmaciaProduto {
 		this.farmacia = new Farmacia();
 		this.btnExcluir = new Button("Excluir");
 		this.btnIsencao = new Button("SUS");
-	}	
+	}
 	
+	public int getIdFarmaciaProd() {
+		return idFarmaciaProd;
+	}
+
+	public void setIdFarmaciaProd(int idFarmaciaProd) {
+		this.idFarmaciaProd = idFarmaciaProd;
+	}
+
 	public Sessao getSessao() {
 		return sessao;
 	}

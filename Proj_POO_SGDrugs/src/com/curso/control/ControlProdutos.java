@@ -10,6 +10,8 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import com.curso.dao.DAOException;
+import com.curso.dao.ProdutoDAOImp;
 import com.curso.entity.Cliente;
 import com.curso.entity.FarmaciaProduto;
 import com.curso.entity.Fornecedor;
@@ -30,6 +32,8 @@ public class ControlProdutos {
 	private ObservableList<Produto> dataListProds = FXCollections.observableArrayList();
 
 	private String arquivo = "Produtos.txt";
+	
+	private ProdutoDAOImp pdi = new ProdutoDAOImp();
 
 	public ControlProdutos() {
 		
@@ -113,7 +117,13 @@ public class ControlProdutos {
 
 	public void attTableProds() {
 		this.dataListProds.clear();
-		this.dataListProds.addAll(ltProdutos);
+		//this.dataListProds.addAll(ltProdutos);
+		try {
+			this.dataListProds.addAll(pdi.consultarProdutosCad());
+		} catch (DAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

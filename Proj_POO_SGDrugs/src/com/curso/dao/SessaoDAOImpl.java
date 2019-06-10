@@ -111,4 +111,24 @@ public class SessaoDAOImpl implements SessaoDAO {
 		return lista;
 	}
 
+	@Override
+	public Sessao pesquisarPorSessao(int id) throws DAOException {
+		Sessao s = null;
+		try {
+			Connection con = ConnectionManager.getInstance().getConnection();
+			String sql = "SELECT * from tbsecao where idSecao=?";
+			PreparedStatement stmt = con.prepareStatement(sql);
+			stmt.setString(1, "%" + id + "%");
+			ResultSet  rs = stmt.executeQuery();		
+			while(rs.next()) {
+				s = new Sessao(rs.getInt("idSecao"), rs.getString("descSecao"));
+			}
+		} catch (SQLException e) {
+			System.out.println("Erro de conexão no banco de dados");
+			e.printStackTrace();
+			throw new DAOException(e);
+		}
+		return s;
+	}
+
 }

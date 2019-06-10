@@ -341,7 +341,7 @@ public class TelaFarmaciaProduto extends Application implements EventHandler<Mou
 		tblFarmaciaProd.setItems(cfp.getDataListProdFarm());
 		
 		TableColumn<FarmaciaProduto, Number> id_produto = new TableColumn<>("ID produto");
-		id_produto.setCellValueFactory(item -> new ReadOnlyIntegerWrapper(item.getValue().getProduto().getId_produto()));
+		id_produto.setCellValueFactory(item -> new ReadOnlyIntegerWrapper(item.getValue().getIdFarmaciaProd()));
 		
 		TableColumn<FarmaciaProduto, String> categoria = new TableColumn<>("Categoria");
 		categoria.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getProduto().getCategoria()));
@@ -369,7 +369,8 @@ public class TelaFarmaciaProduto extends Application implements EventHandler<Mou
 			final int l = i;
 
 			tblFarmaciaProd.getItems().get(i).getBtnExcluir().setOnAction(e -> {
-				cfp.removerProdutoFarm(cfp.pesquisarFarmaciaProd(tblFarmaciaProd.getItems().get(l).getProduto().getId_produto()));
+				cfp.removerProdutoFarm(cfp.pesquisarFarmaciaProd(tblFarmaciaProd.getItems().get(l).getIdFarmaciaProd()));
+				cfp.attTableProdutoFarm();
 				setFunctionProdFarmButtons();
 			});
 		}
