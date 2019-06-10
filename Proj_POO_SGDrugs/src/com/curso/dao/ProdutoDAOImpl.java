@@ -78,16 +78,17 @@ public class ProdutoDAOImpl implements ProdutoDAO {
 	public Produto consultarProduto(int id) throws DAOException {
 		FornecedorDAOImpl fdi = new FornecedorDAOImpl();
 		Produto p = new Produto();
-		String sql = "select * from tbproduto;";
+		String sql = "select * from tbproduto where idProduto=?";
 		try {		
 			Connection con = ConnectionManager.getInstance().getConnection();
 			PreparedStatement stmt = con.prepareStatement(sql);
+			stmt.setInt(1, id);
 			ResultSet  rs = stmt.executeQuery();
 			while (rs.next()) { 
 				p.setId_produto(rs.getInt("idProduto"));
 				p.setNome(rs.getString("descricao"));
 				p.setFornecedor(fdi.pesquisarPorFornecedor(rs.getInt("idFornecedor")));
-				p.setCategoria("categoria");
+				p.setCategoria(rs.getString("categoria"));
 			}
 		} catch (SQLException e) {
 			System.out.println("Erro de conexão no banco de dados");

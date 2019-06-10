@@ -57,11 +57,18 @@ public class ControlProdutos {
 	}
   
 	public Produto selecionarProduto(int id) {
-		for(Produto p : ltProdutos) {
+		try {
+			return produtoDAO.consultarProduto(id);
+		} catch (DAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		/*for(Produto p : ltProdutos) {
 			if(p.getId_produto() == id) {
 				return p;
 			}
 		}
+		return null;*/
 		return null;
 	}
 	

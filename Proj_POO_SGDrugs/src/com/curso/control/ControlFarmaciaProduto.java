@@ -69,7 +69,7 @@ public class ControlFarmaciaProduto {
 	
 	public void pesquisarFarmaciaProd(String cont, String tipo) {
 		this.dataListProdFarm.clear();
-		for(FarmaciaProduto fp : listaProdFarm) {
+		/*for(FarmaciaProduto fp : listaProdFarm) {
 			if(tipo.equals("NOME")) {
 				if(fp.getProduto().getNome().equals(cont)) {
 					dataListProdFarm.add(fp);
@@ -84,9 +84,9 @@ public class ControlFarmaciaProduto {
 					dataListProdFarm.add(fp);
 				}
 			}
-		}
+		}*/
 		try {
-			fpdi.pesquisarFarmaciaProduto(cont, tipo);
+			dataListProdFarm.addAll(fpdi.pesquisarFarmaciaProduto(cont, tipo));
 		} catch (DAOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
