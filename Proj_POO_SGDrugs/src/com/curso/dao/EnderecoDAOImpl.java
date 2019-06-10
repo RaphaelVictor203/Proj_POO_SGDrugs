@@ -139,4 +139,56 @@ public class EnderecoDAOImpl implements EnderecoDAO{
 		}
 	}
 
+	@Override
+	public Endereco pesquisarEnderecoFornecedor(long cnpj) throws DAOException {
+		Endereco end = new Endereco();
+		try {
+			Connection con = ConnectionManager.getInstance().getConnection();
+			String sql = "SELECT e.cep, e.rua, e.numero, e.bairro, e.cidade, e.estado from tbendereco as e"
+					+ " inner join tbfornecedor as f on f.idEndereco=e.idEndereco where f.cnpj like ?";
+			PreparedStatement stmt = con.prepareStatement(sql);
+			stmt.setString(1, "%" + cnpj + "%");
+			ResultSet  rs = stmt.executeQuery();
+			while(rs.next()) {
+				end.setCep(Integer.toString(rs.getInt("cep")));
+				end.setRua(rs.getString("rua"));
+				end.setNumero(rs.getInt("numero"));
+				end.setBairro(rs.getString("Bairro"));
+				end.setCidade(rs.getString("estado"));
+				end.setUf(rs.getString("cidade"));
+			}
+		} catch (SQLException e) {
+			System.out.println("Erro de conexão no banco de dados");
+			e.printStackTrace();
+			throw new DAOException(e);
+		}
+		return end;
+	}
+
+	@Override
+	public Endereco pesquisarEnderecoFarmacia(int id) throws DAOException {
+		Endereco end = new Endereco();
+		try {
+			Connection con = ConnectionManager.getInstance().getConnection();
+			String sql = "SELECT e.cep, e.rua, e.numero, e.bairro, e.cidade, e.estado from tbendereco as e"
+					+ " inner join tbfarmacia as f on f.idEndereco=e.idEndereco where f.idFarmacia like ?";
+			PreparedStatement stmt = con.prepareStatement(sql);
+			stmt.setString(1, "%" + id + "%");
+			ResultSet  rs = stmt.executeQuery();
+			while(rs.next()) {
+				end.setCep(Integer.toString(rs.getInt("cep")));
+				end.setRua(rs.getString("rua"));
+				end.setNumero(rs.getInt("numero"));
+				end.setBairro(rs.getString("Bairro"));
+				end.setCidade(rs.getString("estado"));
+				end.setUf(rs.getString("cidade"));
+			}
+		} catch (SQLException e) {
+			System.out.println("Erro de conexão no banco de dados");
+			e.printStackTrace();
+			throw new DAOException(e);
+		}
+		return end;
+	}
+
 }

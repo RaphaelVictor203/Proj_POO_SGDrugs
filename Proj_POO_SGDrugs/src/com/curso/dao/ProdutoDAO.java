@@ -9,5 +9,5 @@ public interface ProdutoDAO {
 	List<Produto> consultarProduto(String desc) throws DAOException;
 	void alterarProduto(Produto p) throws DAOException;
 	void excluirProduto(Produto p) throws DAOException;
-	
+	Produto consultarProduto(int d) throws DAOException;
 }

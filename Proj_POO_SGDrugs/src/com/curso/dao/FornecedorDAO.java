@@ -6,9 +6,13 @@ import com.curso.entity.Fornecedor;
 
 
 public interface FornecedorDAO {
+	
 	void inserir(Fornecedor fornecedor) throws DAOException ;
-	Fornecedor pesquisarPorFornecedor(long cpf) throws DAOException ;
-	List<Fornecedor> pesquisarPorFornecedor(String nome, long Cnpj, String uf, String cidade) throws DAOException;
+	Fornecedor pesquisarPorFornecedor(long cnpj) throws DAOException ;
+	List<Fornecedor> pesquisarPorFornecedor(String nome) throws DAOException;
+	Fornecedor pesquisarPorFornecedor(int id) throws DAOException;
 	void alterar(Fornecedor fornecedor) throws DAOException ;
-	void remover(long cpf) throws DAOException ;
+	void remover(long cnpj) throws DAOException ;
+	
+	
 }

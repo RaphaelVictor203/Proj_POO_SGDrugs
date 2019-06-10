@@ -14,24 +14,36 @@ import com.curso.entity.Farmacia;
 import com.curso.entity.ProblemaSaude;
 
 public class FornecedorDAOImpl implements FornecedorDAO{
+	
 	EnderecoDAOImpl edi = new EnderecoDAOImpl();
+	FarmaciaDAOImpl far = new FarmaciaDAOImpl();
 	
 	@Override
 	public void inserir(Fornecedor fr) throws DAOException {
 		try {
-			int idEndereco = 0;
+			System.out.println(edi.pesquisarEndereco(fr.getEndereco().getCep(), fr.getEndereco().getNumero(), fr.getEndereco().getRua(), fr.getEndereco().getBairro()).size());
+			Endereco ed = null;
+			edi.inserir(fr.getEndereco());
+			System.out.println(fr.getEndereco().getCep() + " - " + fr.getEndereco().getNumero() + " - " + fr.getEndereco().getRua() + " - " + fr.getEndereco().getBairro());
+			ed = edi.pesquisarEndereco(fr.getEndereco().getCep(), fr.getEndereco().getNumero(), fr.getEndereco().getRua(), fr.getEndereco().getBairro()).get(0);
+			
+			System.out.println(edi.pesquisarEndereco(fr.getEndereco().getCep(), fr.getEndereco().getNumero(), fr.getEndereco().getRua(), fr.getEndereco().getBairro()).size());
+			Farmacia fa = null;
+			far.inserir(fr.getFarmacia());
+			System.out.println(fr.getFarmacia().getEndereco()+ " - " + fr.getFarmacia().getUnidade() + " - " + fr.getFarmacia().getStatus());
+			fa = far.pesquisarFarmaciaFornecedor(fr.getCnpj());
+			
 			Connection con = ConnectionManager.getInstance().getConnection();
 			String sql = "INSERT INTO tbFornecedor "
-					+ "(nome_fantasia,cnpj,telefone,farmacia,id_endereco) "
-					+ " VALUES (?, ?, ?, ?)";
+					+ "(nome_fantasia,cnpj,telefone,id_farmacia,id_endereco) "
+					+ " VALUES (?, ?, ?, ?, ?)";
 			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setString(1, fr.getNome_fantasia());
 			stmt.setLong(2, fr.getCnpj());
 			stmt.setLong(3, fr.getTelefone());
-			stmt.setString(4, fr.getFarmacia().getUnidade());
-			stmt.setInt(5, idEndereco);
+			stmt.setInt(4, fa.getId());
+			stmt.setInt(5, ed.getIdEndereco());
 			stmt.executeUpdate();
-			edi.inserir(fr.getEndereco());
 			con.close();
 		} catch (SQLException e) {
 			System.out.println("Erro de conexão no banco de dados");
@@ -46,17 +58,35 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 		Fornecedor fr = new Fornecedor();
 		try {
 			Connection con = ConnectionManager.getInstance().getConnection();
-			//String sql = "SELECT * from tbFornecedor where cnpj like ?";
-			String sql = "SELECT c.nome, c.cnpj, c.rg, c.sexo, c.telefone, c.email, c.cartaoSus, e.idEndereco, e.CEP, e.numero,"
-					+ "e.rua, e.bairro, e.cidade, e.UF from tbFornecedor as c "
-					+ "inner join tbendereco as e on e.idEndereco=c.idEndereco where c.cnpj like ?";
+			String sql = "SELECT f.idFornecedor,f.nomeFantasia,f.telefone,f.cnpj,cf.idFarmacia,"
+					+ " efrm.idEndereco idEndFarm, efrm.cep cepFarm, efrm.numero numFarm, efrm.rua ruaFarm,"
+					+ " efrm.bairro bairroFarm, efrm.cidade cidadeFarm, efrm.uf ufFarm,"
+					+ " e.idEndereco,e.cep,e.numero,e.rua,e.bairro,e.cidade,e.uf"
+					+ " from tbFornecedor f inner join tbendereco e on e.idEndereco=f.idEndereco"
+					+ " inner join tbConjFornecedor cf on cf.idFornecedor = f.idFornecedor"
+					+ " inner join tbFarmacia fr on fr.idFarmacia = cf.idFarmacia"
+					+ " inner join tbEndereco efrm on efrm.idEndereco = fr.idEndereco"
+					+ " where f.cnpj = ?";
 			PreparedStatement stmt = con.prepareStatement(sql);
-			stmt.setString(1, "%" + cnpj + "%");
+			stmt.setLong(1, cnpj );
 			ResultSet  rs = stmt.executeQuery();		 
-			fr.setNome_fantasia(rs.getString("nome_fantasia"));
+			fr.setNome_fantasia(rs.getString("nomeFantasia"));
 			fr.setCnpj(rs.getLong("cnpj"));
 			fr.setTelefone(rs.getLong("telefone"));
-			fr.setFarmacia(new Farmacia(rs.getString("farmacia")));
+
+			Farmacia frm = new Farmacia();
+			frm.setId(rs.getInt("idFarmacia"));
+			Endereco endFarm = new Endereco();
+			endFarm.setIdEndereco(rs.getInt("idEndFarm"));
+			endFarm.setCep(rs.getString("cepFarm"));
+			endFarm.setNumero(rs.getInt("numFarm"));
+			endFarm.setRua(rs.getString("ruaFarm"));
+			endFarm.setBairro(rs.getString("bairroFarm"));
+			endFarm.setCidade(rs.getString("cidadeFarm"));
+			endFarm.setUf(rs.getString("ufFarm"));
+			frm.setEndereco(endFarm);
+			fr.setFarmacia(frm);
+			
 			Endereco end = new Endereco();
 			end.setIdEndereco(rs.getInt("idEndereco"));
 			end.setCep(rs.getString("cep"));
@@ -66,6 +96,7 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 			end.setCidade(rs.getString("cidade"));
 			end.setUf(rs.getString("UF"));
 			fr.setEndereco(end);
+			
 		} catch (SQLException e) {
 			System.out.println("Erro de conexão no banco de dados");
 			e.printStackTrace();
@@ -75,32 +106,41 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 	}
 
 	@Override
-	public List<Fornecedor> pesquisarPorFornecedor(String nome, long Cnpj, String uf, String cidade) throws DAOException {
+	public List<Fornecedor> pesquisarPorFornecedor(String nome) throws DAOException {
 		List<Fornecedor> lista = new ArrayList<>();
-		String sql = "";
-		
-		/*if(tipo.equals("CIDADE")) {
-			sql = "SELECT c.nome, c.cnpj, c.rg, c.sexo, c.telefone, c.email, c.cartaoSus, e.idEndereco, e.CEP, e.numero,"
-					+ "e.rua, e.bairro, e.cidade, e.UF from tbFornecedor as c "
-					+ "inner join tbendereco as e on e.idEndereco=c.idEndereco where e.cidade like ?";
-			
-		}else {
-			sql = "SELECT c.nome, c.cnpj, c.rg, c.sexo, c.telefone, c.email, c.cartaoSus, e.idEndereco, e.CEP, e.numero,"
-					+ "e.rua, e.bairro, e.cidade, e.UF from tbFornecedor as c "
-					+ "inner join tbendereco as e on e.idEndereco=c.idEndereco where c.nome like ?";
-		}*/
+		String sql = "SELECT f.idFornecedor,f.nomeFantasia,f.telefone,f.cnpj,cf.idFarmacia,"
+				+ " efrm.idEndereco idEndFarm, efrm.cep cepFarm, efrm.numero numFarm, efrm.rua ruaFarm,"
+				+ " efrm.bairro bairroFarm, efrm.cidade cidadeFarm, efrm.uf ufFarm,"
+				+ " e.idEndereco,e.cep,e.numero,e.rua,e.bairro,e.cidade,e.uf"
+				+ " from tbFornecedor f inner join tbendereco e on e.idEndereco=f.idEndereco"
+				+ " inner join tbConjFornecedor cf on cf.idFornecedor = f.idFornecedor"
+				+ " inner join tbFarmacia fr on fr.idFarmacia = cf.idFarmacia"
+				+ " inner join tbEndereco efrm on efrm.idEndereco = fr.idEndereco"
+				+ " where f.nomeFantasia like ?";
 		try {		
 			Connection con = ConnectionManager.getInstance().getConnection();
 			PreparedStatement stmt = con.prepareStatement(sql);
+			stmt.setString(1, "%" + nome + "%");
 			ResultSet  rs = stmt.executeQuery();
 			while (rs.next()) { 
 				Fornecedor fr = new Fornecedor();
-				fr.setNome_fantasia(rs.getString("nome_fantasia"));
+				fr.setNome_fantasia(rs.getString("nomeFantasia"));
 				fr.setCnpj(rs.getLong("cnpj"));
 				fr.setTelefone(rs.getLong("telefone"));
-				//Farmacia frm = new Farmacia();
-				//frm.setId(rs.getInt("id_farmacia"));
-				//fr.setFarmacia(frm);
+
+				Farmacia frm = new Farmacia();
+				frm.setId(rs.getInt("idFarmacia"));
+				Endereco endFarm = new Endereco();
+				endFarm.setIdEndereco(rs.getInt("idEndFarm"));
+				endFarm.setCep(rs.getString("cepFarm"));
+				endFarm.setNumero(rs.getInt("numFarm"));
+				endFarm.setRua(rs.getString("ruaFarm"));
+				endFarm.setBairro(rs.getString("bairroFarm"));
+				endFarm.setCidade(rs.getString("cidadeFarm"));
+				endFarm.setUf(rs.getString("ufFarm"));
+				frm.setEndereco(endFarm);
+				fr.setFarmacia(frm);
+				
 				Endereco end = new Endereco();
 				end.setIdEndereco(rs.getInt("idEndereco"));
 				end.setCep(rs.getString("cep"));
@@ -110,7 +150,6 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 				end.setCidade(rs.getString("cidade"));
 				end.setUf(rs.getString("UF"));
 				fr.setEndereco(end);
-
 				lista.add(fr);
 			}
 		} catch (SQLException e) {
@@ -127,15 +166,17 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 		try {
 			Connection con = ConnectionManager.getInstance().getConnection();
 			String sql = "update tbFornecedor "
-					+ "set nome_fantasia=?, cnpj=? "
+					+ "set nomeFantasia=?, telefone=?"
 					+ " where cnpj=?";
 			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setString(1, Fornecedor.getNome_fantasia());
-			stmt.setLong(2, Fornecedor.getCnpj());
-
+			stmt.setLong(2,Fornecedor.getTelefone());
+			stmt.setLong(4, Fornecedor.getCnpj());
+			
 			stmt.executeUpdate();
 			con.close();
 			edi.alterar(Fornecedor.getEndereco());
+			far.alterar(Fornecedor.getFarmacia());
 		} catch (SQLException e) {
 			System.out.println("Erro de conexão no banco de dados");
 			e.printStackTrace();
@@ -149,6 +190,7 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 		try {
 			Fornecedor fr = pesquisarPorFornecedor(cnpj);
 			edi.remover(fr.getEndereco());
+			far.remover(fr.getFarmacia());
 			Connection con = ConnectionManager.getInstance().getConnection();
 			String sql = "delete from tbFornecedor "
 					+ " where cnpj=?";
@@ -161,6 +203,31 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 			e.printStackTrace();
 			throw new DAOException(e);
 		}
+	}
+
+
+	@Override
+	public Fornecedor pesquisarPorFornecedor(int id) throws DAOException {
+		Fornecedor fr = new Fornecedor();
+		EnderecoDAOImpl edi = new EnderecoDAOImpl();
+		try {
+			Connection con = ConnectionManager.getInstance().getConnection();
+			String sql = "SELECT * from tbfornecedor where idFornecedor=?";
+			PreparedStatement stmt = con.prepareStatement(sql);
+			stmt.setLong(1, id);
+			ResultSet  rs = stmt.executeQuery();		
+			while(rs.next()) {
+				fr.setNome_fantasia(rs.getString("nomeFantasia"));
+				fr.setCnpj(rs.getLong("cnpj"));
+				fr.setTelefone(rs.getLong("telefone"));
+				fr.setEndereco(edi.pesquisarEnderecoFornecedor(rs.getInt("idEndereco")));
+			}
+		} catch (SQLException e) {
+			System.out.println("Erro de conexão no banco de dados");
+			e.printStackTrace();
+			throw new DAOException(e);
+		}
+		return fr;
 	}
 
 }

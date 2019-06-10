@@ -79,11 +79,11 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 		
 		txtNome = new TextField();
 		cmbFarmacia = new ComboBox<>(FXCollections.observableArrayList(
-				new Farmacia ("Unidae Leste"),
-				new Farmacia ("Unidae Sul"),
-				new Farmacia ("Unidae Norte"),
-				new Farmacia ("Unidae Oeste"),
-				new Farmacia ("Unidae Sudeste")
+				new Farmacia (),
+				new Farmacia (),
+				new Farmacia (),
+				new Farmacia (),
+				new Farmacia ()
 				)) ;
 		cmbDia = new ComboBox<String>(FXCollections.observableArrayList(cc.gerarArrayNum(1, 31)));
 		cmbDia.setPromptText("Dia");
@@ -217,7 +217,8 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 		StackPane painels = new StackPane(painelMant, painelCad);
 		pane.setCenter(painels);
 		
-		Scene scene = new Scene(pane, 1100,600);
+		stage.setMaximized(true);
+		Scene scene = new Scene(pane, stage.getWidth(),stage.getHeight());
 		stage.setScene(scene);
 		stage.setTitle("Manter Funcionarios");
 		stage.show();
@@ -637,7 +638,5 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 		}
 		return isValid;
 	}
-
-
 
 }

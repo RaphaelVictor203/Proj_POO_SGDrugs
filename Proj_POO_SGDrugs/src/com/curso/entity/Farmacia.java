@@ -3,21 +3,16 @@ package com.curso.entity;
 public class Farmacia {
 
 	private int id;
-
+	private String Unidade;
+	private Endereco endereco;
+	private String status;
+	
 	public String getUnidade() {
 		return Unidade;
 	}
 
 	public void setUnidade(String unidade) {
 		Unidade = unidade;
-	}
-
-	private String Unidade;
-	private Endereco endereco;
-	private boolean status;
-
-	public Farmacia(String _unidade) {
-		this.Unidade = _unidade;
 	}
 
 	public int getId() {
@@ -36,18 +31,13 @@ public class Farmacia {
 		this.endereco = endereco;
 	}
 
-	public boolean isStatus() {
+
+	public String getStatus() {
 		return status;
 	}
 
-	public void setStatus(boolean status) {
+	public void setStatus(String status) {
 		this.status = status;
-	}
-
-	@Override
-	public String toString() {
-
-		return getUnidade();
 	}
 
 }

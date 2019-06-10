@@ -58,8 +58,12 @@ public class ControlProdutos {
 			obsProdutos.addAll(produtoDAO.consultarProduto(desc));
 	
 	}
-
 	
+	public void PesquisarProduto(int id) throws DAOException{
+			obsProdutos.clear();
+			obsProdutos.addAll(produtoDAO.consultarProduto(id));
+	}
+
 	
 	public Produto selecionarProduto(int id) {
 		for(Produto p : ltProdutos) {
