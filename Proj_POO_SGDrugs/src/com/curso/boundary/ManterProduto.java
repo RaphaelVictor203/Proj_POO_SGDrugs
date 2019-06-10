@@ -11,7 +11,7 @@ import javax.swing.JOptionPane;
 import com.curso.control.ControlProdutos;
 import com.curso.dao.DAOException;
 import com.curso.dao.ProdutoDAO;
-import com.curso.dao.ProdutoDAOImp;
+import com.curso.dao.ProdutoDAOImpl;
 import com.curso.entity.Fornecedor;
 import com.curso.entity.Produto;
 import com.sun.xml.internal.ws.api.pipe.ThrowableContainerPropertySet;
@@ -25,6 +25,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -65,9 +66,9 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 	private TableView<Produto> CAD_tblProdutos;
 	private TableView<Produto> CTR_tblProdutos;
 	private Button btnPrimeiro, btnAnterior, btnProximo, btnUltimo;
-	private ProdutoDAOImp dao = new ProdutoDAOImp();
 
-	ControlProdutos cp = new ControlProdutos();
+	private ProdutoDAOImpl dao = new ProdutoDAOImpl();
+	private ControlProdutos cp = new ControlProdutos();
 
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -233,19 +234,21 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 
 		CAD_btnInserir.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
 		CAD_btnCancelar.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
+		CAD_btnPesquisar.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
 		CAD_btnProdutos.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
 		CTR_btnProdutos.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
-
+		CTR_btnPesquisar.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
+	
 		loadstyles();
 		btnSelected(0);
 
 	}
 
 	@SuppressWarnings("unchecked")
-	public void loadtableInsert() {
+	public void loadtableInsert() throws DAOException {
 
 		cp = new ControlProdutos();
-
+		
 		TableColumn<Produto, Number> id_produto = new TableColumn<>("ID");
 		id_produto.setCellValueFactory(item -> new ReadOnlyIntegerWrapper(item.getValue().getId_produto()));
 
@@ -257,13 +260,12 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 		categoria_produto.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getCategoria()));
 		categoria_produto.setPrefWidth(180);
 
-		TableColumn<Produto, String> fornecedor_produto = new TableColumn<>("Fornecedor");
-		fornecedor_produto
-				.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getFornecedor().toString()));
-		fornecedor_produto.setPrefWidth(150);
+		/*TableColumn<Produto, String> fornecedor_produto = new TableColumn<>("Fornecedor");
+		fornecedor_produto.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getFornecedor().getNome_fantasia()));
+		fornecedor_produto.setPrefWidth(150);*/
 
 		CAD_tblProdutos.setItems(cp.getGetListProdutos());
-		CAD_tblProdutos.getColumns().addAll(id_produto, desc_produto, categoria_produto, fornecedor_produto);
+		CAD_tblProdutos.getColumns().addAll(id_produto, desc_produto, categoria_produto);
 
 	}
 
@@ -281,13 +283,12 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 		categoria_produto.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getCategoria()));
 		categoria_produto.setPrefWidth(230);
 
-		TableColumn<Produto, String> fornecedor_produto = new TableColumn<>("Fornecedor");
-		fornecedor_produto
-				.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getFornecedor().toString()));
-		fornecedor_produto.setPrefWidth(230);
+		/*TableColumn<Produto, Number> fornecedor_produto = new TableColumn<>("Fornecedor");
+		fornecedor_produto.setCellValueFactory(item -> new ReadOnlyIntegerWrapper(item.getValue().getFornecedor().getID()));
+		fornecedor_produto.setPrefWidth(230);*/
 
+		CTR_tblProdutos.getColumns().addAll(id_produto, desc_produto, categoria_produto);
 		CTR_tblProdutos.setItems(cp.getGetListProdutos());
-		CTR_tblProdutos.getColumns().addAll(id_produto, desc_produto, categoria_produto, fornecedor_produto);
 
 	}
 
@@ -359,16 +360,20 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 	public List<Fornecedor> adicionarFornecedor(List<Fornecedor> fornecedores) {
 
 		Fornecedor fornecedor1 = new Fornecedor();
-		fornecedor1.setNome_fantasia("Jequiti");
+		fornecedor1.setID(1);
+		fornecedor1.setNome_fantasia("Drogasil");
 
 		Fornecedor fornecedor2 = new Fornecedor();
-		fornecedor2.setNome_fantasia("Ultrafarma");
+		fornecedor2.setID(2);
+		fornecedor2.setNome_fantasia("Drogaria SP");
 
 		Fornecedor fornecedor3 = new Fornecedor();
-		fornecedor3.setNome_fantasia("Drogaria SP");
+		fornecedor3.setID(3);
+		fornecedor3.setNome_fantasia("Ultrafarma");
 
 		Fornecedor fornecedor4 = new Fornecedor();
-		fornecedor4.setNome_fantasia("Drogasil");
+		fornecedor4.setID(4);
+		fornecedor4.setNome_fantasia("Jequiti");
 
 		fornecedores.add(0, fornecedor1);
 		fornecedores.add(1, fornecedor2);
@@ -384,7 +389,7 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 	}
 
 	@Override
-	public void handle(MouseEvent event)  {
+	public void handle(MouseEvent event) {
 
 		if (event.getSource() == CAD_btnProdutos) {
 			CAD_painelProdutos.toFront();
@@ -393,36 +398,45 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 			CTR_painelProdutos.toFront();
 			btnSelected(1);
 		}
-		if (event.getSource() == CAD_btnCancelar) {
+		 if (event.getSource() == CAD_btnCancelar) {
 			resetarCampos();
 		}
-
-		if (event.getSource() == CAD_btnInserir) {
+	
+		 if (event.getSource() == CAD_btnInserir) {
 
 			Produto produto = new Produto();
 
 			produto.setNome(CAD_txtDescricao.getText());
-			produto.setCategoria(CAD_cmbCategoria.getSelectionModel().getSelectedItem().toString());
+			produto.setCategoria(CAD_cmbCategoria.getSelectionModel().getSelectedItem());
 			produto.setFornecedor(CAD_cmbFornecedor.getSelectionModel().getSelectedItem());
-			produto.getFornecedor().setID(1);
 
 			if (CAD_txtDescricao.getText() == "" || CAD_cmbCategoria.getSelectionModel().getSelectedIndex() == -1) {
+
 				JOptionPane.showMessageDialog(null, "Complete todos os Campos", "Erro", JOptionPane.ERROR_MESSAGE);
+
 			} else {
 
-					try {
-						dao.inserirProduto(produto);
-						JOptionPane.showMessageDialog(null,
-								"Um Novo Produto foi adicionado: " + "\nDescrição: " + produto.getNome() + "\nCategoria: "
-										+ produto.getCategoria() + "\nFornecedor: " + produto.getFornecedor(),
-								"Opração Efetuada com Exito!", JOptionPane.INFORMATION_MESSAGE);
-						resetarCampos();
-					} catch (DAOException e) {
-						e.printStackTrace();
-					}
-					
-				
+				try {
 
+					cp.AdicionarProduto(produto);
+					JOptionPane.showMessageDialog(null,
+							"Um Novo Produto foi adicionado: " + "\nDescrição: " + produto.getNome() + "\nCategoria: "
+							 + produto.getCategoria() + "\nFornecedor: " + produto.getFornecedor(),
+							"Opração Efetuada com Exito!", JOptionPane.INFORMATION_MESSAGE);
+					resetarCampos();
+				} catch (DAOException e) {
+					e.printStackTrace();
+				
+				}
+			}
+		}
+		if(event.getSource() == CTR_btnPesquisar) {
+			
+			try {
+				cp.PesquisarProduto(CTR_txtPesquisar.getText());
+			} catch (DAOException e) {
+				e.printStackTrace();
+				System.out.println("Erro de Conexão");
 			}
 		}
 	}
