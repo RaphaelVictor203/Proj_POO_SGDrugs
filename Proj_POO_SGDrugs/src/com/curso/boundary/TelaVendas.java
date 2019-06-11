@@ -71,6 +71,7 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 	private TextField txtDinheiro;
 	private Button btnFinalizaPOS;
 	DecimalFormat df = new DecimalFormat("#,##0.00");
+	protected Cliente cliente;
 	
 	ControlVendas cv;
 	

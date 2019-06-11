@@ -4,16 +4,19 @@ import javax.swing.JOptionPane;
 
 import com.curso.dao.ClienteDAOImpl;
 import com.curso.dao.DAOException;
+import com.curso.entity.Cliente;
 
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -187,12 +190,25 @@ public class ClientePreVendas extends Application implements EventHandler<MouseE
 		if(event.getSource()==btnPesquisar) {
 			try {
 				cc.pesquisarPorCliente(Long.parseLong(cpfCliente.getText()));
-				TelaVendas tv = new TelaVendas();
-				try {
-					tv.start(stg);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+			} catch (DAOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		if(event.getSource()==btnAvancar) {
+			try {
+				Cliente cl = cc.pesquisarPorCliente(Long.parseLong(cpfCliente.getText()));
+				if (!cl.equals(null)) {
+					TelaVendas tv = new TelaVendas();
+					try {
+						tv.cliente = cl;
+						tv.start(stg);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}else {
+					Alert a = new Alert(AlertType.INFORMATION, "Fornecedor inválido !");
+					a.show();
 				}
 			} catch (NumberFormatException e) {
 				// TODO Auto-generated catch block
@@ -201,9 +217,6 @@ public class ClientePreVendas extends Application implements EventHandler<MouseE
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}
-		if(event.getSource()==btnAvancar) {
-			JOptionPane.showMessageDialog(null, "Avançar teste!");
 		}else
 		if(event.getSource() == btnAvancarSDef) {
 			TelaVendas tv = new TelaVendas();
