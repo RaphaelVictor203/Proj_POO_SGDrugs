@@ -264,9 +264,10 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 		painelPosVenda.setStyle("-fx-background-color: rgba(105,105,105, 0.6)");
 		painelPosVenda.getChildren().addAll(hbInforsGerais, lblInformacoesGerais, hbEfetuarPagamento, lblPagamento);
 		
-		Scene scene = new Scene(pane, 1360, 700);
+		stage.setMaximized(true);
+		Scene scene = new Scene(pane, stage.getWidth(),stage.getHeight());
 		stage.setScene(scene);
-		stage.setTitle("Controle de Vendas");
+		stage.setTitle("Tela de Vendas");
 		stage.show();
 		
 		btnVenda.addEventHandler(MouseEvent.MOUSE_CLICKED, this);

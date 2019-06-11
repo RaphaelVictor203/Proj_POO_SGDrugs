@@ -3,6 +3,9 @@ package com.curso.control;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.curso.dao.DAOException;
+import com.curso.dao.FarmaciaProdutoDAO;
+import com.curso.dao.FarmaciaProdutoDAOImpl;
 import com.curso.entity.FarmaciaProduto;
 
 import javafx.collections.FXCollections;
@@ -10,6 +13,7 @@ import javafx.collections.ObservableList;
 
 public class ControlFarmaciaProduto {
 
+	private FarmaciaProdutoDAO fpdi = new FarmaciaProdutoDAOImpl();
 	private ObservableList<FarmaciaProduto> dataListProdFarm = FXCollections.observableArrayList();
 	private List<FarmaciaProduto> listaProdFarm;
 
@@ -44,21 +48,28 @@ public class ControlFarmaciaProduto {
 	}
 
 	public ObservableList<FarmaciaProduto> getDataListProdFarm() {
+		attTableProdutoFarm();
 		return dataListProdFarm;
 	}
 	
 	public FarmaciaProduto pesquisarFarmaciaProd(int id_prod) {
-		for(FarmaciaProduto fp : listaProdFarm) {
+		/*for(FarmaciaProduto fp : listaProdFarm) {
 			if(fp.getProduto().getId_produto() == id_prod) {
 				return fp;
 			}
+		}*/
+		try {
+			return fpdi.pesquisarFarmaciaProduto(id_prod);
+		} catch (DAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return null;
 	}
 	
 	public void pesquisarFarmaciaProd(String cont, String tipo) {
 		this.dataListProdFarm.clear();
-		for(FarmaciaProduto fp : listaProdFarm) {
+		/*for(FarmaciaProduto fp : listaProdFarm) {
 			if(tipo.equals("NOME")) {
 				if(fp.getProduto().getNome().equals(cont)) {
 					dataListProdFarm.add(fp);
@@ -73,12 +84,25 @@ public class ControlFarmaciaProduto {
 					dataListProdFarm.add(fp);
 				}
 			}
+		}*/
+		try {
+			dataListProdFarm.addAll(fpdi.pesquisarFarmaciaProduto(cont, tipo));
+		} catch (DAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	
 	public void removerProdutoFarm(FarmaciaProduto fp) {
+		System.out.println(fp.getIdFarmaciaProd());
 		this.listaProdFarm.remove(fp);
 		this.attTableProdutoFarm();
+		try {
+			fpdi.remover(fp.getIdFarmaciaProd());
+		} catch (DAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void attProdutoFarm(FarmaciaProduto f) {
@@ -88,18 +112,37 @@ public class ControlFarmaciaProduto {
 				this.attTableProdutoFarm();
 			}
 		}
+		try {
+			fpdi.alterar(f);
+		} catch (DAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void inserir(FarmaciaProduto fp) {
-		if(pesquisarFarmaciaProd(fp.getProduto().getId_produto()) == null) {
+		//if(pesquisarFarmaciaProd(fp.getProduto().getId_produto()) == null) {
 			this.listaProdFarm.add(fp);
-			this.attTableProdutoFarm();
-		}
+			//this.attTableProdutoFarm();
+			try {
+				fpdi.inserir(fp);
+				this.attTableProdutoFarm();
+			} catch (DAOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		//}
 	}
 	
 	public void attTableProdutoFarm() {
 		this.dataListProdFarm.clear();
-		this.dataListProdFarm.addAll(listaProdFarm);
+		//this.dataListProdFarm.addAll(listaProdFarm);
+		try {
+			this.dataListProdFarm.addAll(fpdi.pesquisarFarmaciaProdutos());
+		} catch (DAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void attTableProdutoFarm(FarmaciaProduto fp) {

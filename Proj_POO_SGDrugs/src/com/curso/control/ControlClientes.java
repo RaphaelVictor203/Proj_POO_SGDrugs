@@ -126,7 +126,7 @@ public class ControlClientes {
 		dataList.clear();
 		if(!cont.equals("")) {
 			try {
-				if(tipo.equals("CIDADE")) {
+				/*if(tipo.equals("CIDADE")) {
 					for(Cliente c : clientesCadastrados) {
 						if(c.getEnd().getCidade().contains(cont)) {
 							this.dataList.add(c);
@@ -138,7 +138,7 @@ public class ControlClientes {
 							this.dataList.add(c);
 						}
 					}
-				}
+				}*/
 				dataList.addAll(cdi.pesquisarPorCliente(cont, tipo));
 			} catch (DAOException e) {
 				// TODO Auto-generated catch block

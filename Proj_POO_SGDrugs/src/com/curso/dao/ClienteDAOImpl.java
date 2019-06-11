@@ -100,19 +100,19 @@ public class ClienteDAOImpl implements ClienteDAO{
 		
 		if(tipo.equals("CIDADE")) {
 			sql = "SELECT c.nome, c.cpf, c.rg, c.sexo, c.telefone, c.email, c.cartaoSus, e.idEndereco, e.CEP, e.numero,"
-					+ "e.rua, e.bairro, e.cidade, e.UF from tbcliente as c "
-					+ "inner join tbendereco as e on e.idEndereco=c.idEndereco where e.cidade like ?";
+					+ "e.rua, e.bairro, e.cidade, e.estado from tbcliente as c "
+					+ "inner join tbendereco as e on e.idEndereco=c.idEndereco where e.estado like ?";
 			
 		}else {
 			sql = "SELECT c.nome, c.cpf, c.rg, c.sexo, c.telefone, c.email, c.cartaoSus, e.idEndereco, e.CEP, e.numero,"
-					+ "e.rua, e.bairro, e.cidade, e.UF from tbcliente as c "
+					+ "e.rua, e.bairro, e.cidade, e.estado from tbcliente as c "
 					+ "inner join tbendereco as e on e.idEndereco=c.idEndereco where c.nome like ?";
 		}
 		try {		
 			Connection con = ConnectionManager.getInstance().getConnection();
 			PreparedStatement stmt = con.prepareStatement(sql);
+			stmt.setString(1, "%" + nome + "%");
 			ResultSet  rs = stmt.executeQuery();
-			
 			while (rs.next()) { 
 				Cliente cl = new Cliente();
 				cl.setPrimeiroNome(rs.getString("nome"));
@@ -128,8 +128,8 @@ public class ClienteDAOImpl implements ClienteDAO{
 				end.setNumero(rs.getInt("numero"));
 				end.setRua(rs.getString("rua"));
 				end.setBairro(rs.getString("bairro"));
-				end.setCidade(rs.getString("cidade"));
-				end.setUf(rs.getString("estado"));
+				end.setCidade(rs.getString("estado"));
+				end.setUf(rs.getString("cidade"));
 				cl.setEnd(end);
 				cl.setProblemasSaude(psdi.pesquisarPorProblemas(cl.getCpf()));
 				lista.add(cl);
@@ -167,8 +167,8 @@ public class ClienteDAOImpl implements ClienteDAO{
 				end.setNumero(rs.getInt("numero"));
 				end.setRua(rs.getString("rua"));
 				end.setBairro(rs.getString("bairro"));
-				end.setCidade(rs.getString("cidade"));
-				end.setUf(rs.getString("estado"));
+				end.setCidade(rs.getString("estado"));
+				end.setUf(rs.getString("cidade"));
 				cl.setEnd(end);
 				cl.setProblemasSaude(psdi.pesquisarPorProblemas(cl.getCpf()));
 				lista.add(cl);

@@ -34,14 +34,17 @@ public class ClientePreVendas extends Application implements EventHandler<MouseE
 	private Label InfoCliente,nameClient,cpfClient,idadeClient,sexClient;
 	private Label ruaClient,nClient,bairroClient;
 	private Button btnAvancarSDef;
+	
+	private Stage stg;
 	@Override
 	public void start(Stage stgPreV) throws Exception {
+		stg = stgPreV;
 		// Box REALIZAR VENDA
 		RealVendas 			= new Label("REALIZAR VENDA");
 		cpfCliente 			= new TextField();
 		cpfCliente.setPromptText("Insira o CPF do Cliente");//Funciona como um placeholder
 		btnPesquisar 		= new Button("PESQUISAR");
-		btnAvancar 			= new Button("AVANÃ‡AR");
+		btnAvancar 			= new Button("AVANÇAR");
 		InfoAvancar 		= new Label("Necessario definir um cliente");
 		// Box Info Cliente
 		InfoCliente 		= new Label("INFO. CLIENTE");
@@ -52,7 +55,7 @@ public class ClientePreVendas extends Application implements EventHandler<MouseE
 		ruaClient 			= new Label();
 		nClient 			= new Label();
 		bairroClient 		= new Label();
-		btnAvancarSDef 		= new Button("AVANÃ‡AR SEM DEFINIR CLIENTE");
+		btnAvancarSDef 		= new Button("AVANÇAR SEM DEFINIR CLIENTE");
 		// Paineis Realizar Venda, InformaÃ§Ã£o Cliente e o grid
 		panegrid 			= new GridPane();
 		PaneRV 				= new Pane();
@@ -80,8 +83,8 @@ public class ClientePreVendas extends Application implements EventHandler<MouseE
 				        	 ,new HBox(10,new Label("CPF: "),cpfClient)
 				  	         ,new HBox(10,new Label("Idade: "),idadeClient
 				  				         ,new Label(" Sexo: "),sexClient)
-				  	         ,new HBox(10,new Label("EndereÃ§o: "),ruaClient
-				  	         ,new Label(", nÂ°"),nClient
+				  	         ,new HBox(10,new Label("Endereço: "),ruaClient
+				  	         ,new Label(", N°"),nClient
 				  	         ,new Label(" "),bairroClient));
 		//IC 					= new VBox(InfoCliente,Infos,btnAvancarSDef);
 		IC 					= new GridPane();
@@ -96,15 +99,19 @@ public class ClientePreVendas extends Application implements EventHandler<MouseE
 //													FIM INFORMAÃ‡ÃƒO CLIENTE
 		
 		Styles();
-		Scene mainScene = new Scene(panegrid, 1360, 700);
+		stgPreV.setMaximized(true);
+		//Scene scene = new Scene(pane, stgPreV.getWidth(),stage.getHeight());
+		Scene mainScene = new Scene(panegrid, stgPreV.getWidth(),stgPreV.getHeight());
 		stgPreV.setScene(mainScene);
-		stgPreV.setTitle("SeleÃ§Ã£o de Cliente - PrÃ© Tela de Vendas");
+		stgPreV.setTitle("Seleção de Cliente - Pré Tela de Vendas");
 		stgPreV.show();
 		
 		RV.setPrefHeight(panegrid.getHeight());
 		RV.setPrefWidth(panegrid.getWidth() * 0.67);
 		IC.setPrefHeight(panegrid.getHeight());
 		IC.setPrefWidth(panegrid.getWidth() * 0.33);
+		
+		btnAvancarSDef.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
 
 		
 		
@@ -174,7 +181,16 @@ public class ClientePreVendas extends Application implements EventHandler<MouseE
 	@Override
 	public void handle(MouseEvent event) {
 		if(event.getSource()==btnAvancar) {
-			JOptionPane.showMessageDialog(null, "AvanÃ§ar teste!");
+			JOptionPane.showMessageDialog(null, "Avançar teste!");
+		}else
+		if(event.getSource() == btnAvancarSDef) {
+			TelaVendas tv = new TelaVendas();
+			try {
+				tv.start(stg);
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 	}
 }

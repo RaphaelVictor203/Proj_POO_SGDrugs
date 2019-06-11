@@ -27,7 +27,7 @@ public class ProdutoDAOImpl implements ProdutoDAO {
 			cmd.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			System.out.println("Erro na Conex„o");
+			System.out.println("Erro na Conex√£o");
 			throw new DAOException(e);
 		}
 	}
@@ -64,29 +64,6 @@ public class ProdutoDAOImpl implements ProdutoDAO {
 		return lista;
 	}
 	
-	
-	public Produto consultarProduto(int id) throws DAOException {
-		FornecedorDAOImpl fdi = new FornecedorDAOImpl();
-		Produto p = new Produto();
-		String sql = "select * from tbproduto;";
-		try {		
-			Connection con = ConnectionManager.getInstance().getConnection();
-			PreparedStatement stmt = con.prepareStatement(sql);
-			ResultSet  rs = stmt.executeQuery();
-			while (rs.next()) { 
-				p.setId_produto(rs.getInt("idProduto"));
-				p.setNome(rs.getString("descricao"));
-				p.setFornecedor(fdi.pesquisarPorFornecedor(rs.getInt("idFornecedor")));
-				p.setCategoria("categoria");
-			}
-		} catch (SQLException e) {
-			System.out.println("Erro de conex„o no banco de dados");
-			e.printStackTrace();
-			throw new DAOException(e);
-		}
-		return p;
-	}
-
 	@Override
 	public void alterarProduto(Produto p) throws DAOException {
 
@@ -121,10 +98,58 @@ public class ProdutoDAOImpl implements ProdutoDAO {
 			cmd.executeUpdate();
 
 		} catch (SQLException e) {
-
 			e.printStackTrace();
 		}
 
+	}
+
+	@Override
+	public Produto consultarProduto(int id) throws DAOException {
+		FornecedorDAOImpl fdi = new FornecedorDAOImpl();
+		Produto p = new Produto();
+		String sql = "select * from tbproduto where idProduto=?";
+		try {		
+			Connection con = ConnectionManager.getInstance().getConnection();
+			PreparedStatement stmt = con.prepareStatement(sql);
+			stmt.setInt(1, id);
+			ResultSet  rs = stmt.executeQuery();
+			while (rs.next()) { 
+				p.setId_produto(rs.getInt("idProduto"));
+				p.setNome(rs.getString("descricao"));
+				p.setFornecedor(fdi.pesquisarPorFornecedor(rs.getInt("idFornecedor")));
+				p.setCategoria(rs.getString("categoria"));
+			}
+		} catch (SQLException e) {
+			System.out.println("Erro de conex√£o no banco de dados");
+			e.printStackTrace();
+			throw new DAOException(e);
+		}
+		return p;
+	}
+
+	@Override
+	public List<Produto> consultarProdutosCad() throws DAOException {
+		FornecedorDAOImpl fdi = new FornecedorDAOImpl();
+		List<Produto> lista = new ArrayList<>();
+		String sql = "select * from tbproduto;";
+		try {		
+			Connection con = ConnectionManager.getInstance().getConnection();
+			PreparedStatement stmt = con.prepareStatement(sql);
+			ResultSet  rs = stmt.executeQuery();
+			while (rs.next()) { 
+				Produto p = new Produto();
+				p.setId_produto(rs.getInt("idProduto"));
+				p.setNome(rs.getString("descricao"));
+				p.setFornecedor(fdi.pesquisarPorFornecedor(rs.getInt("idFornecedor")));
+				p.setCategoria("categoria");
+				lista.add(p);
+			}
+		} catch (SQLException e) {
+			System.out.println("Erro de conex√£o no banco de dados");
+			e.printStackTrace();
+			throw new DAOException(e);
+		}
+		return lista;
 	}
 
 }
