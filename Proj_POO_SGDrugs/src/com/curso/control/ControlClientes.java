@@ -19,7 +19,7 @@ import javafx.collections.ObservableList;
 
 public class ControlClientes {
 	
-	private List<Cliente> clientesCadastrados;
+	//private List<Cliente> clientesCadastrados;
 	private List<Endereco> enderecoCadastrados;
 	private List<ProblemaSaude> problemasCadastrados;
 	private ObservableList<Cliente> dataList = FXCollections.observableArrayList();
@@ -29,7 +29,7 @@ public class ControlClientes {
 	private ProblemaSaudeDAOImpl psdi = new ProblemaSaudeDAOImpl();
 	
 	public ControlClientes() {
-		this.clientesCadastrados = new ArrayList<Cliente>();
+		//this.clientesCadastrados = new ArrayList<Cliente>();
 		this.enderecoCadastrados = new ArrayList<Endereco>();
 		this.problemasCadastrados = new ArrayList<ProblemaSaude>();
 		this.problemasCadastrados.add(new ProblemaSaude(1, "Alergia", "cigarro"));
@@ -106,7 +106,7 @@ public class ControlClientes {
 	
 	public boolean cadCliente(Cliente cl) {
 		if(!existCliente(cl.getCpf())) {
-			this.clientesCadastrados.add(cl);
+			//this.clientesCadastrados.add(cl);
 			try {
 				this.dataList.add(cl);
 				this.cdi.inserir(cl);
@@ -163,22 +163,22 @@ public class ControlClientes {
 	}
 	
 	private boolean existCliente(long cpf) {
-		for(Cliente c : clientesCadastrados) {
+		/*for(Cliente c : clientesCadastrados) {
 			if(c.getCpf() == cpf) {
 				return true;
 			}
-		}
-		/*try {
+		}*/
+		try {
 			return (cdi.pesquisarPorCliente(cpf) != null) ? true : false;
 		} catch (DAOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/
+		}
 		return false;
 	}
 	
 	public void removerCliente() {
-		this.clientesCadastrados.remove(pesquisarCliente(clientSel.getCpf()));
+		//this.clientesCadastrados.remove(pesquisarCliente(clientSel.getCpf()));
 		try {
 			cdi.remover(clientSel.getCpf());
 		} catch (DAOException e) {
@@ -189,7 +189,7 @@ public class ControlClientes {
 	}
 	
 	public void attCliente(Cliente cl) {
-		for(Cliente c : clientesCadastrados) {
+		/*for(Cliente c : clientesCadastrados) {
 			if(c.getCpf() == clientSel.getCpf()) {
 				c.setPrimeiroNome(cl.getPrimeiroNome());
 				c.setDt_nasc(cl.getDt_nasc());
@@ -207,7 +207,7 @@ public class ControlClientes {
 				c.setProblemasSaude(cl.getProblemasSaude());
 				c.setSexo(cl.getSexo());
 			}
-		}
+		}*/
 		try {
 			cdi.alterar(cl);			
 		} catch (DAOException e) {
