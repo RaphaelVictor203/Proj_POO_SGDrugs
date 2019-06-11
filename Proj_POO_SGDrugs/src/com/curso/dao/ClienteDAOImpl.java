@@ -55,7 +55,7 @@ public class ClienteDAOImpl implements ClienteDAO{
 
 	@Override
 	public Cliente pesquisarPorCliente(long cpf) throws DAOException {
-		Cliente cl = new Cliente();
+		Cliente cl = null;
 		try {
 			Connection con = ConnectionManager.getInstance().getConnection();
 			//String sql = "SELECT * from tbcliente where cpf like ?";
@@ -66,6 +66,7 @@ public class ClienteDAOImpl implements ClienteDAO{
 			stmt.setString(1, "%" + cpf + "%");
 			ResultSet  rs = stmt.executeQuery();		
 			while(rs.next()) {
+				cl = new Cliente();
 				cl.setPrimeiroNome(rs.getString("nome"));
 				cl.setCpf(rs.getLong("cpf"));
 				cl.setRg(rs.getLong("rg"));
