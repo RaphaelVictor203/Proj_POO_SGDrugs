@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.curso.entity.Fornecedor;
+import com.curso.entity.Cliente;
 import com.curso.entity.Endereco;
 import com.curso.entity.Farmacia;
 import com.curso.entity.ProblemaSaude;
@@ -45,7 +46,7 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 			stmt.executeUpdate();
 			con.close();
 		} catch (SQLException e) {
-			System.out.println("Erro de conex√£o no banco de dados");
+			System.out.println("Erro de conex„o no banco de dados");
 			e.printStackTrace();
 			throw new DAOException(e);
 		}		
@@ -97,7 +98,7 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 			fr.setEndereco(end);
 			
 		} catch (SQLException e) {
-			System.out.println("Erro de conex√£o no banco de dados");
+			System.out.println("Erro de conex„o no banco de dados");
 			e.printStackTrace();
 			throw new DAOException(e);
 		}
@@ -152,7 +153,59 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 				lista.add(fr);
 			}
 		} catch (SQLException e) {
-			System.out.println("Erro de conex√£o no banco de dados");
+			System.out.println("Erro de conex„o no banco de dados");
+			e.printStackTrace();
+			throw new DAOException(e);
+		}
+		return lista;
+	}
+	
+	public List<Fornecedor> pesquisarPorFornecedor() throws DAOException{
+		List<Fornecedor> lista = new ArrayList<Fornecedor>();
+		String sql = "SELECT f.idFornecedor,f.nomeFantasia,f.telefone,f.cnpj,cf.idFarmacia,"
+				+ " efrm.idEndereco idEndFarm, efrm.cep cepFarm, efrm.numero numFarm, efrm.rua ruaFarm,"
+				+ " efrm.bairro bairroFarm, efrm.cidade cidadeFarm, efrm.uf ufFarm,"
+				+ " e.idEndereco,e.cep,e.numero,e.rua,e.bairro,e.cidade,e.uf"
+				+ " from tbFornecedor f inner join tbendereco e on e.idEndereco=f.idEndereco"
+				+ " inner join tbConjFornecedor cf on cf.idFornecedor = f.idFornecedor"
+				+ " inner join tbFarmacia fr on fr.idFarmacia = cf.idFarmacia"
+				+ " inner join tbEndereco efrm on efrm.idEndereco = fr.idEndereco";
+		try {		
+			Connection con = ConnectionManager.getInstance().getConnection();
+			PreparedStatement stmt = con.prepareStatement(sql);
+			ResultSet  rs = stmt.executeQuery();
+			while (rs.next()) { 
+				Fornecedor fr = new Fornecedor();
+				fr.setNome_fantasia(rs.getString("nomeFantasia"));
+				fr.setCnpj(rs.getLong("cnpj"));
+				fr.setTelefone(rs.getLong("telefone"));
+
+				Farmacia frm = new Farmacia();
+				frm.setId(rs.getInt("idFarmacia"));
+				Endereco endFarm = new Endereco();
+				endFarm.setIdEndereco(rs.getInt("idEndFarm"));
+				endFarm.setCep(rs.getString("cepFarm"));
+				endFarm.setNumero(rs.getInt("numFarm"));
+				endFarm.setRua(rs.getString("ruaFarm"));
+				endFarm.setBairro(rs.getString("bairroFarm"));
+				endFarm.setCidade(rs.getString("cidadeFarm"));
+				endFarm.setUf(rs.getString("ufFarm"));
+				frm.setEndereco(endFarm);
+				fr.setFarmacia(frm);
+				
+				Endereco end = new Endereco();
+				end.setIdEndereco(rs.getInt("idEndereco"));
+				end.setCep(rs.getString("cep"));
+				end.setNumero(rs.getInt("numero"));
+				end.setRua(rs.getString("rua"));
+				end.setBairro(rs.getString("bairro"));
+				end.setCidade(rs.getString("cidade"));
+				end.setUf(rs.getString("UF"));
+				fr.setEndereco(end);
+				lista.add(fr);
+			}
+		} catch (SQLException e) {
+			System.out.println("Erro de conex„o no banco de dados");
 			e.printStackTrace();
 			throw new DAOException(e);
 		}
@@ -198,7 +251,7 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 			stmt.executeUpdate();
 			con.close();
 		} catch (SQLException e) {
-			System.out.println("Erro de conex√£o no banco de dados");
+			System.out.println("Erro de conex„o no banco de dados");
 			e.printStackTrace();
 			throw new DAOException(e);
 		}
@@ -223,12 +276,15 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 			}
       
 		} catch (SQLException e) {
-			System.out.println("Erro de conex√£o no banco de dados");
+			System.out.println("Erro de conex„o no banco de dados");
 			e.printStackTrace();
 			throw new DAOException(e);
 		}
 		return fr;
 	}
+
+
+
 
 }
 

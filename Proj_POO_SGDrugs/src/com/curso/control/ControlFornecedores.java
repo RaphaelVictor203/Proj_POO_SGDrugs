@@ -8,6 +8,10 @@ import java.util.List;
 import javax.swing.JOptionPane;
 
 import com.curso.entity.Fornecedor;
+import com.curso.dao.DAOException;
+import com.curso.dao.FarmaciaDAOImpl;
+import com.curso.dao.FornecedorDAOImpl;
+import com.curso.entity.Cliente;
 import com.curso.entity.Endereco;
 import com.curso.entity.Farmacia;
 import com.curso.entity.ProblemaSaude;
@@ -21,6 +25,8 @@ public class ControlFornecedores {
 	private List<Endereco> enderecoCadastrados;
 	private ObservableList<Fornecedor> dataList = FXCollections.observableArrayList();
 	public static Fornecedor fornecSel = new Fornecedor();
+	private FornecedorDAOImpl fornecDAO = new FornecedorDAOImpl();
+	private FarmaciaDAOImpl farmDAO = new FarmaciaDAOImpl();
 	
 	public ControlFornecedores() {
 		this.FornecedoresCadastrados = new ArrayList<Fornecedor>();
@@ -30,12 +36,18 @@ public class ControlFornecedores {
 	public ObservableList<Fornecedor> getDataListFornecedores(){
 		return this.dataList;
 	}
-	
+
 //MANTER Fornecedor ------------------------------------------------------
 	
 	public boolean cadFornecedor(Fornecedor fr) {
 		if(!existFornecedor(fr.getCnpj())) {
-			this.FornecedoresCadastrados.add(fr);
+			try {
+				this.dataList.add(fr);
+				this.fornecDAO.inserir(fr);
+			} catch (DAOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			attTableFornecedor();
 			return true;
 		}else {
@@ -44,53 +56,54 @@ public class ControlFornecedores {
 		}
 	}
 	
-	public void pesquisarFornecedor(String nome, long Cnpj, String uf, String cidade) {
+	public void pesquisarFornecedor(String nome) {
 		dataList.clear();
 		if(!nome.equals("")) {
-			for(Fornecedor f : FornecedoresCadastrados) {
-				if(f.getCnpj() == Cnpj) {
-					dataList.add(f);
-				}
+			try {
+				dataList.addAll(fornecDAO.pesquisarPorFornecedor(nome));
+			} catch (DAOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 	}
 	
 	public Fornecedor pesquisarFornecedor(long Cnpj) {
-		for(Fornecedor f : FornecedoresCadastrados) {
-			if(f.getCnpj() == Cnpj) {
-				return f;
-			}
+		try {
+			return fornecDAO.pesquisarPorFornecedor(Cnpj);
+		} catch (DAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return null;
 	}
 	
 	private boolean existFornecedor(long Cnpj) {
-		for(Fornecedor f : FornecedoresCadastrados) {
-			if(f.getCnpj() == Cnpj) {
-				return true;
-			}
+		try {
+			return (fornecDAO.pesquisarPorFornecedor(Cnpj) != null) ? true : false;
+		} catch (DAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return false;
 	}
 	
 	public void removerFornecedor() {
-		this.FornecedoresCadastrados.remove(pesquisarFornecedor(fornecSel.getCnpj()));
+		try {
+			this.fornecDAO.remover(fornecSel.getCnpj());
+		} catch (DAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		this.attTableFornecedor();
 	}
 	
 	public void attFornecedor(Fornecedor fr) {
-		for(Fornecedor f : FornecedoresCadastrados) {
-			if(f.getCnpj() == fornecSel.getCnpj()) {
-				f.setNome_fantasia(fr.getNome_fantasia());
-				f.setCnpj(fr.getCnpj());
-				f.setTelefone(fr.getTelefone());
-				f.getFarmacia().setUnidade(fr.getFarmacia().getUnidade());
-				f.getEndereco().setCep(fr.getEndereco().getCep());
-				f.getEndereco().setRua(fr.getEndereco().getRua());
-				f.getEndereco().setNumero(fr.getEndereco().getNumero());
-				f.getEndereco().setCidade(fr.getEndereco().getCidade());
-				f.getEndereco().setUf(fr.getEndereco().getUf());
-			}
+		try {
+			fornecDAO.alterar(fr);
+		} catch (DAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	
@@ -101,13 +114,22 @@ public class ControlFornecedores {
 
 	public void attTableFornecedor() {
 		this.dataList.clear();
-		this.dataList.addAll(FornecedoresCadastrados);
+		try {
+			this.dataList.addAll(fornecDAO.pesquisarPorFornecedor());
+		} catch (DAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 	
-	public void attTableFornecedor(Fornecedor cl) {
+	public void attTableFornecedor(Fornecedor fr) {
 		this.dataList.clear();
-		this.dataList.add(cl);
+		this.dataList.add(fr);
+	}
+	public void attTableFornecedor(List<Fornecedor> frs) {
+		this.dataList.clear();
+		this.dataList.addAll(frs);
 	}
 	
 	
@@ -147,5 +169,14 @@ public class ControlFornecedores {
 		}
 		return arrayNum;
 	}
-	
+	//COMBO FARMACIA ------------------------
+		public List<Farmacia> comboFarm (){
+			try {
+				return farmDAO.pesquisarFarmacia();
+			} catch (DAOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
+		}
 }
