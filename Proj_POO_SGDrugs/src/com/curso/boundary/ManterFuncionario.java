@@ -7,6 +7,10 @@ import java.util.Date;
 import javax.swing.JOptionPane;
 
 import com.curso.control.ControlClientes;
+import com.curso.control.ControlFuncionario;
+import com.curso.dao.DAOException;
+import com.curso.dao.FarmaciaDAOImpl;
+import com.curso.dao.FuncionarioDAOImpl;
 import com.curso.entity.Cliente;
 import com.curso.entity.Endereco;
 import com.curso.entity.Farmacia;
@@ -16,7 +20,10 @@ import com.curso.entity.ProblemaSaude;
 import javafx.application.Application;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyLongWrapper;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -48,6 +55,7 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 	private BorderPane painelMant;
 	private HBox menuTop;
 	private TextField txtNome;
+	private TextField txtSobrenome;
 	private ComboBox<String> cmbDia, cmbMes, cmbAno;
 	private TextField txtRG, txtCPF;
 	private TextField txtTelefone, txtEmail;
@@ -60,9 +68,11 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 	private TextField txtUFPesquisa;
 	private TextField txtCidadePesquisa;
 	private ComboBox<String> cmbSexo;
-	private TableView<Funcionario> tblProb;
+	private TableView<Funcionario> tableFuncionario;
 	private Button btnAddProb, btnLimpaCampos, btnCadastrar, btnPesquisa;
-
+    private TextField txtSalario;
+    private ControlFuncionario funcio = new ControlFuncionario();
+    private FuncionarioDAOImpl dao = new FuncionarioDAOImpl();
 	
 	
 	ControlClientes cc;
@@ -76,15 +86,11 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 //INICIO PAINEL CADASTRO-------------------------------------------------------------------------------
 		
 		
-		
+		FarmaciaDAOImpl fdi = new FarmaciaDAOImpl();
 		txtNome = new TextField();
-		cmbFarmacia = new ComboBox<>(FXCollections.observableArrayList(
-				new Farmacia (),
-				new Farmacia (),
-				new Farmacia (),
-				new Farmacia (),
-				new Farmacia ()
-				)) ;
+		cmbFarmacia = new ComboBox<>(FXCollections.observableArrayList(fdi.pesquisarFarmacia())) ;
+		
+
 		cmbDia = new ComboBox<String>(FXCollections.observableArrayList(cc.gerarArrayNum(1, 31)));
 		cmbDia.setPromptText("Dia");
 		cmbMes = new ComboBox<String>(FXCollections.observableArrayList(cc.gerarArrayNum(1, 12)));
@@ -92,16 +98,16 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 		cmbAno = new ComboBox<String>(FXCollections.observableArrayList(cc.gerarArrayNum(1900, 2019)));
 		cmbAno.setPromptText("Ano");
 		txtRG = new TextField(); 
+		txtSobrenome = new TextField();
 		txtCPF = new TextField();
 		txtTelefone = new TextField();
 		txtEmail = new TextField();
-	
+		cargo = new ComboBox<String>(FXCollections.observableArrayList(new String[]{"1"}));
 		
+		txtSalario = new TextField();
 		txtCEP = new TextField();
 		txtRua = new TextField();
 		txtNum = new TextField();
-		/*txtCid = new TextField();
-		txtUF = new TextField();*/
 		cmbCid = new ComboBox<String>(FXCollections.observableArrayList(new String[] {"São Paulo", "Ribeirão", "Botucatu", "Piracicaba", "Santos", "Franca", "Araçatuba"}));
 		cmbUF = new ComboBox<String>(FXCollections.observableArrayList(new String[] {"SP"}));
 		cmbSexo = new ComboBox<String>(FXCollections.observableArrayList(new String[]{"M", "F"}));
@@ -113,8 +119,8 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 		btnLimpaCampos = new Button("LIMPAR CAMPOS");
 		btnCadastrar = new Button("CADASTRAR");
 		btnAddProb = new Button("PESQUISAR");
-		tblProb = new TableView<Funcionario>();
-		tblProb.setMaxWidth(625);
+		tableFuncionario = new TableView<Funcionario>();
+		tableFuncionario.setMaxWidth(625);
 		
 		
 		
@@ -127,7 +133,7 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 		VBox entradaInfoCli = new VBox(
 				new Label("INFORMAÇÕES RELACIONADAS AO FUNCIONÁRIO"),
 				new Separator(),
-				new HBox(10, new Label("Nome: "), txtNome),
+				new HBox(10, new Label("Nome: "), txtNome,new Label("Sobrenome.:"),txtSobrenome),
 				new HBox(10, new Label("Data Nascimento: "), cmbDia, new Label("/"), cmbMes, new Label("/"),cmbAno),
 				new HBox(10, new Label("RG: "), txtRG, new Label("CPF: "), txtCPF),
 				new HBox(10, new Label("Telefone: "), txtTelefone,new Label("Sexo: "), cmbSexo) ,
@@ -152,7 +158,7 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 		VBox entradaINfoWork = new VBox(
 				new Label("LOCAL DE TRABALHO "),
 				new Separator(),
-				new HBox(10, new Label("Unidade.:"), cmbFarmacia)
+				new HBox(10, new Label("Unidade.:"), cmbFarmacia, new Label("Cargo :"),cargo,new Label("Salario"),txtSalario)
 		);
 		entradaINfoWork.setSpacing(10);
 		entradaINfoWork.setStyle("-fx-min-width: 50%; -fx-font-size: 15px"); 
@@ -165,7 +171,7 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 				new Separator(),
 				new HBox(txtPesquisa),
 				btnAddProb,
-				tblProb
+				tableFuncionario
 		);
 		entradaTab.setPadding(new Insets(39, 40, 40, 40));
 		entradaTab.setSpacing(10);
@@ -214,11 +220,10 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 //FIM PAINEL GERENCIAMENTO-----------------------------------------------------------------------------
 		
 		pane.setTop(menuTop);
-		StackPane painels = new StackPane(painelMant, painelCad);
+		StackPane painels = new StackPane(painelCad);
 		pane.setCenter(painels);
 		
-		stage.setMaximized(true);
-		Scene scene = new Scene(pane, stage.getWidth(),stage.getHeight());
+		Scene scene = new Scene(pane, 1100,600);
 		stage.setScene(scene);
 		stage.setTitle("Manter Funcionarios");
 		stage.show();
@@ -233,8 +238,10 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 		addEventosFoco();
 		startStyle();
 		btnSelected(0);
-		createTableColumnsProb();
-		
+		createTableColumnsFunc();
+		funcio.attTableFuncionario();
+		//funcio.attTableFuncionario();
+		setFunctionFuncButtons();
 		
 	}
 	
@@ -298,30 +305,68 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 	
 
 	@SuppressWarnings("unchecked")
-	public void createTableColumnsProb() {
+	public void createTableColumnsFunc() {
 		
-	
 		
-		TableColumn<Funcionario, Number> id_problema = new TableColumn<>("ID");
-		id_problema.setCellValueFactory(item -> new ReadOnlyIntegerWrapper(item.getValue().getID()));
+		tableFuncionario.setItems(funcio.getDataList());
+		tableFuncionario.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Funcionario>() {
+			@Override
+			public void changed(ObservableValue<? extends Funcionario> funcionario, Funcionario funcionario1, Funcionario funcionario2) {
+				if(funcionario2 != null) {
+					try {
+						//System.out.println("teste cpf - " + funcionario2.getCpf());
+						btnCadastrar.setText("ALTERAR");
+						FuncionarioToBoundary(dao.pesquisarFuncionario(funcionario2.getCpf()));
+					} catch (DAOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			} 
+		});
 		
-		TableColumn<Funcionario, String> tipo = new TableColumn<>("Nome");
-		tipo.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getPrimeiroNome()));
+		
+		
+		TableColumn<Funcionario, String> nome = new TableColumn<>("Nome");
+		nome.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getNome()));
+		
+		TableColumn<Funcionario, String> sobrenome = new TableColumn<>("Sobrenome");
+		sobrenome.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getSobrenome()));
 		
 		TableColumn<Funcionario, Number> desc = new TableColumn<>("CPF");
 		desc.setCellValueFactory(item -> new ReadOnlyLongWrapper(item.getValue().getCpf()));
 		
+		TableColumn<Funcionario, Button> excluir = new TableColumn<>("Excluir");
+		excluir.setCellValueFactory(item -> new ReadOnlyObjectWrapper(item.getValue().getBtnExcluir()));		
 		
-		tblProb.getColumns().addAll(id_problema,tipo,desc);
+		tableFuncionario.getColumns().addAll(nome,sobrenome,desc, excluir);
 		
 	}
 	
-	
-	
-	
+	private void setFunctionFuncButtons() {
+		System.out.println("size: " + tableFuncionario.getItems().size());
+		for (int i = 0; i < tableFuncionario.getItems().size(); i++) {
+			final int l = i;
+
+			tableFuncionario.getItems().get(i).getBtnExcluir().setOnAction(e -> {
+				System.out.println("teste");
+				try {
+					dao.remover(tableFuncionario.getItems().get(l).getCpf());
+					funcio.attTableFuncionario();
+					limparCampos();
+				} catch (DAOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				setFunctionFuncButtons();
+			});
+
+		}
+	}	
 	
 	@SuppressWarnings("deprecation")
-	public void clienteToBoundary(Cliente c) {
+	public void FuncionarioToBoundary(Funcionario c) {
+		funcio.funcSel = c;
 		this.txtNome.setText(c.getPrimeiroNome());
 		this.cmbDia.getSelectionModel().select(Integer.toString(c.getDt_nasc().getDate()));
 		this.cmbMes.getSelectionModel().select(Integer.toString(c.getDt_nasc().getMonth()));
@@ -330,6 +375,10 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 		this.txtCPF.setText(Long.toString(c.getCpf()));
 		this.txtTelefone.setText(Long.toString(c.getTelefone()));
 		this.txtEmail.setText(c.getEmail());
+		this.txtSobrenome.setText(c.getSobrenome());
+		this.txtSalario.setText(Float.toString(c.getSalario()));
+		this.cmbFarmacia.getSelectionModel().select(c.getFarmacia().getId() - 1);
+		this.cargo.getSelectionModel().select(Integer.toString(c.getFuncao().getIdFuncao()));
 	
 		Endereco ed = c.getEnd();
 		this.txtCEP.setText(ed.getCep());
@@ -342,30 +391,32 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 	
 	
 	@SuppressWarnings("deprecation")
-	public Cliente boundaryToCliente() {
+	public Funcionario boundaryToFuncionario() {
 		
-		Cliente c = new Cliente();
-		c.setPrimeiroNome(this.txtNome.getText());
-		c.setDt_nasc(new java.sql.Date(Integer.parseInt(this.cmbAno.getSelectionModel().getSelectedItem()), Integer.parseInt(this.cmbMes.getSelectionModel().getSelectedItem()), Integer.parseInt(this.cmbDia.getSelectionModel().getSelectedItem())));
-		c.setRg(Long.parseLong(this.txtRG.getText()));
-		c.setCpf(Long.parseLong(this.txtCPF.getText()));
-		if(!this.txtTelefone.getText().equals("")) {
-			c.setTelefone(Long.parseLong(this.txtTelefone.getText()));
-		}
-		c.setEmail(this.txtEmail.getText());
-		
-		c.setSexo(cmbSexo.getSelectionModel().getSelectedItem().charAt(0));
-		
-		Endereco ed = new Endereco();
-		ed.setCep(this.txtCEP.getText());
-		ed.setRua(this.txtRua.getText());
+		Funcionario fun = new Funcionario();
+	    fun.setNome(txtNome.getText());
+	    fun.setSobrenome(txtSobrenome.getText());
+	    fun.setDt_nasc(new java.sql.Date(Integer.parseInt(this.cmbAno.getSelectionModel().getSelectedItem()),
+	    		Integer.parseInt(this.cmbMes.getSelectionModel().getSelectedItem()),
+	    		Integer.parseInt(this.cmbDia.getSelectionModel().getSelectedItem())));
+	    fun.setRg(Integer.parseInt( txtRG.getText()));
+	    fun.setCpf(Long.parseLong( txtCPF.getText()));
+	    fun.setTelefone(Long.parseLong(txtTelefone.getText()));
+	    fun.setEmail(txtEmail.getText());
+	    //Farmacia c = new Farmacia(this.cmbAno.getSelectionModel().getSelectedItem());
+	    fun.setFarmacia(this.cmbFarmacia.getSelectionModel().getSelectedItem());
+	    fun.setSexo(cmbSexo.getSelectionModel().getSelectedItem().charAt(0));
+	    fun.setSalario(Float.parseFloat(txtSalario.getText()));
+	    Endereco ed = new Endereco();
+	    ed.setCep(this.txtCEP.getText());
+	    ed.setRua(this.txtRua.getText());
 		ed.setNumero(Integer.parseInt(this.txtNum.getText()));
 		ed.setCidade(this.cmbCid.getSelectionModel().getSelectedItem());
 		ed.setUf(this.cmbUF.getSelectionModel().getSelectedItem());
-		c.setEnd(ed);
-		
-		c.setProblemasSaude(ControlClientes.clientSel.getProblemasSaude());
-		return c;
+		ed.setIdEndereco(funcio.funcSel.getEnd().getIdEndereco());
+		//fun.setFuncao(funcao);
+	    fun.setEnd(ed);
+		return fun;
 	}
 	
 	public void startStyle() {
@@ -413,15 +464,10 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 		String styleEntradaDataNasc = "-fx-min-width: 130px;";
 		
 		String styleEntradas = "-fx-background-radius: 8;";
-		
+	
 		String styleEntradaPesquisa = "-fx-background-radius: 8px 8px 8px 8px;"
 				+ "-fx-min-width: 625px;";
 		
-		String stylePesquisaProb = "-fx-min-height: 30px;"
-				+ "-fx-min-width: 30px;"
-				+ "-fx-background-radius: 0px 8px 8px 0px;"
-				+ "-fx-background-color: #0095FE;"
-				+ "-fx-cursor: hand;";
 		
 		String comboStyle = "-fx-background-radius: 8;"
 				+ "-fx-background-color: #FEFFFA;"
@@ -432,7 +478,7 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 		painelCad.setStyle(stylePainel);
 		painelMant.setStyle(stylePainel);
 		menuTop.setStyle(styleMenuTop);
-		txtNome.setStyle("-fx-min-width: 515px;" + styleEntradas);
+		txtNome.setStyle("-fx-min-width: 100px;" + styleEntradas);
 		cmbDia.setStyle(styleEntradaDataNasc + styleEntradas + comboStyle);
 		cmbDia.setEffect(dp);
 		cmbMes.setStyle(styleEntradaDataNasc + styleEntradas + comboStyle);
@@ -443,7 +489,7 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 		txtCPF.setStyle("-fx-min-width: 259px;" + styleEntradas);
 		txtTelefone.setStyle("-fx-max-width: 250px;" + styleEntradas);
 		txtEmail.setStyle("-fx-min-width: 523px;" + styleEntradas);
-	
+	    txtSobrenome.setStyle("-fx-min-width: 300px;" + styleEntradas);
 		txtCEP.setStyle("-fx-min-width: 228px; " + styleEntradas);
 		txtRua.setStyle("-fx-min-width: 530px; " + styleEntradas);
 		txtNum.setStyle("-fx-min-width: 227px; " + styleEntradas);
@@ -466,13 +512,12 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 	
 	public void btnSelected(int btn) {
 		String CadSelected = "";
-		String MantSelected = "";
 		if(btn == 0) {
 			CadSelected = "#FEFFFA";
-			MantSelected = "#EAEAEA";
+		
 		}else {
 			CadSelected = "#EAEAEA";
-			MantSelected = "#FEFFFA";
+		
 		}
 		btnCadCli.setStyle(
 				"-fx-background-color: " + CadSelected + ";"
@@ -490,17 +535,46 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 
 	@Override
 	public void handle(MouseEvent e) {
-		if(e.getSource() == btnCadCli) {
-			painelCad.toFront();
-			btnSelected(0);	
-		}else
 		
-		if(e.getSource() == btnCadastrar) {
-			if(btnCadastrar.getText().equals("CADASTRAR") && camposValidos()) {
-				JOptionPane.showMessageDialog(null, "cadastro realizado !!!", "Cadastro", JOptionPane.INFORMATION_MESSAGE);
-				if(cc.cadCliente(boundaryToCliente())) {
-					limparCampos();
+		if(e.getSource() == btnCadastrar && camposValidos()) {
+			if(btnCadastrar.getText().equals("ALTERAR")&& camposValidos()) {
+			    alterarFuncionario();
+			    limparCampos();
+			}else {
+			   cadastrarFuncionario();
+			   limparCampos();
+			}
+			funcio.attTableFuncionario();
+		}
+		
+	}
+	private void alterarFuncionario() {
+		// TODO Auto-generated method stub
+		Funcionario fn = new Funcionario();
+		try {
+			fn = boundaryToFuncionario();
+			funcio.alterar(fn);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+	}
+
+	public void cadastrarFuncionario() {
+				Funcionario fn = new Funcionario();
+				try {
+					fn = boundaryToFuncionario();
+					funcio.inserir(fn);
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
+			}
+
+			/*if(btnCadastrar.getText().equals("CADASTRAR") && camposValidos()) {
+				JOptionPane.showMessageDialog(null, "cadastro realizado !!!", "Cadastro", JOptionPane.INFORMATION_MESSAGE);
+				
 				
 			}else 
 			if(btnCadastrar.getText().equals("ALTERAR") && camposValidos()){
@@ -538,13 +612,16 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 			}
 		
 		}
-	}
+	}*/
 	
 	public void limparCampos() {
 		btnCadastrar.setText("CADASTRAR");
 		btnCadCli.setText("CADASTRO");
 		btnLimpaCampos.setText("LIMPAR CAMPOS");
 		this.txtNome.setText("");
+		this.txtSobrenome.setText("");
+	    this.cargo.getSelectionModel().select(-1);
+	    this.cmbFarmacia.getSelectionModel().select(-1);
 		this.cmbDia.getSelectionModel().select(-1);
 		this.cmbMes.getSelectionModel().select(-1);
 		this.cmbAno.getSelectionModel().select(-1);
@@ -552,13 +629,14 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 		this.txtCPF.setText("");
 		this.txtTelefone.setText("");
 		this.txtEmail.setText("");
-		
+		this.cmbSexo.getSelectionModel().select(-1);
 		this.txtCEP.setText("");
 		this.txtRua.setText("");
 		this.txtNum.setText("");
 		this.cmbCid.getSelectionModel().select(-1);
 		this.cmbUF.getSelectionModel().select(-1);
 		this.txtPesquisa.setText("");
+		this.txtSalario.setText("");
 		cc.attTableProb(new ArrayList<ProblemaSaude>());
 		ControlClientes.clientSel = new Cliente();
 		startStyle();
@@ -573,6 +651,55 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 					+ "-fx-background-radius: 8px;");
 			isValid = false;
 		}
+		if(this.txtSalario.getText().equals("")) {
+			this.txtSalario.setStyle(this.txtSalario.getStyle() + "-fx-border-color: red;"
+					+ "-fx-border-radius: 8px;"
+					+ "-fx-background-radius: 8px;");
+			isValid = false;
+		}
+		
+		if(txtTelefone.getText().equals("")) {
+			this.txtTelefone.setStyle(this.txtTelefone.getStyle() + "-fx-border-color: red;"
+					+ "-fx-border-radius: 8px;"
+					+ "-fx-background-radius: 8px;");
+			isValid = false;
+		}
+		if(txtSobrenome.getText().equals("")) {
+			this.txtSobrenome.setStyle(this.txtSobrenome.getStyle() + "-fx-border-color: red;"
+					+ "-fx-border-radius: 8px;"
+					+ "-fx-background-radius: 8px;");
+			isValid = false;
+		}
+		
+		if(this.cmbFarmacia.getSelectionModel().getSelectedIndex() == -1) {
+			this.cmbFarmacia.setStyle(this.cmbFarmacia.getStyle() + "-fx-border-color: red;"
+					+ "-fx-border-radius: 8px;"
+					+ "-fx-background-radius: 8px;");
+			isValid = false;
+		}
+		
+		if(this.cargo.getSelectionModel().getSelectedIndex() == -1) {
+			this.cargo.setStyle(this.cargo.getStyle() + "-fx-border-color: red;"
+					+ "-fx-border-radius: 8px;"
+					+ "-fx-background-radius: 8px;");
+			isValid = false;
+		}
+		
+		
+		if(txtEmail.getText().equals("")) {
+			this.txtEmail.setStyle(this.txtEmail.getStyle() + "-fx-border-color: red;"
+					+ "-fx-border-radius: 8px;"
+					+ "-fx-background-radius: 8px;");
+			isValid = false;
+		}
+		
+		if(this.cmbSexo.getSelectionModel().getSelectedIndex() == -1) {
+			this.cmbSexo.setStyle(this.cmbSexo.getStyle() + "-fx-border-color: red;"
+					+ "-fx-border-radius: 8px;"
+					+ "-fx-background-radius: 8px;");
+			isValid = false;
+		}
+		
 		if(this.cmbDia.getSelectionModel().getSelectedIndex() == -1) {
 			this.cmbDia.setStyle(this.cmbDia.getStyle() + "-fx-border-color: red;"
 					+ "-fx-border-radius: 8px;"

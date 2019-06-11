@@ -180,4 +180,40 @@ public class FarmaciaDAOImpl implements FarmaciaDAO{
 		return frm;
 	}
 
+	@Override
+	public List<Farmacia> pesquisarFarmacia() throws DAOException {
+		List<Farmacia> lista = new ArrayList<Farmacia>();
+		try {
+			Connection con = ConnectionManager.getInstance().getConnection();
+			String sql = "SELECT f.idFarmacia,f.unidade,f.statusFarmacia,e.idEndereco,e.cep,e.numero,e.rua,e.bairro,e.estado,e.cidade"
+					+ " from tbFarmacia f inner join tbEndereco e on f.idEndereco=e.idEndereco";
+			PreparedStatement stmt = con.prepareStatement(sql);
+			ResultSet  rs = stmt.executeQuery();
+			Farmacia frm;
+			while(rs.next()) {
+				frm = new Farmacia();
+				frm.setId(rs.getInt("idFarmacia"));
+				
+				Endereco end = new Endereco();
+				end.setIdEndereco(rs.getInt("idEndereco"));
+				end.setCep(rs.getString("cep"));
+				end.setNumero(rs.getInt("numero"));
+				end.setRua(rs.getString("rua"));
+				end.setBairro(rs.getString("bairro"));
+				end.setCidade(rs.getString("estado"));
+				end.setUf(rs.getString("cidade"));
+				frm.setEndereco(end);
+				frm.setUnidade(rs.getString("unidade"));
+				frm.setStatus(rs.getString("statusFarmacia"));
+			
+				lista.add(frm);
+			}
+		} catch (SQLException e) {
+			System.out.println("Erro de conexão no banco de dados");
+			e.printStackTrace();
+			throw new DAOException(e);
+		}
+		return lista;
+	}
+
 }

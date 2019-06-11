@@ -1,25 +1,42 @@
 package com.curso.entity;
 
+import javafx.scene.control.Button;
+
 public class Funcionario extends Pessoa{
 	
 	private long cpf;
 	private String nome;
 	private String sobrenome;
-	//private Funcao funcao;
+	private Funcao funcao;
 	private Farmacia farmacia;
 	private Endereco endereco;
-	private double salario;
+	private float salario;
+	private Button btnExcluir = new Button("Excluir");
 	
+	
+	
+	public Button getBtnExcluir() {
+		return btnExcluir;
+	}
+	public void setBtnExcluir(Button btnExcluir) {
+		this.btnExcluir = btnExcluir;
+	}
+	public Funcao getFuncao() {
+		return funcao;
+	}
+	public void setFuncao(Funcao funcao) {
+		this.funcao = funcao;
+	}
 	public Endereco getEndereco() {
 		return endereco;
 	}
 	public void setEndereco(Endereco endereco) {
 		this.endereco = endereco;
 	}
-	public double getSalario() {
+	public float getSalario() {
 		return salario;
 	}
-	public void setSalario(double salario) {
+	public void setSalario(float salario) {
 		this.salario = salario;
 	}
 	public long getCpf() {

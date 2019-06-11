@@ -1,6 +1,6 @@
 package com.curso.entity;
 
-import java.util.Date;
+import java.sql.Date;
 
 public  class Pessoa {
 	
