@@ -1,11 +1,7 @@
 package com.curso.boundary;
-
-
 import java.util.ArrayList;
 import java.util.Date;
-
 import javax.swing.JOptionPane;
-
 import com.curso.control.ControlFornecedores;
 import com.curso.entity.Fornecedor;
 import com.curso.entity.Fornecedor;
@@ -14,7 +10,6 @@ import com.curso.entity.Endereco;
 import com.curso.entity.Farmacia;
 import com.curso.entity.Fornecedor;
 import com.curso.entity.ProblemaSaude;
-
 import javafx.application.Application;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyLongWrapper;
@@ -593,7 +588,5 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 		}
 		return isValid;
 	}
-
-
 
 }

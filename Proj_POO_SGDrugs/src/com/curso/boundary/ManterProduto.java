@@ -259,14 +259,14 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 
 		TableColumn<Produto, String> categoria_produto = new TableColumn<>("Categoria");
 		categoria_produto.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getCategoria()));
-		categoria_produto.setPrefWidth(180);
+		categoria_produto.setPrefWidth(200);
 
-		/*TableColumn<Produto, String> fornecedor_produto = new TableColumn<>("Fornecedor");
+		TableColumn<Produto, String> fornecedor_produto = new TableColumn<>("Fornecedor");
 		fornecedor_produto.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getFornecedor().getNome_fantasia()));
-		fornecedor_produto.setPrefWidth(150);*/
+		fornecedor_produto.setPrefWidth(150);
 
 		CAD_tblProdutos.setItems(cp.getGetListProdutos());
-		CAD_tblProdutos.getColumns().addAll(id_produto, desc_produto, categoria_produto);
+		CAD_tblProdutos.getColumns().addAll(id_produto, desc_produto, categoria_produto, fornecedor_produto);
 
 	}
 
@@ -284,11 +284,11 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 		categoria_produto.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getCategoria()));
 		categoria_produto.setPrefWidth(230);
 
-		/*TableColumn<Produto, Number> fornecedor_produto = new TableColumn<>("Fornecedor");
-		fornecedor_produto.setCellValueFactory(item -> new ReadOnlyIntegerWrapper(item.getValue().getFornecedor().getID()));
-		fornecedor_produto.setPrefWidth(230);*/
+		TableColumn<Produto, String> fornecedor_produto = new TableColumn<>("Fornecedor");
+		fornecedor_produto.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getFornecedor().getNome_fantasia()));
+		fornecedor_produto.setPrefWidth(230);
 
-		CTR_tblProdutos.getColumns().addAll(id_produto, desc_produto, categoria_produto);
+		CTR_tblProdutos.getColumns().addAll(id_produto, desc_produto, categoria_produto, fornecedor_produto);
 		CTR_tblProdutos.setItems(cp.getGetListProdutos());
 
 	}
@@ -425,7 +425,7 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 							 + produto.getCategoria() + "\nFornecedor: " + produto.getFornecedor(),
 							"Opração Efetuada com Exito!", JOptionPane.INFORMATION_MESSAGE);
 					resetarCampos();
-				} catch (DAOException e) {
+				  } catch (DAOException e) {
 					e.printStackTrace();
 				
 				}
@@ -434,7 +434,7 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 		if(event.getSource() == CTR_btnPesquisar) {
 			
 			try {
-				cp.PesquisarProduto(CTR_txtPesquisar.getText());
+					cp.PesquisarProduto(CTR_txtPesquisar.getText());
 			} catch (DAOException e) {
 				e.printStackTrace();
 				System.out.println("Erro de Conexão");

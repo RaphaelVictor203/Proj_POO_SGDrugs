@@ -1,18 +1,16 @@
 package com.curso.dao;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
 import com.curso.entity.Cliente;
 import com.curso.entity.Endereco;
 import com.curso.entity.FarmaciaProduto;
 import com.curso.entity.Grupo;
 
-public class FarmaciaProdutoDAOImpl implements FarmaciaProdutoDAO{
+public class FarmaciaProdutoDAOImpl implements FarmaciaProdutoDAO {
 
 	@Override
 	public void inserir(FarmaciaProduto fp) throws DAOException {
@@ -31,7 +29,7 @@ public class FarmaciaProdutoDAOImpl implements FarmaciaProdutoDAO{
 			stmt.executeUpdate();
 			con.close();
 		} catch (SQLException e) {
-			System.out.println("Erro de conex„o no banco de dados");
+			System.out.println("Erro de conex√£o no banco de dados");
 			e.printStackTrace();
 			throw new DAOException(e);
 		}
@@ -62,7 +60,7 @@ public class FarmaciaProdutoDAOImpl implements FarmaciaProdutoDAO{
 				fp.setQntdEstoque(rs.getInt("qntd"));
 			}
 		} catch (SQLException e) {
-			System.out.println("Erro de conex„o no banco de dados");
+			System.out.println("Erro de conex√£o no banco de dados");
 			e.printStackTrace();
 			throw new DAOException(e);
 		}
@@ -80,15 +78,29 @@ public class FarmaciaProdutoDAOImpl implements FarmaciaProdutoDAO{
 		List<FarmaciaProduto> lista = new ArrayList<>();
 		String sql = "";
 		if(tipo.equals("NOME")) {
-			sql = "select fp.idFarmaciaProduto, p.idProduto, p.categoria, p.descricao, fp.qntd, fp.precoUnit, fp.idGrupo, fp.idSecao from tbfarmaciaproduto as fp"
+
+			sql = "select p.idProduto, p.categoria, p.descricao, fp.qntd, fp.precoUnit from tbfarmaciaproduto as fp"
 					+ " inner join tbproduto as p on p.idProduto=fp.idProduto where p.descricao=?";
-		}else
+		} else
 		if(tipo.equals("CATEGORIA")) {
-			sql = "select fp.idFarmaciaProduto, p.idProduto, p.categoria, p.descricao, fp.qntd, fp.precoUnit, fp.idGrupo, fp.idSecao from tbfarmaciaproduto as fp"
+			sql = "select p.idProduto, p.categoria, p.descricao, fp.qntd, fp.precoUnit from tbfarmaciaproduto as fp"
 					+ " inner join tbproduto as p on p.idProduto=fp.idProduto where p.categoria=?";
 		}else
+      
+		/* if(tipo.equals("FORNECEDOR")) {
+		
+			sql = "select fp.idFarmaciaProduto, p.idProduto, p.categoria, p.descricao, fp.qntd, fp.precoUnit, fp.idGrupo, fp.idSecao from tbfarmaciaproduto as fp"
+					+ " inner join tbproduto as p on p.idProduto=fp.idProduto where p.descricao=?";
+		} else */
+		
+    if(tipo.equals("CATEGORIA")) {
+			sql = "select fp.idFarmaciaProduto, p.idProduto, p.categoria, p.descricao, fp.qntd, fp.precoUnit, fp.idGrupo, fp.idSecao from tbfarmaciaproduto as fp"
+			+ " inner join tbproduto as p on p.idProduto=fp.idProduto where p.categoria=?";
+		} else
+      
 		if(tipo.equals("FORNECEDOR")) {
 			sql = "select fp.idFarmaciaProduto, p.idProduto, p.categoria, p.descricao, fp.qntd, fp.precoUnit, fp.idGrupo, fp.idSecao from tbfarmaciaproduto as fp"
+
 					+ " inner join tbproduto as p on p.idProduto=fp.idProduto inner join tbfornecedor as f"
 					+ " on f.idFornecedor=p.idFornecedor where f.nomeFantasia=?";
 		}
@@ -111,7 +123,7 @@ public class FarmaciaProdutoDAOImpl implements FarmaciaProdutoDAO{
 				lista.add(fp);
 			}
 		} catch (SQLException e) {
-			System.out.println("Erro de conex„o no banco de dados");
+			System.out.println("Erro de conex√£o no banco de dados");
 			e.printStackTrace();
 			throw new DAOException(e);
 		}
@@ -144,7 +156,40 @@ public class FarmaciaProdutoDAOImpl implements FarmaciaProdutoDAO{
 				lista.add(fp);
 			}
 		} catch (SQLException e) {
-			System.out.println("Erro de conex„o no banco de dados");
+			System.out.println("Erro de conex√£o no banco de dados");
+			e.printStackTrace();
+			throw new DAOException(e);
+		}
+		return lista;
+	}
+	
+	@Override
+	public List<FarmaciaProduto> pesquisarFarmaciaProdutos() throws DAOException {
+		GrupoDAOImpl gdi = new GrupoDAOImpl();
+		SessaoDAOImpl sdi = new SessaoDAOImpl();
+		ProdutoDAOImpl pdi = new ProdutoDAOImpl();
+		FarmaciaDAOImpl fdi = new FarmaciaDAOImpl();
+		List<FarmaciaProduto> lista = new ArrayList<>();
+		String sql = "select fp.idFarmaciaProduto, p.idProduto, p.categoria, p.descricao, fp.qntd, fp.precoUnit, fp.idGrupo, fp.idSecao from tbfarmaciaproduto as fp"
+					+ " inner join tbproduto as p on p.idProduto=fp.idProduto";
+		
+		try {
+			Connection con = ConnectionManager.getInstance().getConnection();
+			PreparedStatement stmt = con.prepareStatement(sql);
+			ResultSet  rs = stmt.executeQuery();		
+			while(rs.next()) {
+				FarmaciaProduto fp = new FarmaciaProduto();
+				//fp.setFarmacia(fdi.pesquisarFarmacia(rs.getInt("idFarmacia")));
+				fp.setIdFarmaciaProd(rs.getInt("idFarmaciaProduto"));
+				fp.setGrupo(gdi.pesquisarPorGrupo(rs.getInt("idGrupo")));
+				fp.setSessao(sdi.pesquisarPorSessao(rs.getInt("idSecao")));
+				fp.setPreco(rs.getDouble("precoUnit"));
+				fp.setProduto(pdi.consultarProduto(rs.getInt("idProduto")));
+				fp.setQntdEstoque(rs.getInt("qntd"));
+				lista.add(fp);
+			}
+		} catch (SQLException e) {
+			System.out.println("Erro de conex√£o no banco de dados");
 			e.printStackTrace();
 			throw new DAOException(e);
 		}
@@ -153,12 +198,9 @@ public class FarmaciaProdutoDAOImpl implements FarmaciaProdutoDAO{
 
 	@Override
 	public void alterar(FarmaciaProduto fp) throws DAOException {
-		// TODO Auto-generated method stub
 		
 	}
-
-	@Override
-	public void remover(int id_produto) throws DAOException {
+ public void remover(int id_produto) throws DAOException {
 		System.out.println(id_produto);
 		try {
 			Connection con = ConnectionManager.getInstance().getConnection();
@@ -168,12 +210,14 @@ public class FarmaciaProdutoDAOImpl implements FarmaciaProdutoDAO{
 			stmt.executeUpdate();
 			con.close();
 		} catch (SQLException e) {
-			System.out.println("Erro de conex„o no banco de dados");
+			System.out.println("Erro de conex√£o no banco de dados");
 			e.printStackTrace();
 			throw new DAOException(e);
 		}		
-	}
 
+}	
+  
+}
 	
 
-}
+

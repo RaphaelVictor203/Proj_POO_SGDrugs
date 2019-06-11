@@ -15,6 +15,7 @@ public class Fornecedor {
 	
 	private Button btnEditar;
 	private Button btnExcluir;
+	
 	public Fornecedor() {
 		
 		this.btnEditar = new Button("Editar");
@@ -72,6 +73,6 @@ public class Fornecedor {
 	public String toString() {
 		
 		return getNome_fantasia();
-	}
-	
+	}	
+
 }

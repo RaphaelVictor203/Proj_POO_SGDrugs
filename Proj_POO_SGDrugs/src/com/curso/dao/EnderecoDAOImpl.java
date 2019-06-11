@@ -9,7 +9,7 @@ import java.util.List;
 
 import com.curso.entity.Endereco;
 
-public class EnderecoDAOImpl implements EnderecoDAO{
+public class EnderecoDAOImpl implements EnderecoDAO {
 
 	@Override
 	public boolean inserir(Endereco end) throws DAOException {
@@ -33,7 +33,7 @@ public class EnderecoDAOImpl implements EnderecoDAO{
 				return false;
 			}
 		} catch (SQLException e) {
-			System.out.println("Erro de conex„o no banco de dados");
+			System.out.println("Erro de conex√£o no banco de dados");
 			e.printStackTrace();
 			throw new DAOException(e);
 		}		
@@ -56,7 +56,7 @@ public class EnderecoDAOImpl implements EnderecoDAO{
 			end.setCidade(rs.getString("estado"));
 			end.setUf(rs.getString("cidade"));
 		} catch (SQLException e) {
-			System.out.println("Erro de conex„o no banco de dados");
+			System.out.println("Erro de conex√£o no banco de dados");
 			e.printStackTrace();
 			throw new DAOException(e);
 		}
@@ -90,7 +90,7 @@ public class EnderecoDAOImpl implements EnderecoDAO{
 				lista.add(end);
 			}
 		} catch (SQLException e) {
-			System.out.println("Erro de conex„o no banco de dados");
+			System.out.println("Erro de conex√£o no banco de dados");
 			e.printStackTrace();
 			throw new DAOException(e);
 		}
@@ -116,7 +116,7 @@ public class EnderecoDAOImpl implements EnderecoDAO{
 			stmt.executeUpdate();
 			con.close();
 		} catch (SQLException e) {
-			System.out.println("Erro de conex„o no banco de dados");
+			System.out.println("Erro de conex√£o no banco de dados");
 			e.printStackTrace();
 			throw new DAOException(e);
 		}
@@ -133,7 +133,7 @@ public class EnderecoDAOImpl implements EnderecoDAO{
 			stmt.executeUpdate();
 			con.close();
 		} catch (SQLException e) {
-			System.out.println("Erro de conex„o no banco de dados");
+			System.out.println("Erro de conex√£o no banco de dados");
 			e.printStackTrace();
 			throw new DAOException(e);
 		}
@@ -158,7 +158,7 @@ public class EnderecoDAOImpl implements EnderecoDAO{
 				end.setUf(rs.getString("cidade"));
 			}
 		} catch (SQLException e) {
-			System.out.println("Erro de conex„o no banco de dados");
+			System.out.println("Erro de conex√£o no banco de dados");
 			e.printStackTrace();
 			throw new DAOException(e);
 		}
@@ -184,7 +184,7 @@ public class EnderecoDAOImpl implements EnderecoDAO{
 				end.setUf(rs.getString("cidade"));
 			}
 		} catch (SQLException e) {
-			System.out.println("Erro de conex„o no banco de dados");
+			System.out.println("Erro de conex√£o no banco de dados");
 			e.printStackTrace();
 			throw new DAOException(e);
 		}

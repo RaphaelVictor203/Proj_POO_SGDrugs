@@ -12,12 +12,11 @@ import com.curso.entity.Produto;
 
 public class ProdutoDAOImpl implements ProdutoDAO {
 
-
 	@Override
 	public void inserirProduto(Produto p) throws DAOException {
-			
+
 		try {
-	
+
 			Connection con = ConnectionManager.getInstance().getConnection();
 			String sql = "INSERT INTO tbProduto (descricao, categoria, idFornecedor) VALUES(?, ?, ?)";
 			PreparedStatement cmd = con.prepareStatement(sql);
@@ -28,49 +27,79 @@ public class ProdutoDAOImpl implements ProdutoDAO {
 			cmd.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			System.out.println("Erro na Conex„o");
+			System.out.println("Erro na Conex√£o");
 			throw new DAOException(e);
 		}
 	}
 
 	@Override
 	public List<Produto> consultarProduto(String desc) throws DAOException {
-		
+
 		List<Produto> lista = new ArrayList<>();
-		
+		FornecedorDAOImpl fcdi = new FornecedorDAOImpl();
+
 		try {
 			Connection con = ConnectionManager.getInstance().getConnection();
-			String sql = "SELECT idProduto, descricao, categoria FROM tbProduto Where descricao like ?";
+			String sql = "SELECT * FROM tbProduto Where descricao like ?";
 			PreparedStatement cmd = con.prepareStatement(sql);
 			cmd.setString(1, "%" + desc + "%");
-	
-			ResultSet  rs = cmd.executeQuery();	
-			while(rs.next()) {
+
+			ResultSet rs = cmd.executeQuery();
+			while (rs.next()) {
 				Produto p = new Produto();
-				
+
 				p.setId_produto(rs.getInt("idProduto"));
 				p.setNome(rs.getString("descricao"));
 				p.setCategoria(rs.getString("categoria"));
+				p.setFornecedor(fcdi.pesquisarPorFornecedor(rs.getInt("idFornecedor")));
 				lista.add(p);
 			}
-			
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println("Erro no Produto");
 			throw new DAOException(e);
 		}
-			
+
 		return lista;
 	}
 	
-
 	@Override
-	public void alterarProduto(Produto p) {
+	public void alterarProduto(Produto p) throws DAOException {
+
+		try {
+			Connection con = ConnectionManager.getInstance().getConnection();
+			String sql = "UPDATE tbProduto set descricao=?, categoria=?, idFarmacia=? WHERE idProduto=?";
+			PreparedStatement cmd = con.prepareStatement(sql);
+			cmd.setInt(1, p.getId_produto());
+			cmd.setString(2, p.getNome());
+			cmd.setString(3, p.getCategoria());
+			cmd.setInt(4, p.getFornecedor().getID());
+			cmd.executeUpdate();
+
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+		}
 
 	}
 
 	@Override
-	public void excluirProduto(Produto p) {
+	public void excluirProduto(Produto p) throws DAOException {
+
+		try {
+			Connection con = ConnectionManager.getInstance().getConnection();
+			String sql = "DELETE FROM tbProduto WHERE idProduto=?";
+			PreparedStatement cmd = con.prepareStatement(sql);
+			cmd.setInt(1, p.getId_produto());
+			cmd.setString(2, p.getNome());
+			cmd.setString(3, p.getCategoria());
+			cmd.setInt(4, p.getFornecedor().getID());
+			cmd.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 
 	}
 
@@ -91,7 +120,7 @@ public class ProdutoDAOImpl implements ProdutoDAO {
 				p.setCategoria(rs.getString("categoria"));
 			}
 		} catch (SQLException e) {
-			System.out.println("Erro de conex„o no banco de dados");
+			System.out.println("Erro de conex√£o no banco de dados");
 			e.printStackTrace();
 			throw new DAOException(e);
 		}
@@ -116,12 +145,11 @@ public class ProdutoDAOImpl implements ProdutoDAO {
 				lista.add(p);
 			}
 		} catch (SQLException e) {
-			System.out.println("Erro de conex„o no banco de dados");
+			System.out.println("Erro de conex√£o no banco de dados");
 			e.printStackTrace();
 			throw new DAOException(e);
 		}
 		return lista;
 	}
-
 
 }

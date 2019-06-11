@@ -13,5 +13,7 @@ public interface EnderecoDAO {
 	List<Endereco> pesquisarEndereco(String cep, int num, String rua, String bairro) throws DAOException;
 	void alterar(Endereco end) throws DAOException ;
 	void remover(Endereco end) throws DAOException ;
+	Endereco pesquisarEnderecoFarmacia(int id) throws DAOException;
+	Endereco pesquisarEnderecoFornecedor(long cnpj) throws DAOException;
 	
 }

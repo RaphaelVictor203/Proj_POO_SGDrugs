@@ -1,5 +1,5 @@
-package com.curso.dao;
 
+package com.curso.dao;
 import java.util.List;
 import com.curso.entity.Produto;
 
@@ -13,3 +13,4 @@ public interface ProdutoDAO {
 	void excluirProduto(Produto p) throws DAOException;
 	
 }
+
