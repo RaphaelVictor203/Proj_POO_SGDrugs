@@ -2,6 +2,9 @@ package com.curso.boundary;
 
 import javax.swing.JOptionPane;
 
+import com.curso.dao.ClienteDAOImpl;
+import com.curso.dao.DAOException;
+
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -34,8 +37,9 @@ public class ClientePreVendas extends Application implements EventHandler<MouseE
 	private Label InfoCliente,nameClient,cpfClient,idadeClient,sexClient;
 	private Label ruaClient,nClient,bairroClient;
 	private Button btnAvancarSDef;
-	
 	private Stage stg;
+	
+	private ClienteDAOImpl cc = new ClienteDAOImpl();
 	@Override
 	public void start(Stage stgPreV) throws Exception {
 		stg = stgPreV;
@@ -112,8 +116,8 @@ public class ClientePreVendas extends Application implements EventHandler<MouseE
 		IC.setPrefWidth(panegrid.getWidth() * 0.33);
 		
 		btnAvancarSDef.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
-
-		
+		btnAvancar.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
+		btnPesquisar.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
 		
 	}
 	
@@ -180,6 +184,24 @@ public class ClientePreVendas extends Application implements EventHandler<MouseE
 	}
 	@Override
 	public void handle(MouseEvent event) {
+		if(event.getSource()==btnPesquisar) {
+			try {
+				cc.pesquisarPorCliente(Long.parseLong(cpfCliente.getText()));
+				TelaVendas tv = new TelaVendas();
+				try {
+					tv.start(stg);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} catch (NumberFormatException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (DAOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		if(event.getSource()==btnAvancar) {
 			JOptionPane.showMessageDialog(null, "Avançar teste!");
 		}else
