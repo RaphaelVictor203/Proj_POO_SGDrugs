@@ -78,32 +78,16 @@ public class FarmaciaProdutoDAOImpl implements FarmaciaProdutoDAO {
 		List<FarmaciaProduto> lista = new ArrayList<>();
 		String sql = "";
 		if (tipo.equals("NOME")) {
-
-			sql = "select p.idProduto, p.categoria, p.descricao, fp.qntd, fp.precoUnit from tbfarmaciaproduto as fp"
+			sql = "select fp.idFarmaciaProduto, p.idProduto, p.categoria, p.descricao, fp.qntd, fp.precoUnit, fp.idGrupo, fp.idSecao from tbfarmaciaproduto as fp"
 					+ " inner join tbproduto as p on p.idProduto=fp.idProduto where p.descricao=?";
+			
 		} else if (tipo.equals("CATEGORIA")) {
-			sql = "select p.idProduto, p.categoria, p.descricao, fp.qntd, fp.precoUnit from tbfarmaciaproduto as fp"
-					+ " inner join tbproduto as p on p.idProduto=fp.idProduto where p.categoria=?";
-		} else
-
-		/*
-		 * if(tipo.equals("FORNECEDOR")) {
-		 * 
-		 * sql =
-		 * "select fp.idFarmaciaProduto, p.idProduto, p.categoria, p.descricao, fp.qntd, fp.precoUnit, fp.idGrupo, fp.idSecao from tbfarmaciaproduto as fp"
-		 * +
-		 * " inner join tbproduto as p on p.idProduto=fp.idProduto where p.descricao=?";
-		 * } else
-		 */
-
-		if (tipo.equals("CATEGORIA")) {
 			sql = "select fp.idFarmaciaProduto, p.idProduto, p.categoria, p.descricao, fp.qntd, fp.precoUnit, fp.idGrupo, fp.idSecao from tbfarmaciaproduto as fp"
 					+ " inner join tbproduto as p on p.idProduto=fp.idProduto where p.categoria=?";
+			
 		} else
-
 		if (tipo.equals("FORNECEDOR")) {
 			sql = "select fp.idFarmaciaProduto, p.idProduto, p.categoria, p.descricao, fp.qntd, fp.precoUnit, fp.idGrupo, fp.idSecao from tbfarmaciaproduto as fp"
-
 					+ " inner join tbproduto as p on p.idProduto=fp.idProduto inner join tbfornecedor as f"
 					+ " on f.idFornecedor=p.idFornecedor where f.nomeFantasia=?";
 		}
