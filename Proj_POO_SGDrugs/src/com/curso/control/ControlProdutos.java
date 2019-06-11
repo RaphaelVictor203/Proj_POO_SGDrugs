@@ -12,17 +12,14 @@ import com.curso.entity.Produto;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-
 public class ControlProdutos {
 
 	private ProdutoDAOImpl produtoDAO = new ProdutoDAOImpl();
-	
 	private List<Produto> ltProdutos = new ArrayList<>();
-
 	private ObservableList<Produto> obsProdutos = FXCollections.observableArrayList();
-
 	private ObservableList<Produto> dataListProds = FXCollections.observableArrayList();
-  	
+
+
 	public ObservableList<Produto> getGetListProdutos() {
 		return obsProdutos;
 	}
@@ -50,13 +47,12 @@ public class ControlProdutos {
 	}
 	
 	public void PesquisarProduto(String desc) throws DAOException {
-		
 			obsProdutos.clear();
 			obsProdutos.addAll(produtoDAO.consultarProduto(desc));
 	
 	}
-  
-	public Produto selecionarProduto(int id) {
+ 
+  public Produto selecionarProduto(int id) {
 		try {
 			return produtoDAO.consultarProduto(id);
 		} catch (DAOException e) {
@@ -71,12 +67,8 @@ public class ControlProdutos {
 		return null;*/
 		return null;
 	}
-	
-	public ObservableList<Produto> getDataListProds() {
-		return this.dataListProds;
-	}
-
-	public void attTableProds() {
+  
+  public void attTableProds() {
 		this.dataListProds.clear();
 		//this.dataListProds.addAll(ltProdutos);
 		try {
@@ -85,4 +77,10 @@ public class ControlProdutos {
 			e.printStackTrace();
 		}
 	}
+
+	public ObservableList<Produto> getDataListProds() {
+	  	return this.dataListProds;
+	  }
+
 }
+

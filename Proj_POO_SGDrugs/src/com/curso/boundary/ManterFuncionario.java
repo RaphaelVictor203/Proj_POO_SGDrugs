@@ -766,6 +766,4 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 		return isValid;
 	}
 
-
-
 }

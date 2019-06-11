@@ -1,3 +1,4 @@
+
 package com.curso.dao;
 
 import java.sql.Connection;
@@ -44,7 +45,7 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 			stmt.executeUpdate();
 			con.close();
 		} catch (SQLException e) {
-			System.out.println("Erro de conex„o no banco de dados");
+			System.out.println("Erro de conex√£o no banco de dados");
 			e.printStackTrace();
 			throw new DAOException(e);
 		}		
@@ -96,7 +97,7 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 			fr.setEndereco(end);
 			
 		} catch (SQLException e) {
-			System.out.println("Erro de conex„o no banco de dados");
+			System.out.println("Erro de conex√£o no banco de dados");
 			e.printStackTrace();
 			throw new DAOException(e);
 		}
@@ -151,7 +152,7 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 				lista.add(fr);
 			}
 		} catch (SQLException e) {
-			System.out.println("Erro de conex„o no banco de dados");
+			System.out.println("Erro de conex√£o no banco de dados");
 			e.printStackTrace();
 			throw new DAOException(e);
 		}
@@ -176,7 +177,7 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 			edi.alterar(Fornecedor.getEndereco());
 			far.alterar(Fornecedor.getFarmacia());
 		} catch (SQLException e) {
-			System.out.println("Erro de conex„o no banco de dados");
+			System.out.println("Erro de conex√£o no banco de dados");
 			e.printStackTrace();
 			throw new DAOException(e);
 		}
@@ -197,7 +198,7 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 			stmt.executeUpdate();
 			con.close();
 		} catch (SQLException e) {
-			System.out.println("Erro de conex„o no banco de dados");
+			System.out.println("Erro de conex√£o no banco de dados");
 			e.printStackTrace();
 			throw new DAOException(e);
 		}
@@ -218,10 +219,11 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 				fr.setNome_fantasia(rs.getString("nomeFantasia"));
 				fr.setCnpj(rs.getLong("cnpj"));
 				fr.setTelefone(rs.getLong("telefone"));
-				fr.setEndereco(edi.pesquisarEnderecoFornecedor(rs.getInt("cnpj")));
+        fr.setEndereco(edi.pesquisarEnderecoFornecedor(rs.getInt("idEndereco")));      
 			}
+      
 		} catch (SQLException e) {
-			System.out.println("Erro de conex„o no banco de dados");
+			System.out.println("Erro de conex√£o no banco de dados");
 			e.printStackTrace();
 			throw new DAOException(e);
 		}
@@ -229,3 +231,4 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 	}
 
 }
+
