@@ -36,7 +36,7 @@ public class FuncionarioDAOImpl implements FuncionarioDAO {
 			stmt.setString(2, fn.getSobrenome());
 			stmt.setString(3, String.valueOf(fn.getCpf()));
 			stmt.setInt(4,1);
-			stmt.setInt(5, 1);
+			stmt.setInt(5, fn.getFarmacia().getId());
 			stmt.setInt(6, ed.getIdEndereco());
 			float salario = (float) fn.getSalario();
 			stmt.setFloat(7,salario);
@@ -63,6 +63,7 @@ public class FuncionarioDAOImpl implements FuncionarioDAO {
 	public Funcionario pesquisarFuncionario(long cpf) throws DAOException {
 		Funcionario f = new Funcionario();
 		EnderecoDAOImpl edi = new EnderecoDAOImpl();
+		FarmaciaDAOImpl fdi = new FarmaciaDAOImpl();
 		try {
 			Connection con = ConnectionManager.getInstance().getConnection();
 			//String sql = "SELECT * from tbcliente where cpf like ?";
@@ -84,8 +85,7 @@ public class FuncionarioDAOImpl implements FuncionarioDAO {
 				f.setEnd(edi.pesquisarEnderecoFuncionario(cpf));
 				f.setSobrenome(rs.getString("sobrenome"));
 				f.setSalario(rs.getFloat("salario"));
-				Farmacia frm = new Farmacia();
-				frm.setId(rs.getInt("idFarmacia"));
+				Farmacia frm = fdi.pesquisarFarmacia(rs.getInt("idFarmacia"));
 				Funcao func = new Funcao(rs.getInt("IdFuncao"));
 				f.setFarmacia(frm);
 				f.setFuncao(func);

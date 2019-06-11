@@ -413,7 +413,9 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 		ed.setNumero(Integer.parseInt(this.txtNum.getText()));
 		ed.setCidade(this.cmbCid.getSelectionModel().getSelectedItem());
 		ed.setUf(this.cmbUF.getSelectionModel().getSelectedItem());
-		ed.setIdEndereco(funcio.funcSel.getEnd().getIdEndereco());
+		if(funcio.funcSel.getEnd() != null) {
+			ed.setIdEndereco(funcio.funcSel.getEnd().getIdEndereco());
+		}
 		//fun.setFuncao(funcao);
 	    fun.setEnd(ed);
 		return fun;

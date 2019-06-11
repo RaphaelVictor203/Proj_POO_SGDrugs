@@ -40,5 +40,12 @@ public class Farmacia {
 		this.status = status;
 	}
 
+	@Override
+	public String toString() {
+		return Unidade;
+	}
+
+	
+	
 }
 
