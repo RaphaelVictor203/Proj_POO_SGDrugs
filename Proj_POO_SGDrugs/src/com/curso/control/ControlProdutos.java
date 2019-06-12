@@ -76,7 +76,7 @@ public class ControlProdutos {
 	}
 
 	public Produto SearchProdutoTabela(String entrada) throws DAOException {
-
+			
 			return (Produto) produtoDAO.consultarProduto(entrada);
 	}
 
@@ -90,7 +90,6 @@ public class ControlProdutos {
 		try {
 			return produtoDAO.consultarProduto(id);
 		} catch (DAOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		/*
