@@ -7,6 +7,8 @@ import javax.swing.JOptionPane;
 import com.curso.control.ControlClientes;
 import com.curso.control.ControlFuncionario;
 import com.curso.control.ControlVendas;
+import com.curso.dao.FarmaciaDAO;
+import com.curso.dao.FarmaciaDAOImpl;
 import com.curso.dao.FuncionarioDAO;
 import com.curso.dao.FuncionarioDAOImpl;
 import com.curso.entity.Cliente;
@@ -83,8 +85,10 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 	@Override
 	public void start(Stage stage) throws Exception {
 		
+		FarmaciaDAO fai = new FarmaciaDAOImpl();
 		FuncionarioDAO fdi = new FuncionarioDAOImpl();
 		func = fdi.pesquisarPorFuncionarios().get(0);
+		func.setFarmacia(fai.pesquisarFarmacia().get(0));
 
 		cv = new ControlVendas();
 		
