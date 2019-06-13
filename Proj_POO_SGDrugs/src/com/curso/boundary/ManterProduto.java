@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Random;
 
 import javax.swing.JOptionPane;
+
+import com.curso.control.ControlFornecedores;
 import com.curso.control.ControlProdutos;
 import com.curso.dao.DAOException;
 import com.curso.dao.ProdutoDAO;
@@ -19,6 +21,8 @@ import com.sun.xml.internal.ws.api.pipe.ThrowableContainerPropertySet;
 import javafx.application.Application;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -26,6 +30,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -42,6 +47,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import sun.util.resources.cldr.brx.CalendarData_brx_IN;
 
 public class ManterProduto extends Application implements EventHandler<MouseEvent> {
 
@@ -60,14 +66,17 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 	private Button CAD_btnInserir;
 	private Button CAD_btnCancelar;
 	private Button CAD_btnPesquisar;
+	private Button CAD_btnAlterar;
+	private Button CAD_btnExcluir;
 	private TextField CAD_txtPesquisar;
 	private Button CTR_btnPesquisar;
 	private TextField CTR_txtPesquisar;
 	private TableView<Produto> CAD_tblProdutos;
 	private TableView<Produto> CTR_tblProdutos;
 	private Button btnPrimeiro, btnAnterior, btnProximo, btnUltimo;
-
-	private ProdutoDAOImpl dao = new ProdutoDAOImpl();
+	private Produto p;
+	//private Fornecedor fornecedor;
+	//private ControlFornecedores cf = new ControlFornecedores();
 	private ControlProdutos cp = new ControlProdutos();
 
 	@Override
@@ -95,13 +104,20 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 
 		CAD_btnInserir = new Button("Inserir");
 		CAD_btnInserir.setPrefSize(220, 40);
+
 		CAD_btnCancelar = new Button("Cancelar");
+		CAD_btnCancelar.setPrefSize(220, 40);
+
+		CAD_btnAlterar = new Button("Alterar");
+		CAD_btnAlterar.setPrefSize(220, 40);
+
+		CAD_btnExcluir = new Button("Excluir");
+		CAD_btnExcluir.setPrefSize(220, 40);
 
 		ImageView search1 = new ImageView(new Image(new FileInputStream("imgs\\search.png")));
 		search1.setFitWidth(20);
 		search1.setFitHeight(20);
 
-		CAD_btnCancelar.setPrefSize(220, 40);
 		CAD_btnPesquisar = new Button("", search1);
 		CAD_btnPesquisar.setPrefSize(35, 20);
 
@@ -130,22 +146,23 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 				new HBox(10, new Label("Categoria: "), CAD_cmbCategoria),
 				new HBox(10, new Label("Fornecedor: "), CAD_cmbFornecedor));
 		vbCadastro.setSpacing(8);
-		vbCadastro.setPadding(new Insets(39, 40, 40, 80));
+		vbCadastro.setPadding(new Insets(16, 40, 40, 80));
 		vbCadastro.setStyle("-fx-font-size: 15px;");
 
 		VBox vbPesquisaCAD = new VBox(new Label("PESQUISA"), new Separator(),
 				new HBox(5, CAD_txtPesquisar, CAD_btnPesquisar));
 		vbPesquisaCAD.setSpacing(8);
-		vbPesquisaCAD.setPadding(new Insets(39, 0, 20, 0));
+		vbPesquisaCAD.setPadding(new Insets(16, 0, 20, 0));
 		vbPesquisaCAD.setStyle("-fx-font-size: 15px;");
 
 		VBox vbTabela = new VBox(new HBox(new Label("LISTA DE PRODUTOS")), new Separator(), new HBox(CAD_tblProdutos));
-		vbTabela.setPadding(new Insets(20, 0, 0, 0));
+		vbTabela.setPadding(new Insets(10, 0, 0, 0));
 		vbTabela.setSpacing(10);
 		vbTabela.setStyle("-fx-font-size: 15px;");
 
-		HBox hbButtons = new HBox(CAD_btnInserir, CAD_btnCancelar);
-		hbButtons.setSpacing(20);
+		HBox hbButtons = new HBox(new VBox(5, CAD_btnInserir, CAD_btnCancelar),
+				new VBox(5, CAD_btnAlterar, CAD_btnExcluir));
+		hbButtons.setSpacing(8);
 		hbButtons.setPadding(new Insets(7, 0, 0, 40));
 		hbButtons.setAlignment(Pos.BASELINE_CENTER);
 
@@ -228,18 +245,29 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 		pane.setCenter(painels);
 
 		stage.setMaximized(true);
-		Scene cena = new Scene(pane, stage.getWidth(),stage.getHeight());
+		Scene cena = new Scene(pane, stage.getWidth(), stage.getHeight());
 		stage.setScene(cena);
 		stage.setTitle("Manter Produtos");
 		stage.show();
 
 		CAD_btnInserir.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
 		CAD_btnCancelar.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
+		CAD_btnAlterar.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
+		CAD_btnExcluir.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
+
 		CAD_btnPesquisar.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
 		CAD_btnProdutos.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
+
 		CTR_btnProdutos.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
 		CTR_btnPesquisar.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
-	
+
+		btnPrimeiro.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
+		btnAnterior.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
+		btnProximo.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
+		btnUltimo.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
+
+		CAD_tblProdutos.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
+
 		loadstyles();
 		btnSelected(0);
 
@@ -249,7 +277,19 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 	public void loadtableInsert() throws DAOException {
 
 		cp = new ControlProdutos();
-		
+		CAD_tblProdutos.setItems(cp.getProdutosCAD());
+
+		CAD_tblProdutos.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Produto>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Produto> observable, Produto oldValue, Produto newValue) {
+
+				if (newValue != null) {
+					produtoToBoundary(newValue);
+				}
+			}
+		});
+
 		TableColumn<Produto, Number> id_produto = new TableColumn<>("ID");
 		id_produto.setCellValueFactory(item -> new ReadOnlyIntegerWrapper(item.getValue().getId_produto()));
 
@@ -262,10 +302,11 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 		categoria_produto.setPrefWidth(200);
 
 		TableColumn<Produto, String> fornecedor_produto = new TableColumn<>("Fornecedor");
-		fornecedor_produto.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getFornecedor().getNome_fantasia()));
+		fornecedor_produto.setCellValueFactory(
+				item -> new ReadOnlyStringWrapper(item.getValue().getFornecedor().getNome_fantasia()));
 		fornecedor_produto.setPrefWidth(150);
 
-		CAD_tblProdutos.setItems(cp.getGetListProdutos());
+		cp.CarregarProdutos();
 		CAD_tblProdutos.getColumns().addAll(id_produto, desc_produto, categoria_produto, fornecedor_produto);
 
 	}
@@ -285,11 +326,12 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 		categoria_produto.setPrefWidth(230);
 
 		TableColumn<Produto, String> fornecedor_produto = new TableColumn<>("Fornecedor");
-		fornecedor_produto.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getFornecedor().getNome_fantasia()));
+		fornecedor_produto.setCellValueFactory(
+				item -> new ReadOnlyStringWrapper(item.getValue().getFornecedor().getNome_fantasia()));
 		fornecedor_produto.setPrefWidth(230);
 
 		CTR_tblProdutos.getColumns().addAll(id_produto, desc_produto, categoria_produto, fornecedor_produto);
-		CTR_tblProdutos.setItems(cp.getGetListProdutos());
+		CTR_tblProdutos.setItems(cp.getProdutosCTR());
 
 	}
 
@@ -314,13 +356,13 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 		CAD_cmbFornecedor.setStyle(styleEntradas);
 		CAD_btnInserir.setStyle(styleButtons);
 		CAD_btnCancelar.setStyle(styleButtons);
+		CAD_btnAlterar.setStyle(styleButtons);
+		CAD_btnExcluir.setStyle(styleButtons);
 		CAD_btnPesquisar.setStyle(styleBtnPesquisa);
 		CAD_btnProdutos.setStyle(styleMeuBtn);
-
 		CTR_txtPesquisar.setStyle(styleEntradas);
 		CTR_btnProdutos.setStyle(styleMeuBtn);
 		CTR_btnPesquisar.setStyle(styleBtnPesquisa);
-
 		btnPrimeiro.setStyle(styleButtons);
 		btnAnterior.setStyle(styleButtons);
 		btnProximo.setStyle(styleButtons);
@@ -360,6 +402,7 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 
 	public List<Fornecedor> adicionarFornecedor(List<Fornecedor> fornecedores) {
 
+	
 		Fornecedor fornecedor1 = new Fornecedor();
 		fornecedor1.setID(1);
 		fornecedor1.setNome_fantasia("Drogasil");
@@ -375,11 +418,11 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 		Fornecedor fornecedor4 = new Fornecedor();
 		fornecedor4.setID(4);
 		fornecedor4.setNome_fantasia("Jequiti");
-
+		
 		fornecedores.add(0, fornecedor1);
 		fornecedores.add(1, fornecedor2);
 		fornecedores.add(2, fornecedor3);
-		fornecedores.add(3, fornecedor4);
+		fornecedores.add(3, fornecedor4); 
 
 		return fornecedores;
 	}
@@ -387,6 +430,49 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 	public static void main(String[] args) {
 
 		Application.launch(args);
+	}
+
+	public Produto boundaryToProduto() {
+		
+		p = new Produto();
+		p.setNome(CAD_txtDescricao.getText());
+		p.setCategoria(CAD_cmbCategoria.getSelectionModel().getSelectedItem());
+		p.setFornecedor(CAD_cmbFornecedor.getSelectionModel().getSelectedItem());
+		
+		return p;
+	}
+
+	public void produtoToBoundary(Produto produto) {
+
+		CAD_txtDescricao.setText(produto.getNome());
+		CAD_cmbCategoria.setValue(produto.getCategoria());
+		CAD_cmbFornecedor.setValue(produto.getFornecedor());
+	}
+
+	public boolean validarCampos() {
+
+		boolean isValido = true;
+		if (CAD_txtDescricao.getText().equals("") || CAD_txtDescricao.getText().equals(null)) {
+			CAD_txtDescricao.setStyle(CAD_txtDescricao.getStyle() + "-fx-border-color: red;"
+					+ "-fx-background-radius: 8px;" + "-fx-border-radius: 8px;");
+			isValido = false;
+		}
+		if (CAD_cmbCategoria.getSelectionModel().getSelectedIndex() == -1) {
+			CAD_cmbCategoria.setStyle(CAD_cmbCategoria.getStyle() + "-fx-border-color: red;"
+					+ "-fx-background-radius: 7px;" + "-fx-border-radius: 7px;");
+			isValido = false;
+		}
+		if (CAD_cmbFornecedor.getSelectionModel().getSelectedIndex() == -1) {
+			CAD_cmbFornecedor.setStyle(CAD_cmbFornecedor.getStyle() + "-fx-border-color: red;"
+					+ "-fx-background-radius: 7px;" + "-fx-border-radius: 7px;");
+			isValido = false;
+		}
+		if (!isValido) {
+			Alert alert = new Alert(AlertType.WARNING, "Complete todos os Campos Grifados em Vermelho");
+			alert.setTitle("Atenção");
+			alert.show();
+		}
+		return isValido;
 	}
 
 	@Override
@@ -399,46 +485,106 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 			CTR_painelProdutos.toFront();
 			btnSelected(1);
 		}
-		 if (event.getSource() == CAD_btnCancelar) {
+
+		if (event.getSource() == CAD_btnCancelar) {
 			resetarCampos();
+			try {
+				cp.SearchProdutoCadastro("");
+			} catch (DAOException e) {
+				e.printStackTrace();
+			}
 		}
-	
-		 if (event.getSource() == CAD_btnInserir) {
 
-			Produto produto = new Produto();
+		if (event.getSource() == CAD_btnInserir) {
 
-			produto.setNome(CAD_txtDescricao.getText());
-			produto.setCategoria(CAD_cmbCategoria.getSelectionModel().getSelectedItem());
-			produto.setFornecedor(CAD_cmbFornecedor.getSelectionModel().getSelectedItem());
-
-			if (CAD_txtDescricao.getText() == "" || CAD_cmbCategoria.getSelectionModel().getSelectedIndex() == -1) {
-
-				JOptionPane.showMessageDialog(null, "Complete todos os Campos", "Erro", JOptionPane.ERROR_MESSAGE);
-
-			} else {
-
+			p = boundaryToProduto();
+			if (validarCampos() == true) {
 				try {
-
-					cp.AdicionarProduto(produto);
-					JOptionPane.showMessageDialog(null,
-							"Um Novo Produto foi adicionado: " + "\nDescrição: " + produto.getNome() + "\nCategoria: "
-							 + produto.getCategoria() + "\nFornecedor: " + produto.getFornecedor(),
-							"Opração Efetuada com Exito!", JOptionPane.INFORMATION_MESSAGE);
+					cp.AdicionarProduto(p);
+					Alert alert = new Alert(AlertType.CONFIRMATION, "Produto Inserido com Êxito");
+					alert.show();
 					resetarCampos();
-				  } catch (DAOException e) {
+				} catch (DAOException e) {
 					e.printStackTrace();
-				
 				}
 			}
 		}
-		if(event.getSource() == CTR_btnPesquisar) {
-			
+		if (event.getSource() == CAD_btnPesquisar) {
+
 			try {
-					cp.PesquisarProduto(CTR_txtPesquisar.getText());
+
+				cp.SearchProdutoCadastro(CAD_txtPesquisar.getText());
+				CAD_tblProdutos.requestFocus();
+				CAD_tblProdutos.getSelectionModel().clearAndSelect(0);
+
 			} catch (DAOException e) {
 				e.printStackTrace();
 				System.out.println("Erro de Conexão");
 			}
+
+		}
+
+		if (event.getSource() == CAD_btnAlterar) {
+			p = boundaryToProduto();
+			p.setId_produto(CAD_tblProdutos.getSelectionModel().getSelectedItem().getId_produto());
+			try {
+				if (validarCampos() == true) {
+					cp.AlterarProduto(p);
+					Alert alert = new Alert(AlertType.INFORMATION, "Alteração Realizada com Êxito");
+					alert.show();
+					resetarCampos();
+				}
+			} catch (DAOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		if (event.getSource() == CAD_btnExcluir) {
+			p = new Produto();
+			p.setId_produto(CAD_tblProdutos.getSelectionModel().getSelectedItem().getId_produto());
+			try {
+				cp.ExcluirProduto(p);
+				Alert alert = new Alert(AlertType.INFORMATION, "Exclusão Realizada com Êxito");
+				alert.show();
+				resetarCampos();
+			} catch (DAOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		if (event.getSource() == CTR_btnPesquisar) {
+			try {
+
+				cp.SearchProdutoControle(CTR_txtPesquisar.getText());
+				CTR_tblProdutos.requestFocus();
+				CTR_tblProdutos.getSelectionModel().clearAndSelect(0);
+
+			} catch (DAOException e) {
+				e.printStackTrace();
+				System.out.println("Erro de Conexão");
+			}
+
+		}
+		if (event.getSource() == btnProximo) {
+
+			CTR_tblProdutos.requestFocus();
+			CTR_tblProdutos.getSelectionModel().selectNext();
+		}
+		if (event.getSource() == btnAnterior) {
+
+			CTR_tblProdutos.requestFocus();
+			CTR_tblProdutos.getSelectionModel().selectPrevious();
+		}
+		if (event.getSource() == btnPrimeiro) {
+
+			CTR_tblProdutos.requestFocus();
+			CTR_tblProdutos.getSelectionModel().selectFirst();
+
+		}
+		if (event.getSource() == btnUltimo) {
+
+			CTR_tblProdutos.requestFocus();
+			CTR_tblProdutos.getSelectionModel().selectLast();
 		}
 	}
 
@@ -448,5 +594,6 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 		CAD_cmbCategoria.getSelectionModel().clearAndSelect(-1);
 		CAD_cmbFornecedor.getSelectionModel().clearAndSelect(-1);
 		CAD_txtDescricao.requestFocus();
+		
 	}
 }

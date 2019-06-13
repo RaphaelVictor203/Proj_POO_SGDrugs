@@ -50,25 +50,27 @@ public class FarmaciaDAOImpl implements FarmaciaDAO{
 		Farmacia frm = new Farmacia();
 		try {
 			Connection con = ConnectionManager.getInstance().getConnection();
-			String sql = "SELECT f.idFarmacia,f.unidade,f.statusFarmacia,e.idEndereco,e.cep,e.numero,e.rua,e.bairro,e.estado,e.cidade"
-					+ "from tbFarmacia f inner join tbEndereco e on f.idEndereco=e.idEndereco "
-					+ "where f.cnpj = ?";
+			String sql = "SELECT f.idFarmacia,f.unidade,f.statusFarmacia,e.idEndereco,e.cep,e.numero,e.rua,e.bairro,e.estado,e.cidade "
+					+ "from tbFarmacia  f inner join tbEndereco  e on f.idEndereco=e.idEndereco inner join tbConjFornecedor cf on "
+					+ "cf.idFarmacia = f.idFarmacia inner join tbFornecedor tf on tf.idFornecedor = cf.idFornecedor"
+					+ "where tf.cnpj = ?";
 			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setLong(1, cnpj );
-			ResultSet  rs = stmt.executeQuery();		
-			frm.setId(rs.getInt("idFarmacia"));
-			frm.setUnidade(rs.getString("unidade"));
-			frm.setStatus(rs.getString("statusFarmacia"));
-			Endereco end = new Endereco();
-			end.setIdEndereco(rs.getInt("idEndereco"));
-			end.setCep(rs.getString("cep"));
-			end.setNumero(rs.getInt("numero"));
-			end.setRua(rs.getString("rua"));
-			end.setBairro(rs.getString("bairro"));
-			end.setCidade(rs.getString("estado"));
-			end.setUf(rs.getString("cidade"));
-			frm.setEndereco(end);
-			
+			ResultSet  rs = stmt.executeQuery();
+			while(rs.next()){
+				frm.setId(rs.getInt("idFarmacia"));
+				frm.setUnidade(rs.getString("unidade"));
+				frm.setStatus(rs.getString("statusFarmacia"));
+				Endereco end = new Endereco();
+				end.setIdEndereco(rs.getInt("idEndereco"));
+				end.setCep(rs.getString("cep"));
+				end.setNumero(rs.getInt("numero"));
+				end.setRua(rs.getString("rua"));
+				end.setBairro(rs.getString("bairro"));
+				end.setCidade(rs.getString("estado"));
+				end.setUf(rs.getString("cidade"));
+				frm.setEndereco(end);
+			}
 		} catch (SQLException e) {
 			System.out.println("Erro de conexão no banco de dados");
 			e.printStackTrace();

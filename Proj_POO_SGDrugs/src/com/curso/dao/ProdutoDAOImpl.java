@@ -43,24 +43,21 @@ public class ProdutoDAOImpl implements ProdutoDAO {
 			String sql = "SELECT * FROM tbProduto Where descricao like ?";
 			PreparedStatement cmd = con.prepareStatement(sql);
 			cmd.setString(1, "%" + desc + "%");
-
 			ResultSet rs = cmd.executeQuery();
 			while (rs.next()) {
 				Produto p = new Produto();
-
 				p.setId_produto(rs.getInt("idProduto"));
 				p.setNome(rs.getString("descricao"));
 				p.setCategoria(rs.getString("categoria"));
 				p.setFornecedor(fcdi.pesquisarPorFornecedor(rs.getInt("idFornecedor")));
 				lista.add(p);
 			}
-
+			rs.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println("Erro no Produto");
 			throw new DAOException(e);
 		}
-
 		return lista;
 	}
 	
@@ -68,15 +65,16 @@ public class ProdutoDAOImpl implements ProdutoDAO {
 	public void alterarProduto(Produto p) throws DAOException {
 
 		try {
+			
 			Connection con = ConnectionManager.getInstance().getConnection();
-			String sql = "UPDATE tbProduto set descricao=?, categoria=?, idFarmacia=? WHERE idProduto=?";
+			String sql = "UPDATE tbProduto set descricao=?, categoria=?, idFornecedor=? WHERE idProduto=?";
 			PreparedStatement cmd = con.prepareStatement(sql);
-			cmd.setInt(1, p.getId_produto());
-			cmd.setString(2, p.getNome());
-			cmd.setString(3, p.getCategoria());
-			cmd.setInt(4, p.getFornecedor().getID());
+			cmd.setString(1, p.getNome());
+			cmd.setString(2, p.getCategoria());
+			cmd.setInt(3, p.getFornecedor().getID());
+			cmd.setInt(4, p.getId_produto());
 			cmd.executeUpdate();
-
+			cmd.close();
 		} catch (SQLException e) {
 
 			e.printStackTrace();
@@ -92,10 +90,8 @@ public class ProdutoDAOImpl implements ProdutoDAO {
 			String sql = "DELETE FROM tbProduto WHERE idProduto=?";
 			PreparedStatement cmd = con.prepareStatement(sql);
 			cmd.setInt(1, p.getId_produto());
-			cmd.setString(2, p.getNome());
-			cmd.setString(3, p.getCategoria());
-			cmd.setInt(4, p.getFornecedor().getID());
 			cmd.executeUpdate();
+			cmd.close();
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -141,7 +137,7 @@ public class ProdutoDAOImpl implements ProdutoDAO {
 				p.setId_produto(rs.getInt("idProduto"));
 				p.setNome(rs.getString("descricao"));
 				p.setFornecedor(fdi.pesquisarPorFornecedor(rs.getInt("idFornecedor")));
-				p.setCategoria("categoria");
+				p.setCategoria(rs.getString("categoria"));
 				lista.add(p);
 			}
 		} catch (SQLException e) {
@@ -151,5 +147,6 @@ public class ProdutoDAOImpl implements ProdutoDAO {
 		}
 		return lista;
 	}
+	
 
 }

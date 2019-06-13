@@ -180,7 +180,7 @@ public class ControlClientes {
 	public void removerCliente() {
 		//this.clientesCadastrados.remove(pesquisarCliente(clientSel.getCpf()));
 		try {
-			cdi.remover(clientSel.getCpf());
+			cdi.remover(clientSel.getId());
 		} catch (DAOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -304,7 +304,7 @@ public class ControlClientes {
 				}
 			}
 			try {
-				psdi.removerProblemaCliente(ControlClientes.clientSel.getCpf(), id);
+				psdi.removerProblemaCliente(ControlClientes.clientSel.getId(), id);
 			} catch (DAOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -317,7 +317,7 @@ public class ControlClientes {
 				}
 			}
 			try {
-				psdi.removerProblemaCliente(ControlClientes.clientSel.getCpf(), id);
+				psdi.removerProblemaCliente(ControlClientes.clientSel.getId(), id);
 			} catch (DAOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

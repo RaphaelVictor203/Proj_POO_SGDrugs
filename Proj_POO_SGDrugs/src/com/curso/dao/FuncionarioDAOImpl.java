@@ -153,12 +153,12 @@ public class FuncionarioDAOImpl implements FuncionarioDAO {
 		EnderecoDAOImpl edi = new EnderecoDAOImpl();
 		try {
 			Funcionario f = pesquisarFuncionario(l);
-			edi.remover(f.getEnd());
 			Connection con = ConnectionManager.getInstance().getConnection();
 			String sql = "DELETE FROM tbFuncionario WHERE cpf=?;";		
 			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setLong(1, l);
 			stmt.executeUpdate();
+			edi.remover(f.getEnd());
 			con.close();
 			
 		}catch (SQLException e) {

@@ -46,7 +46,6 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 	private Button btnCadFornec;
 
 	private Pane painelCad;
-	private BorderPane painelMant;
 	private HBox menuTop;
 	private TextField txtNome;
 	private TextField txtCNPJ;
@@ -56,12 +55,8 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 	private TextField txtRua, txtNum;
 	private ComboBox<String> cmbCid, cmbUF;
 	private TextField txtPesquisa;
-	private TextField txtNomePesquisa;
-	private TextField txtCNPJPesquisa;
-	private TextField txtUFPesquisa;
-	private TextField txtCidadePesquisa;
 	private TableView<Fornecedor> tblFornec;
-	private Button btnAddPFornec, btnLimpaCampos, btnCadastrar, btnPesquisa;
+	private Button btnAddPFornec, btnLimpaCampos, btnCadastrar;
 
 	
 	
@@ -77,13 +72,7 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 		
 		
 		txtNome = new TextField();
-		cmbFarmacia = new ComboBox<>(FXCollections.observableArrayList(
-				new Farmacia (),
-				new Farmacia (),
-				new Farmacia (),
-				new Farmacia (),
-				new Farmacia ()
-				)) ;
+		cmbFarmacia = new ComboBox<>(FXCollections.observableArrayList(ff.comboFarm())) ;
 		txtCNPJ = new TextField();
 		txtTelefone = new TextField();
 		txtCEP = new TextField();
@@ -172,33 +161,9 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 		painelCad.getChildren().add(entradaInfoGeral);
 
 //FIM PAINEL CADASTRO----------------------------------------------------------------------------------
-		
-//INICIO PAINEL GERENCIAMENTO--------------------------------------------------------------------------
-		
-		txtNomePesquisa = new TextField();
-		txtCNPJPesquisa = new TextField();
-		txtUFPesquisa = new TextField();
-		txtCidadePesquisa = new TextField();
-		btnPesquisa = new Button("PESQUISAR");
-	
-		
-		Label lblTitulo = new Label("PESQUISA Fornecedor");
-		HBox hb = new HBox(80,
-				new VBox(10,
-							lblTitulo,
-							new Separator(),
-							new HBox(10, new Label("Nome: "), txtNomePesquisa),
-							new HBox(10, new Label("CNPJ.: "), txtCNPJPesquisa, new Label("UF.: "), txtUFPesquisa),
-							new HBox(10, new Label("Cidade: "), txtCidadePesquisa, btnPesquisa)
-						)
-				);
-		hb.setStyle("-fx-font-size: 15px;");
-		painelMant = new BorderPane(hb);
-		
-//FIM PAINEL GERENCIAMENTO-----------------------------------------------------------------------------
-		
+
 		pane.setTop(menuTop);
-		StackPane painels = new StackPane(painelMant, painelCad);
+		StackPane painels = new StackPane(painelCad);
 		pane.setCenter(painels);
 		
 		stage.setMaximized(true);
@@ -211,7 +176,6 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 		btnCadastrar.addEventFilter(MouseEvent.MOUSE_CLICKED, this);
 		btnAddPFornec.addEventFilter(MouseEvent.MOUSE_CLICKED, this);
 		btnLimpaCampos.addEventFilter(MouseEvent.MOUSE_CLICKED, this);
-		btnPesquisa.addEventFilter(MouseEvent.MOUSE_CLICKED, this);
 		
 		addEventosFoco();
 		startStyle();
@@ -281,7 +245,7 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 		tel.setCellValueFactory(item -> new ReadOnlyLongWrapper(item.getValue().getTelefone()));
 		
 		TableColumn<Fornecedor, String> frm = new TableColumn<>("Farmacia");
-		frm.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getFarmacia().toString()));
+		frm.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getFarmacia().getUnidade()));
 		
 		TableColumn<Fornecedor, Button> columnEditar = new TableColumn<>("Editar");
 		columnEditar.setPrefWidth(81);
@@ -367,13 +331,6 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 		
 		DropShadow dp = new DropShadow(4, 0, 0, Color.GRAY);
 		
-		String styleBtnPesquisa = 
-				"-fx-background-color: #0095FE;"
-				+ "-fx-text-fill: white;"
-				+ "-fx-background-radius: 7;"
-				+ "-fx-min-width: 240px;"
-				+ "-fx-min-height: 30px;"
-				+ "-fx-cursor: hand;";
 		
 		String styleBtns = 
 				"-fx-background-color: #0095FE;"
@@ -418,7 +375,6 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 		btnCadFornec.setStyle(styleBtn);
 		
 		painelCad.setStyle(stylePainel);
-		painelMant.setStyle(stylePainel);
 		menuTop.setStyle(styleMenuTop);
 		txtNome.setStyle("-fx-min-width: 450px;" + styleEntradas);
 		txtCNPJ.setStyle("-fx-min-width: 240px;" + styleEntradas);
@@ -437,9 +393,6 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 		btnAddPFornec.setStyle(stylebtnAddPFornec);
 		btnLimpaCampos.setStyle(styleBtns);
 		btnCadastrar.setStyle(styleBtns);
-		txtUFPesquisa.setStyle("-fx-min-width: 200px;" + styleEntradas);
-		txtCidadePesquisa.setStyle("-fx-min-width: 262px;" + styleEntradas);
-		btnPesquisa.setStyle(styleBtnPesquisa);
 
 	}
 	
@@ -476,17 +429,21 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 		
 		if(e.getSource() == btnCadastrar) {
 			if(btnCadastrar.getText().equals("CADASTRAR") && camposValidos()) {
-				JOptionPane.showMessageDialog(null, "Cadastro realizado !!!", "Cadastro", JOptionPane.INFORMATION_MESSAGE);
 				if(ff.cadFornecedor(boundaryToFornecedor())) {
+					Alert a = new Alert(AlertType.INFORMATION, "Cadastro realizado com sucesso !!!");
+					a.show();
 					limparCampos();
 					tblFornec.refresh();
 					setFunctionForButtons();
+				}else {
+					Alert a = new Alert(AlertType.INFORMATION, "Não foi cadastrado !!!");
+					a.show();
 				}
-				
 			}else 
 			if(btnCadastrar.getText().equals("ALTERAR") && camposValidos()){
 				ff.attFornecedor(boundaryToFornecedor());
-				JOptionPane.showMessageDialog(null, "Alterações realizadas com sucesso", "Alteração concluida", JOptionPane.INFORMATION_MESSAGE);
+				Alert a = new Alert(AlertType.INFORMATION, "Alterações realizadas com sucesso !!!");
+				a.show();
 				limparCampos();
 				tblFornec.refresh();
 				setFunctionForButtons();
@@ -495,18 +452,19 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 		if(e.getSource() == btnLimpaCampos) {
 			limparCampos();
 		}
-		if(e.getSource() == btnPesquisa) {
-			if(txtCNPJPesquisa.getText().equals("")) {
+		if(e.getSource() == btnAddPFornec) {
+			if(txtPesquisa.getText().equals("")) {
 				ff.attTableFornecedor();
 				setFunctionForButtons();
 			}else {
-				long CNPJ = Long.parseLong(txtCNPJPesquisa.getText());
+				long CNPJ = Long.parseLong(txtPesquisa.getText());
 				Fornecedor cl = ff.pesquisarFornecedor(CNPJ);
 				if(cl != null) {
 					ff.attTableFornecedor(cl);
 					setFunctionForButtons();
 				}else {
-					JOptionPane.showMessageDialog(null, "FORNECEDOR não encontrado", "Erro", JOptionPane.ERROR_MESSAGE);
+					Alert a = new Alert(AlertType.INFORMATION, "Fornecedor não encontrado !");
+					a.show();
 				}
 			}
 		

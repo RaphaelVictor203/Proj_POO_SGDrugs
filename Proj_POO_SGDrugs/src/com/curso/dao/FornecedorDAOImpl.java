@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.curso.entity.Fornecedor;
+import com.curso.entity.Cliente;
 import com.curso.entity.Endereco;
 import com.curso.entity.Farmacia;
 import com.curso.entity.ProblemaSaude;
@@ -24,7 +25,7 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 			Endereco ed = null;
 			edi.inserir(fr.getEndereco());
 			System.out.println(fr.getEndereco().getCep() + " - " + fr.getEndereco().getNumero() + " - " + fr.getEndereco().getRua() + " - " + fr.getEndereco().getBairro());
-			ed = edi.pesquisarEndereco(fr.getEndereco().getCep(), fr.getEndereco().getNumero(), fr.getEndereco().getRua(), fr.getEndereco().getBairro()).get(0);
+			ed = edi.pesquisarEnderecoFornecedor(fr.getCnpj());
 			
 			System.out.println(edi.pesquisarEndereco(fr.getEndereco().getCep(), fr.getEndereco().getNumero(), fr.getEndereco().getRua(), fr.getEndereco().getBairro()).size());
 			Farmacia fa = null;
@@ -34,18 +35,26 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 			
 			Connection con = ConnectionManager.getInstance().getConnection();
 			String sql = "INSERT INTO tbFornecedor "
-					+ "(nome_fantasia,cnpj,telefone,id_farmacia,id_endereco) "
-					+ " VALUES (?, ?, ?, ?, ?)";
+					+ "(nome_fantasia,cnpj,telefone,id_endereco) "
+					+ " VALUES (?, ?, ?, ?)";
 			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setString(1, fr.getNome_fantasia());
 			stmt.setLong(2, fr.getCnpj());
 			stmt.setLong(3, fr.getTelefone());
-			stmt.setInt(4, fa.getId());
-			stmt.setInt(5, ed.getIdEndereco());
+			stmt.setInt(4, ed.getIdEndereco());
 			stmt.executeUpdate();
+			
+			String sql2 = "INSERT INTO tbConjFornecedor "
+					+ "(id_fornecedor,id_farmacia) "
+					+ " VALUES (?, ?)";
+			PreparedStatement stmt2 = con.prepareStatement(sql2);
+			stmt2.setInt(1, pesquisarPorFornecedor(fr.getCnpj()).getID());
+			stmt2.setInt(2, fr.getFarmacia().getId());
+			stmt2.executeUpdate();
+			
 			con.close();
 		} catch (SQLException e) {
-			System.out.println("Erro de conex√£o no banco de dados");
+			System.out.println("Erro de conex„o no banco de dados");
 			e.printStackTrace();
 			throw new DAOException(e);
 		}		
@@ -59,8 +68,8 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 			Connection con = ConnectionManager.getInstance().getConnection();
 			String sql = "SELECT f.idFornecedor,f.nomeFantasia,f.telefone,f.cnpj,cf.idFarmacia,"
 					+ " efrm.idEndereco idEndFarm, efrm.cep cepFarm, efrm.numero numFarm, efrm.rua ruaFarm,"
-					+ " efrm.bairro bairroFarm, efrm.cidade cidadeFarm, efrm.uf ufFarm,"
-					+ " e.idEndereco,e.cep,e.numero,e.rua,e.bairro,e.cidade,e.uf"
+					+ " efrm.bairro bairroFarm, efrm.cidade ufFarm, efrm.estado estadoFarm,"
+					+ " e.idEndereco,e.cep,e.numero,e.rua,e.bairro,e.cidade uf,e.estado"
 					+ " from tbFornecedor f inner join tbendereco e on e.idEndereco=f.idEndereco"
 					+ " inner join tbConjFornecedor cf on cf.idFornecedor = f.idFornecedor"
 					+ " inner join tbFarmacia fr on fr.idFarmacia = cf.idFarmacia"
@@ -68,36 +77,38 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 					+ " where f.cnpj = ?";
 			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setLong(1, cnpj );
-			ResultSet  rs = stmt.executeQuery();		 
-			fr.setNome_fantasia(rs.getString("nomeFantasia"));
-			fr.setCnpj(rs.getLong("cnpj"));
-			fr.setTelefone(rs.getLong("telefone"));
-
-			Farmacia frm = new Farmacia();
-			frm.setId(rs.getInt("idFarmacia"));
-			Endereco endFarm = new Endereco();
-			endFarm.setIdEndereco(rs.getInt("idEndFarm"));
-			endFarm.setCep(rs.getString("cepFarm"));
-			endFarm.setNumero(rs.getInt("numFarm"));
-			endFarm.setRua(rs.getString("ruaFarm"));
-			endFarm.setBairro(rs.getString("bairroFarm"));
-			endFarm.setCidade(rs.getString("cidadeFarm"));
-			endFarm.setUf(rs.getString("ufFarm"));
-			frm.setEndereco(endFarm);
-			fr.setFarmacia(frm);
-			
-			Endereco end = new Endereco();
-			end.setIdEndereco(rs.getInt("idEndereco"));
-			end.setCep(rs.getString("cep"));
-			end.setNumero(rs.getInt("numero"));
-			end.setRua(rs.getString("rua"));
-			end.setBairro(rs.getString("bairro"));
-			end.setCidade(rs.getString("cidade"));
-			end.setUf(rs.getString("UF"));
-			fr.setEndereco(end);
-			
+			ResultSet  rs = stmt.executeQuery();
+			while(rs.next()) {
+				fr.setID(rs.getInt("idFornecedor"));
+				fr.setNome_fantasia(rs.getString("nomeFantasia"));
+				fr.setCnpj(rs.getLong("cnpj"));
+				fr.setTelefone(rs.getLong("telefone"));
+	
+				Farmacia frm = new Farmacia();
+				frm.setId(rs.getInt("idFarmacia"));
+				Endereco endFarm = new Endereco();
+				endFarm.setIdEndereco(rs.getInt("idEndFarm"));
+				endFarm.setCep(rs.getString("cepFarm"));
+				endFarm.setNumero(rs.getInt("numFarm"));
+				endFarm.setRua(rs.getString("ruaFarm"));
+				endFarm.setBairro(rs.getString("bairroFarm"));
+				endFarm.setCidade(rs.getString("estadoFarm"));
+				endFarm.setUf(rs.getString("ufFarm"));
+				frm.setEndereco(endFarm);
+				fr.setFarmacia(frm);
+				
+				Endereco end = new Endereco();
+				end.setIdEndereco(rs.getInt("idEndereco"));
+				end.setCep(rs.getString("cep"));
+				end.setNumero(rs.getInt("numero"));
+				end.setRua(rs.getString("rua"));
+				end.setBairro(rs.getString("bairro"));
+				end.setCidade(rs.getString("estado"));
+				end.setUf(rs.getString("uf"));
+				fr.setEndereco(end);
+			}
 		} catch (SQLException e) {
-			System.out.println("Erro de conex√£o no banco de dados");
+			System.out.println("Erro de conex„o no banco de dados");
 			e.printStackTrace();
 			throw new DAOException(e);
 		}
@@ -109,8 +120,8 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 		List<Fornecedor> lista = new ArrayList<>();
 		String sql = "SELECT f.idFornecedor,f.nomeFantasia,f.telefone,f.cnpj,cf.idFarmacia,"
 				+ " efrm.idEndereco idEndFarm, efrm.cep cepFarm, efrm.numero numFarm, efrm.rua ruaFarm,"
-				+ " efrm.bairro bairroFarm, efrm.cidade cidadeFarm, efrm.uf ufFarm,"
-				+ " e.idEndereco,e.cep,e.numero,e.rua,e.bairro,e.cidade,e.uf"
+				+ " efrm.bairro bairroFarm, efrm.estado estadoFarm, efrm.cidade ufFarm,"
+				+ " e.idEndereco,e.cep,e.numero,e.rua,e.bairro,e.estado,e.cidade uf"
 				+ " from tbFornecedor f inner join tbendereco e on e.idEndereco=f.idEndereco"
 				+ " inner join tbConjFornecedor cf on cf.idFornecedor = f.idFornecedor"
 				+ " inner join tbFarmacia fr on fr.idFarmacia = cf.idFarmacia"
@@ -123,6 +134,7 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 			ResultSet  rs = stmt.executeQuery();
 			while (rs.next()) { 
 				Fornecedor fr = new Fornecedor();
+				fr.setID(rs.getInt("idFornecedor"));
 				fr.setNome_fantasia(rs.getString("nomeFantasia"));
 				fr.setCnpj(rs.getLong("cnpj"));
 				fr.setTelefone(rs.getLong("telefone"));
@@ -135,7 +147,7 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 				endFarm.setNumero(rs.getInt("numFarm"));
 				endFarm.setRua(rs.getString("ruaFarm"));
 				endFarm.setBairro(rs.getString("bairroFarm"));
-				endFarm.setCidade(rs.getString("cidadeFarm"));
+				endFarm.setCidade(rs.getString("estadoFarm"));
 				endFarm.setUf(rs.getString("ufFarm"));
 				frm.setEndereco(endFarm);
 				fr.setFarmacia(frm);
@@ -146,13 +158,66 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 				end.setNumero(rs.getInt("numero"));
 				end.setRua(rs.getString("rua"));
 				end.setBairro(rs.getString("bairro"));
-				end.setCidade(rs.getString("cidade"));
-				end.setUf(rs.getString("UF"));
+				end.setCidade(rs.getString("estado"));
+				end.setUf(rs.getString("uf"));
 				fr.setEndereco(end);
 				lista.add(fr);
 			}
 		} catch (SQLException e) {
-			System.out.println("Erro de conex√£o no banco de dados");
+			System.out.println("Erro de conex„o no banco de dados");
+			e.printStackTrace();
+			throw new DAOException(e);
+		}
+		return lista;
+	}
+	
+	public List<Fornecedor> pesquisarPorFornecedor() throws DAOException{
+		List<Fornecedor> lista = new ArrayList<Fornecedor>();
+		String sql = "SELECT f.idFornecedor,f.nomeFantasia,f.telefone,f.cnpj,cf.idFarmacia,"
+				+ " efrm.idEndereco idEndFarm, efrm.cep cepFarm, efrm.numero numFarm, efrm.rua ruaFarm,"
+				+ " efrm.bairro bairroFarm, efrm.estado cidadeFarm, efrm.cidade ufFarm,"
+				+ " e.idEndereco,e.cep,e.numero,e.rua,e.bairro,e.estado,e.cidade uf"
+				+ " from tbFornecedor f inner join tbendereco e on e.idEndereco=f.idEndereco"
+				+ " inner join tbConjFornecedor cf on cf.idFornecedor = f.idFornecedor"
+				+ " inner join tbFarmacia fr on fr.idFarmacia = cf.idFarmacia"
+				+ " inner join tbEndereco efrm on efrm.idEndereco = fr.idEndereco";
+		try {		
+			Connection con = ConnectionManager.getInstance().getConnection();
+			PreparedStatement stmt = con.prepareStatement(sql);
+			ResultSet  rs = stmt.executeQuery();
+			while (rs.next()) { 
+				Fornecedor fr = new Fornecedor();
+				fr.setID(rs.getInt("idFornecedor"));
+				fr.setNome_fantasia(rs.getString("nomeFantasia"));
+				fr.setCnpj(rs.getLong("cnpj"));
+				fr.setTelefone(rs.getLong("telefone"));
+
+				Farmacia frm = new Farmacia();
+				frm.setId(rs.getInt("idFarmacia"));
+				Endereco endFarm = new Endereco();
+				endFarm.setIdEndereco(rs.getInt("idEndFarm"));
+				endFarm.setCep(rs.getString("cepFarm"));
+				endFarm.setNumero(rs.getInt("numFarm"));
+				endFarm.setRua(rs.getString("ruaFarm"));
+				endFarm.setBairro(rs.getString("bairroFarm"));
+				endFarm.setCidade(rs.getString("estadoFarm"));
+				endFarm.setUf(rs.getString("ufFarm"));
+				frm.setEndereco(endFarm);
+				fr.setFarmacia(frm);
+				
+				Endereco end = new Endereco();
+				end.setIdEndereco(rs.getInt("idEndereco"));
+				end.setCep(rs.getString("cep"));
+				end.setNumero(rs.getInt("numero"));
+				end.setRua(rs.getString("rua"));
+				end.setBairro(rs.getString("bairro"));
+				end.setCidade(rs.getString("estado"));
+				end.setUf(rs.getString("uf"));
+				fr.setEndereco(end);
+				lista.add(fr);
+			}
+		} catch (SQLException e) {
+			System.out.println("Erro de conex„o no banco de dados");
 			e.printStackTrace();
 			throw new DAOException(e);
 		}
@@ -198,7 +263,7 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 			stmt.executeUpdate();
 			con.close();
 		} catch (SQLException e) {
-			System.out.println("Erro de conex√£o no banco de dados");
+			System.out.println("Erro de conex„o no banco de dados");
 			e.printStackTrace();
 			throw new DAOException(e);
 		}
@@ -223,12 +288,15 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 			}
       
 		} catch (SQLException e) {
-			System.out.println("Erro de conex√£o no banco de dados");
+			System.out.println("Erro de conex„o no banco de dados");
 			e.printStackTrace();
 			throw new DAOException(e);
 		}
 		return fr;
 	}
+
+
+
 
 }
 
