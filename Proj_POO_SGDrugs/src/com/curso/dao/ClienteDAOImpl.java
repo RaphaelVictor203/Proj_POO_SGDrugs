@@ -59,7 +59,7 @@ public class ClienteDAOImpl implements ClienteDAO{
 		try {
 			Connection con = ConnectionManager.getInstance().getConnection();
 			//String sql = "SELECT * from tbcliente where cpf like ?";
-			String sql = "SELECT c.nome, c.cpf, c.rg, c.sexo, c.datanasc, c.telefone, c.email, c.cartaoSus, e.idEndereco, e.CEP, e.numero,"
+			String sql = "SELECT c.idCliente, c.nome, c.cpf, c.rg, c.sexo, c.datanasc, c.telefone, c.email, c.cartaoSus, e.idEndereco, e.CEP, e.numero,"
 					+ "e.rua, e.bairro, e.cidade, e.estado from tbcliente as c "
 					+ "inner join tbendereco as e on e.idEndereco=c.idEndereco where c.cpf like ?";
 			PreparedStatement stmt = con.prepareStatement(sql);
@@ -67,6 +67,7 @@ public class ClienteDAOImpl implements ClienteDAO{
 			ResultSet  rs = stmt.executeQuery();		
 			while(rs.next()) {
 				cl = new Cliente();
+				cl.setId(rs.getInt("idCliente"));
 				cl.setPrimeiroNome(rs.getString("nome"));
 				cl.setCpf(rs.getLong("cpf"));
 				cl.setRg(rs.getLong("rg"));
@@ -84,7 +85,7 @@ public class ClienteDAOImpl implements ClienteDAO{
 				end.setCidade(rs.getString("estado"));
 				end.setUf(rs.getString("cidade"));
 				cl.setEnd(end);
-				cl.setProblemasSaude(psdi.pesquisarPorProblemas(cl.getCpf()));
+				cl.setProblemasSaude(psdi.pesquisarPorProblemas(cl.getId()));
 			}
 		} catch (SQLException e) {
 			System.out.println("Erro de conexão no banco de dados");
@@ -100,12 +101,12 @@ public class ClienteDAOImpl implements ClienteDAO{
 		String sql = "";
 		
 		if(tipo.equals("CIDADE")) {
-			sql = "SELECT c.nome, c.cpf, c.rg, c.sexo, c.telefone, c.email, c.cartaoSus, e.idEndereco, e.CEP, e.numero,"
+			sql = "SELECT c.idCliente, c.nome, c.cpf, c.rg, c.sexo, c.telefone, c.email, c.cartaoSus, e.idEndereco, e.CEP, e.numero,"
 					+ "e.rua, e.bairro, e.cidade, e.estado from tbcliente as c "
 					+ "inner join tbendereco as e on e.idEndereco=c.idEndereco where e.estado like ?";
 			
 		}else {
-			sql = "SELECT c.nome, c.cpf, c.rg, c.sexo, c.telefone, c.email, c.cartaoSus, e.idEndereco, e.CEP, e.numero,"
+			sql = "SELECT c.idCliente, c.nome, c.cpf, c.rg, c.sexo, c.telefone, c.email, c.cartaoSus, e.idEndereco, e.CEP, e.numero,"
 					+ "e.rua, e.bairro, e.cidade, e.estado from tbcliente as c "
 					+ "inner join tbendereco as e on e.idEndereco=c.idEndereco where c.nome like ?";
 		}
@@ -116,6 +117,7 @@ public class ClienteDAOImpl implements ClienteDAO{
 			ResultSet  rs = stmt.executeQuery();
 			while (rs.next()) { 
 				Cliente cl = new Cliente();
+				cl.setId(rs.getInt("idCliente"));
 				cl.setPrimeiroNome(rs.getString("nome"));
 				cl.setCpf(rs.getLong("cpf"));
 				cl.setRg(rs.getLong("rg"));
@@ -132,7 +134,7 @@ public class ClienteDAOImpl implements ClienteDAO{
 				end.setCidade(rs.getString("estado"));
 				end.setUf(rs.getString("cidade"));
 				cl.setEnd(end);
-				cl.setProblemasSaude(psdi.pesquisarPorProblemas(cl.getCpf()));
+				cl.setProblemasSaude(psdi.pesquisarPorProblemas(cl.getId()));
 				lista.add(cl);
 			}
 		} catch (SQLException e) {
@@ -148,13 +150,14 @@ public class ClienteDAOImpl implements ClienteDAO{
 		try {
 			Connection con = ConnectionManager.getInstance().getConnection();
 			//String sql = "SELECT * from tbcliente where cpf like ?";
-			String sql = "SELECT c.nome, c.cpf, c.rg, c.sexo, c.telefone, c.email, c.cartaoSus, e.idEndereco, e.CEP, e.numero,"
+			String sql = "SELECT c.idCliente, c.nome, c.cpf, c.rg, c.sexo, c.telefone, c.email, c.cartaoSus, e.idEndereco, e.CEP, e.numero,"
 					+ "e.rua, e.bairro, e.cidade, e.estado from tbcliente as c "
 					+ "inner join tbendereco as e on e.idEndereco=c.idEndereco";
 			PreparedStatement stmt = con.prepareStatement(sql);
 			ResultSet  rs = stmt.executeQuery();		 
 			while (rs.next()) { 
 				Cliente cl = new Cliente();
+				cl.setId(rs.getInt("idCliente"));
 				cl.setPrimeiroNome(rs.getString("nome"));
 				cl.setCpf(rs.getLong("cpf"));
 				cl.setRg(rs.getLong("rg"));
@@ -171,7 +174,7 @@ public class ClienteDAOImpl implements ClienteDAO{
 				end.setCidade(rs.getString("estado"));
 				end.setUf(rs.getString("cidade"));
 				cl.setEnd(end);
-				cl.setProblemasSaude(psdi.pesquisarPorProblemas(cl.getCpf()));
+				cl.setProblemasSaude(psdi.pesquisarPorProblemas(cl.getId()));
 				lista.add(cl);
 			}
 		} catch (SQLException e) {
@@ -207,7 +210,7 @@ public class ClienteDAOImpl implements ClienteDAO{
 			System.out.println(cliente.getEnd().getIdEndereco());
 			edi.alterar(cliente.getEnd());
 			for(ProblemaSaude ps : cliente.getProblemasSaude()) {
-				psdi.removerProblemaCliente(cliente.getCpf(), ps.getId_problema());
+				psdi.removerProblemaCliente(cliente.getId(), ps.getId_problema());
 			}
 			psdi.inserirProbCliente(cliente);
 			
@@ -220,19 +223,19 @@ public class ClienteDAOImpl implements ClienteDAO{
 
 
 	@Override
-	public void remover(long cpf) throws DAOException {
+	public void remover(int idCliente) throws DAOException {
 		try {
-			Cliente cl = pesquisarPorCliente(cpf);
+			Cliente cl = pesquisarPorCliente(idCliente);
 			for(ProblemaSaude ps : cl.getProblemasSaude()) {
-				psdi.removerProblemaCliente(cpf, ps.getId_problema());
+				psdi.removerProblemaCliente(cl.getId(), ps.getId_problema());
 			}
-			edi.remover(cl.getEnd());
 			Connection con = ConnectionManager.getInstance().getConnection();
 			String sql = "delete from tbcliente "
 					+ " where cpf=?";
 			PreparedStatement stmt = con.prepareStatement(sql);
-			stmt.setLong(1, cpf);
+			stmt.setLong(1, cl.getCpf());
 			stmt.executeUpdate();
+			edi.remover(cl.getEnd());
 			con.close();
 		} catch (SQLException e) {
 			System.out.println("Erro de conexão no banco de dados");

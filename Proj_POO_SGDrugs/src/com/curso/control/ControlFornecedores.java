@@ -56,6 +56,22 @@ public class ControlFornecedores {
 		}
 	}
 	
+	public List<Fornecedor> pesquisarFornecedor(Fornecedor f){
+		
+		List<Fornecedor> fornecedores = new ArrayList<>();
+		try {
+			
+			for(Fornecedor forn : fornecDAO.pesquisarPorFornecedor()) {
+				 forn.getNome_fantasia();
+				 fornecedores.add(forn);
+			}
+			
+		} catch(DAOException e) {
+			e.printStackTrace();
+		}
+
+		return fornecedores;	
+	}
 	public void pesquisarFornecedor(String nome) {
 		dataList.clear();
 		if(!nome.equals("")) {
