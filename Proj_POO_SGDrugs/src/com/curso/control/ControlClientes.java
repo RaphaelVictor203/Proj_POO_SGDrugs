@@ -180,7 +180,7 @@ public class ControlClientes {
 	public void removerCliente() {
 		//this.clientesCadastrados.remove(pesquisarCliente(clientSel.getCpf()));
 		try {
-			cdi.remover(clientSel.getId());
+			cdi.remover(clientSel.getCpf());
 		} catch (DAOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

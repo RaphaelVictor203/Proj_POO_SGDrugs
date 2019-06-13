@@ -374,6 +374,7 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 				limparCampos();
 				Cliente c = cc.pesquisarCliente((long) tblCli.getItems().get(l).getCpf());
 				ControlClientes.clientSel = c;
+				System.out.println("clientSel = " + ControlClientes.clientSel.getId());
 				cc.removerCliente();
 				cc.attTableCliente();
 				setFunctionCliButtons();
@@ -544,7 +545,6 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 				Alert a = new Alert(AlertType.INFORMATION, "Cadastro realizado com sucesso !!!");
 				a.show();
 				if (cc.cadCliente(boundaryToCliente())) {
-					cc.cadProbCliente();
 					limparCampos();
 				}
 				tblCli.refresh();

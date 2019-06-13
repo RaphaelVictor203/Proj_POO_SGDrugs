@@ -42,9 +42,10 @@ public class ClienteDAOImpl implements ClienteDAO{
 			stmt.setString(8, cl.getEmail());
 			stmt.setLong(9, cl.getCartaoSUS());
 			stmt.executeUpdate();
-		
-			psdi.inserirProbCliente(cl);
 			con.close();
+			
+			psdi.inserirProbCliente(cl);
+
 		} catch (SQLException e) {
 			System.out.println("Erro de conexão no banco de dados");
 			e.printStackTrace();
@@ -188,6 +189,7 @@ public class ClienteDAOImpl implements ClienteDAO{
 
 	@Override
 	public void alterar(Cliente cliente) throws DAOException {
+		System.out.println("teste id cliente alterar" + cliente.getId());
 		try {
 			
 			Connection con = ConnectionManager.getInstance().getConnection();
@@ -210,7 +212,7 @@ public class ClienteDAOImpl implements ClienteDAO{
 			System.out.println(cliente.getEnd().getIdEndereco());
 			edi.alterar(cliente.getEnd());
 			for(ProblemaSaude ps : cliente.getProblemasSaude()) {
-				psdi.removerProblemaCliente(cliente.getId(), ps.getId_problema());
+				psdi.removerProblemaCliente(pesquisarPorCliente(cliente.getCpf()).getId(), ps.getId_problema());
 			}
 			psdi.inserirProbCliente(cliente);
 			
@@ -223,11 +225,13 @@ public class ClienteDAOImpl implements ClienteDAO{
 
 
 	@Override
-	public void remover(int idCliente) throws DAOException {
+	public void remover(long cpf) throws DAOException {
 		try {
-			Cliente cl = pesquisarPorCliente(idCliente);
-			for(ProblemaSaude ps : cl.getProblemasSaude()) {
-				psdi.removerProblemaCliente(cl.getId(), ps.getId_problema());
+			Cliente cl = pesquisarPorCliente(cpf);
+			if(cl.getProblemasSaude() != null) {
+				for(ProblemaSaude ps : cl.getProblemasSaude()) {
+					psdi.removerProblemaCliente(cl.getId(), ps.getId_problema());
+				}
 			}
 			Connection con = ConnectionManager.getInstance().getConnection();
 			String sql = "delete from tbcliente "

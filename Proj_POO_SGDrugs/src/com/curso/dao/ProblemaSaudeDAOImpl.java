@@ -33,6 +33,7 @@ public class ProblemaSaudeDAOImpl implements ProblemaSaudeDAO{
 
 	@Override
 	public void inserirProbCliente(Cliente cl) throws DAOException {
+		ClienteDAO cdi = new ClienteDAOImpl();
 		try {
 			Connection con = ConnectionManager.getInstance().getConnection();
 			String sql;
@@ -43,7 +44,7 @@ public class ProblemaSaudeDAOImpl implements ProblemaSaudeDAO{
 						+ " VALUES (?, ?)";
 				stmt = con.prepareStatement(sql);
 				stmt.setInt(1, ps.getId_problema());
-				stmt.setLong(2, cl.getCpf());
+				stmt.setLong(2, cdi.pesquisarPorCliente(cl.getCpf()).getId());
 				stmt.executeUpdate();
 			}
 			con.close();
