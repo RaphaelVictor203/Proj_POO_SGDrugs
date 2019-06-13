@@ -74,7 +74,7 @@ public class FuncionarioDAOImpl implements FuncionarioDAO {
 			stmt.setLong(1, cpf);
 			ResultSet  rs = stmt.executeQuery();		 
 			while(rs.next()) {
-				f.setPrimeiroNome(rs.getString("nome"));
+				f.setNome(rs.getString("nome"));
 				f.setDt_nasc(rs.getDate("dtnascimento"));
 				System.out.println("teste - " + f.getDt_nasc().getYear());
 				f.setCpf(rs.getLong("cpf"));

@@ -10,6 +10,7 @@ import com.curso.control.ControlClientes;
 import com.curso.control.ControlFuncionario;
 import com.curso.dao.DAOException;
 import com.curso.dao.FarmaciaDAOImpl;
+import com.curso.dao.FuncionarioDAO;
 import com.curso.dao.FuncionarioDAOImpl;
 import com.curso.entity.Cliente;
 import com.curso.entity.Endereco;
@@ -198,13 +199,13 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 //INICIO PAINEL GERENCIAMENTO--------------------------------------------------------------------------
 		
 		txtNomePesquisa = new TextField();
-		txtPesquisa = new TextField();
+		//txtPesquisa = new TextField();
 		txtUFPesquisa = new TextField();
 		txtCidadePesquisa = new TextField();
 		btnPesquisa = new Button("PESQUISAR");
 	
 		
-		Label lblTitulo = new Label("PESQUISA CLIENTE");
+		/*Label lblTitulo = new Label("PESQUISA CLIENTE");
 		HBox hb = new HBox(80,
 				new VBox(10,
 							lblTitulo,
@@ -215,7 +216,7 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 						)
 				);
 		hb.setStyle("-fx-font-size: 15px;");
-		painelMant = new BorderPane(hb);
+		painelMant = new BorderPane(hb);*/
 		
 //FIM PAINEL GERENCIAMENTO-----------------------------------------------------------------------------
 		
@@ -233,7 +234,7 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 		btnCadastrar.addEventFilter(MouseEvent.MOUSE_CLICKED, this);
 		btnAddProb.addEventFilter(MouseEvent.MOUSE_CLICKED, this);
 		btnLimpaCampos.addEventFilter(MouseEvent.MOUSE_CLICKED, this);
-		btnPesquisa.addEventFilter(MouseEvent.MOUSE_CLICKED, this);
+		//btnPesquisa.addEventFilter(MouseEvent.MOUSE_CLICKED, this);
 		
 		addEventosFoco();
 		startStyle();
@@ -316,6 +317,7 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 					try {
 						//System.out.println("teste cpf - " + funcionario2.getCpf());
 						btnCadastrar.setText("ALTERAR");
+						btnLimpaCampos.setText("CANCELAR ALTERAÇÃO");
 						FuncionarioToBoundary(dao.pesquisarFuncionario(funcionario2.getCpf()));
 					} catch (DAOException e) {
 						// TODO Auto-generated catch block
@@ -367,7 +369,7 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 	@SuppressWarnings("deprecation")
 	public void FuncionarioToBoundary(Funcionario c) {
 		funcio.funcSel = c;
-		this.txtNome.setText(c.getPrimeiroNome());
+		this.txtNome.setText(c.getNome());
 		this.cmbDia.getSelectionModel().select(Integer.toString(c.getDt_nasc().getDate()));
 		this.cmbMes.getSelectionModel().select(Integer.toString(c.getDt_nasc().getMonth()));
 		this.cmbAno.getSelectionModel().select(Integer.toString(c.getDt_nasc().getYear()));
@@ -478,7 +480,7 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 		btnCadCli.setStyle(styleBtn);
 		
 		painelCad.setStyle(stylePainel);
-		painelMant.setStyle(stylePainel);
+		/*painelMant.setStyle(stylePainel);*/
 		menuTop.setStyle(styleMenuTop);
 		txtNome.setStyle("-fx-min-width: 100px;" + styleEntradas);
 		cmbDia.setStyle(styleEntradaDataNasc + styleEntradas + comboStyle);
@@ -537,7 +539,7 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 
 	@Override
 	public void handle(MouseEvent e) {
-		
+		FuncionarioDAO fdi = new FuncionarioDAOImpl();
 		if(e.getSource() == btnCadastrar && camposValidos()) {
 			if(btnCadastrar.getText().equals("ALTERAR")&& camposValidos()) {
 			    alterarFuncionario();
@@ -547,6 +549,22 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 			   limparCampos();
 			}
 			funcio.attTableFuncionario();
+		}else
+		if(e.getSource() == btnLimpaCampos) {
+			if(btnLimpaCampos.getText().equals("CANCELAR ALTERAÇÃO")) {
+				btnCadastrar.setText("CADASTRAR");
+				limparCampos();
+			}else {
+				limparCampos();
+			}
+		}else
+		if(e.getSource() == btnAddProb) {
+			if(!txtPesquisa.getText().equals("")) {
+				funcio.pesquisarFuncionario(Long.parseLong(txtPesquisa.getText()));
+			}else {
+				funcio.attTableFuncionario();
+			}
+			setFunctionFuncButtons();
 		}
 		
 	}

@@ -88,4 +88,14 @@ public class ControlFuncionario {
 		//System.out.println(ClassList.funcionario.size()+" kkkkkkk");
 	}
 
+	public void pesquisarFuncionario(long cpf) {
+		this.dataList.clear();
+		try {
+			this.dataList.add(dao.pesquisarFuncionario(cpf));
+		} catch (DAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 }
