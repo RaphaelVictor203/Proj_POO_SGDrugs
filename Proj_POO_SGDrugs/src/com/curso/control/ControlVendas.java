@@ -2,6 +2,10 @@ package com.curso.control;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.curso.dao.DAOException;
+import com.curso.dao.VendaDAO;
+import com.curso.dao.VendaDAOImpl;
 import com.curso.entity.Cliente;
 import com.curso.entity.FarmaciaProduto;
 import com.curso.entity.FormaPagto;
@@ -16,6 +20,7 @@ public class ControlVendas {
 	private List<FarmaciaProduto> produtos;
 	private ObservableList<ItemVenda> dataItens = FXCollections.observableArrayList();
 	private List<Venda> vendasRealizadas;
+	private VendaDAO vdi = new VendaDAOImpl();
 	
 	public ControlVendas() {
 	   
@@ -95,8 +100,14 @@ public class ControlVendas {
 	
 	public void addVenda() {
 		this.vendasRealizadas.add(this.getVendaAtual());
+		//this.vendaAtual.setId_venda(this.vendasRealizadas.size());
+		try {
+			vdi.inserir(this.vendaAtual);
+		} catch (DAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		this.vendaAtual = new Venda();
-		this.vendaAtual.setId_venda(this.vendasRealizadas.size());
 		printVendas();
 		attDataItens();
 	}

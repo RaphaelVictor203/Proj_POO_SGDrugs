@@ -5,7 +5,10 @@ import java.text.DecimalFormat;
 import javax.swing.JOptionPane;
 
 import com.curso.control.ControlClientes;
+import com.curso.control.ControlFuncionario;
 import com.curso.control.ControlVendas;
+import com.curso.dao.FuncionarioDAO;
+import com.curso.dao.FuncionarioDAOImpl;
 import com.curso.entity.Cliente;
 import com.curso.entity.FarmaciaProduto;
 import com.curso.entity.FormaPagto;
@@ -75,15 +78,13 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 	
 	ControlVendas cv;
 	
-	//TESTE
-	Cliente cl = new Cliente();
 	Funcionario func = new Funcionario();
 
 	@Override
 	public void start(Stage stage) throws Exception {
 		
-		cl.setPrimeiroNome("Raphael");
-		func.setPrimeiroNome("Adalberto");
+		FuncionarioDAO fdi = new FuncionarioDAOImpl();
+		func = fdi.pesquisarPorFuncionarios().get(0);
 
 		cv = new ControlVendas();
 		
@@ -475,7 +476,7 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 		}else
 		if(event.getSource() == btnFinalizaPOS) {
 			//finalizar a compra tela pos venda
-			cv.getVendaAtual().setCliente(cl);
+			cv.getVendaAtual().setCliente(cliente);
 			cv.getVendaAtual().setFuncionario(func);
 			cv.addVenda();
 			JOptionPane.showMessageDialog(null, "Compra realiza com sucesso !!!", "Transação finalizada", JOptionPane.INFORMATION_MESSAGE);
