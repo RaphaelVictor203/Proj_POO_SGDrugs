@@ -15,6 +15,7 @@ public class Cliente {
 	private char sexo;
 	private Endereco end;
 	private List<ProblemaSaude> problemasSaude;
+	private int id;
 	
 	private Button btnEditar;
 	private Button btnExcluir;
@@ -26,6 +27,20 @@ public class Cliente {
 		this.end = new Endereco();
 	}
 	
+	
+	
+	public int getId() {
+		return id;
+	}
+
+
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+
+
 	public char getSexo() {
 		return sexo;
 	}

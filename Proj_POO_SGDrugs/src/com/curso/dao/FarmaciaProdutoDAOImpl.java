@@ -15,6 +15,7 @@ public class FarmaciaProdutoDAOImpl implements FarmaciaProdutoDAO {
 
 	@Override
 	public void inserir(FarmaciaProduto fp) throws DAOException {
+		fp.getFarmacia().setId(1);
 		try {
 			Connection con = ConnectionManager.getInstance().getConnection();
 			String sql = "INSERT INTO tbfarmaciaproduto "

@@ -137,7 +137,7 @@ public class ProdutoDAOImpl implements ProdutoDAO {
 				p.setId_produto(rs.getInt("idProduto"));
 				p.setNome(rs.getString("descricao"));
 				p.setFornecedor(fdi.pesquisarPorFornecedor(rs.getInt("idFornecedor")));
-				p.setCategoria("categoria");
+				p.setCategoria(rs.getString("categoria"));
 				lista.add(p);
 			}
 		} catch (SQLException e) {

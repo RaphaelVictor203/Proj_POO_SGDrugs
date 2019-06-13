@@ -39,7 +39,7 @@ public class ProblemaSaudeDAOImpl implements ProblemaSaudeDAO{
 			PreparedStatement stmt;
 			for( ProblemaSaude ps : cl.getProblemasSaude()) {
 				sql = "INSERT INTO tbconjproblemas "
-						+ "(idProblema, cpfCliente) "
+						+ "(idProblema, idCliente) "
 						+ " VALUES (?, ?)";
 				stmt = con.prepareStatement(sql);
 				stmt.setInt(1, ps.getId_problema());
@@ -75,14 +75,14 @@ public class ProblemaSaudeDAOImpl implements ProblemaSaudeDAO{
 	}
 
 	@Override
-	public List<ProblemaSaude> pesquisarPorProblemas(long cpf) throws DAOException {
+	public List<ProblemaSaude> pesquisarPorProblemas(int idCliente) throws DAOException {
 		List<ProblemaSaude> lista = new ArrayList<ProblemaSaude>();
 		try {
 			Connection con = ConnectionManager.getInstance().getConnection();
 			String sql = "SELECT p.idProblema, p.descProblema, p.tipo from tbconjproblemas as c"
-					+ " inner join tbproblemasaude as p on p.idProblema=c.idProblema where c.cpfCliente like ?";
+					+ " inner join tbproblemasaude as p on p.idProblema=c.idProblema where c.idCliente like ?";
 			PreparedStatement stmt = con.prepareStatement(sql);
-			stmt.setString(1, "%" + cpf + "%");
+			stmt.setString(1, "%" + idCliente + "%");
 			ResultSet  rs = stmt.executeQuery();
 			ProblemaSaude ps;
 			while(rs.next()) {
@@ -159,12 +159,12 @@ public class ProblemaSaudeDAOImpl implements ProblemaSaudeDAO{
 	}
 	
 	@Override
-	public void removerProblemaCliente(long cpf, int id) throws DAOException {
+	public void removerProblemaCliente(int idCliente, int id) throws DAOException {
 		try {
 			Connection con = ConnectionManager.getInstance().getConnection();
-			String sql = "delete from tbconjproblemas where cpfCliente=? and idProblema=?";
+			String sql = "delete from tbconjproblemas where idCliente=? and idProblema=?";
 			PreparedStatement stmt = con.prepareStatement(sql);
-			stmt.setLong(1, cpf);
+			stmt.setLong(1, idCliente);
 			stmt.setInt(2, id);
 			stmt.executeUpdate();
 			con.close();
