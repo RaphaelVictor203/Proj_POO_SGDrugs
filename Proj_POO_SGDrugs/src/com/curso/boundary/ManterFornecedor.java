@@ -46,7 +46,6 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 	private Button btnCadFornec;
 
 	private Pane painelCad;
-	private BorderPane painelMant;
 	private HBox menuTop;
 	private TextField txtNome;
 	private TextField txtCNPJ;
@@ -164,7 +163,7 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 //FIM PAINEL CADASTRO----------------------------------------------------------------------------------
 
 		pane.setTop(menuTop);
-		StackPane painels = new StackPane(painelMant, painelCad);
+		StackPane painels = new StackPane(painelCad);
 		pane.setCenter(painels);
 		
 		stage.setMaximized(true);
@@ -246,7 +245,7 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 		tel.setCellValueFactory(item -> new ReadOnlyLongWrapper(item.getValue().getTelefone()));
 		
 		TableColumn<Fornecedor, String> frm = new TableColumn<>("Farmacia");
-		frm.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getFarmacia().toString()));
+		frm.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getFarmacia().getUnidade()));
 		
 		TableColumn<Fornecedor, Button> columnEditar = new TableColumn<>("Editar");
 		columnEditar.setPrefWidth(81);
@@ -376,7 +375,6 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 		btnCadFornec.setStyle(styleBtn);
 		
 		painelCad.setStyle(stylePainel);
-		painelMant.setStyle(stylePainel);
 		menuTop.setStyle(styleMenuTop);
 		txtNome.setStyle("-fx-min-width: 450px;" + styleEntradas);
 		txtCNPJ.setStyle("-fx-min-width: 240px;" + styleEntradas);
@@ -431,14 +429,16 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 		
 		if(e.getSource() == btnCadastrar) {
 			if(btnCadastrar.getText().equals("CADASTRAR") && camposValidos()) {
-				Alert a = new Alert(AlertType.INFORMATION, "Cadastro realizado com sucesso !!!");
-				a.show();
 				if(ff.cadFornecedor(boundaryToFornecedor())) {
+					Alert a = new Alert(AlertType.INFORMATION, "Cadastro realizado com sucesso !!!");
+					a.show();
 					limparCampos();
 					tblFornec.refresh();
 					setFunctionForButtons();
+				}else {
+					Alert a = new Alert(AlertType.INFORMATION, "Não foi cadastrado !!!");
+					a.show();
 				}
-				
 			}else 
 			if(btnCadastrar.getText().equals("ALTERAR") && camposValidos()){
 				ff.attFornecedor(boundaryToFornecedor());

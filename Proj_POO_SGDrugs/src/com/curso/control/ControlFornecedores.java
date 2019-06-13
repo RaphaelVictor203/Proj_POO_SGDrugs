@@ -40,7 +40,7 @@ public class ControlFornecedores {
 //MANTER Fornecedor ------------------------------------------------------
 	
 	public boolean cadFornecedor(Fornecedor fr) {
-		if(!existFornecedor(fr.getCnpj())) {
+		if(existFornecedor(fr.getCnpj())) {
 			try {
 				this.dataList.add(fr);
 				this.fornecDAO.inserir(fr);
