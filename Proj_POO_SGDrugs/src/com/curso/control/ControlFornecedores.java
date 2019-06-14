@@ -8,6 +8,8 @@ import java.util.List;
 import javax.swing.JOptionPane;
 
 import com.curso.entity.Fornecedor;
+import com.curso.dao.ConjFornecedorDAO;
+import com.curso.dao.ConjFornecedorDAOImpl;
 import com.curso.dao.DAOException;
 import com.curso.dao.FarmaciaDAOImpl;
 import com.curso.dao.FornecedorDAOImpl;
@@ -105,8 +107,11 @@ public class ControlFornecedores {
 	}
 	
 	public void removerFornecedor() {
+		ConjFornecedorDAO cfdi = new ConjFornecedorDAOImpl();
 		try {
-			this.fornecDAO.remover(fornecSel.getCnpj());
+			this.fornecSel = this.fornecDAO.pesquisarPorFornecedor(fornecSel.getCnpj());
+			cfdi.remover(fornecSel.getID(), fornecSel.getFarmacia().getId());
+			//this.fornecDAO.remover(fornecSel.getCnpj());
 		} catch (DAOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -50,9 +50,13 @@ public class FarmaciaDAOImpl implements FarmaciaDAO{
 		Farmacia frm = new Farmacia();
 		try {
 			Connection con = ConnectionManager.getInstance().getConnection();
-			String sql = "SELECT f.idFarmacia,f.unidade,f.statusFarmacia,e.idEndereco,e.cep,e.numero,e.rua,e.bairro,e.estado,e.cidade "
+			/*String sql = "SELECT f.idFarmacia,f.unidade,f.statusFarmacia,e.idEndereco,e.cep,e.numero,e.rua,e.bairro,e.estado,e.cidade "
 					+ "from tbFarmacia  f inner join tbEndereco  e on f.idEndereco=e.idEndereco inner join tbConjFornecedor cf on "
 					+ "cf.idFarmacia = f.idFarmacia inner join tbFornecedor tf on tf.idFornecedor = cf.idFornecedor"
+					+ "where tf.cnpj = ?";*/
+			String sql = "SELECT f.idFarmacia,f.unidade,f.statusFarmacia,e.idEndereco,e.cep,e.numero,e.rua,e.bairro,e.estado,e.cidade "
+					+ "from tbFarmacia  f inner join tbEndereco  e on f.idEndereco=e.idEndereco inner join tbConjFornecedor cf on "
+					+ "cf.idFarmacia = f.idFarmacia inner join tbFornecedor tf on tf.idFornecedor = cf.idFornecedor "
 					+ "where tf.cnpj = ?";
 			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setLong(1, cnpj );

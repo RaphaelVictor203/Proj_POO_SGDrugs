@@ -66,6 +66,8 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 	public void start(Stage stage) throws Exception{
 		
 		ff = new ControlFornecedores();
+		ff.attTableFornecedor();
+		
 		painelCad = new Pane();
 
 //INICIO PAINEL CADASTRO-------------------------------------------------------------------------------

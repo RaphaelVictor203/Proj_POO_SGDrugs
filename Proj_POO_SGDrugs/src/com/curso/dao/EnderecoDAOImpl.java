@@ -298,6 +298,7 @@ public class EnderecoDAOImpl implements EnderecoDAO {
 
 	@Override
 	public void remover(Endereco end) throws DAOException {
+		System.out.println("id endereco " + end.getIdEndereco());
 		try {
 			Connection con = ConnectionManager.getInstance().getConnection();
 			String sql = "delete from tbendereco "
@@ -318,12 +319,13 @@ public class EnderecoDAOImpl implements EnderecoDAO {
 		Endereco end = new Endereco();
 		try {
 			Connection con = ConnectionManager.getInstance().getConnection();
-			String sql = "SELECT e.cep, e.rua, e.numero, e.bairro, e.cidade, e.estado from tbendereco as e"
+			String sql = "SELECT e.idEndereco, e.cep, e.rua, e.numero, e.bairro, e.cidade, e.estado from tbendereco as e"
 					+ " inner join tbfornecedor as f on f.idEndereco=e.idEndereco where f.cnpj like ?";
 			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setString(1, "%" + cnpj + "%");
 			ResultSet  rs = stmt.executeQuery();
 			while(rs.next()) {
+				end.setIdEndereco(rs.getInt("idEndereco"));
 				end.setCep(Integer.toString(rs.getInt("cep")));
 				end.setRua(rs.getString("rua"));
 				end.setNumero(rs.getInt("numero"));
