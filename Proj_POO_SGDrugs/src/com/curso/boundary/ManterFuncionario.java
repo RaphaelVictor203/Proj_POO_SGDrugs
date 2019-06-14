@@ -368,6 +368,7 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 	
 	@SuppressWarnings("deprecation")
 	public void FuncionarioToBoundary(Funcionario c) {
+		System.out.println(c.getFarmacia().getUnidade());
 		funcio.funcSel = c;
 		this.txtNome.setText(c.getNome());
 		this.cmbDia.getSelectionModel().select(Integer.toString(c.getDt_nasc().getDate()));
@@ -379,7 +380,7 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 		this.txtEmail.setText(c.getEmail());
 		this.txtSobrenome.setText(c.getSobrenome());
 		this.txtSalario.setText(Float.toString(c.getSalario()));
-		this.cmbFarmacia.getSelectionModel().select(c.getFarmacia().getId() - 1);
+		this.cmbFarmacia.getSelectionModel().select(c.getFarmacia());
 		this.cargo.getSelectionModel().select(Integer.toString(c.getFuncao().getIdFuncao()));
 	
 		Endereco ed = c.getEnd();
