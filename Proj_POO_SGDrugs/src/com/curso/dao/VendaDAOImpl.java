@@ -7,6 +7,7 @@ import java.sql.SQLException;
 
 import com.curso.entity.Cliente;
 import com.curso.entity.Endereco;
+import com.curso.entity.FormaPagto;
 import com.curso.entity.ItemVenda;
 import com.curso.entity.Venda;
 
@@ -15,6 +16,7 @@ public class VendaDAOImpl implements VendaDAO {
 	@Override
 	public void inserir(Venda v) throws DAOException {
 		ItemVendaDAO ivo = new ItemVendaDAOImpl();
+		FormaPagtoDAO fpi = new FormaPagtoDAOImpl();
 		try {
 			
 			Connection con = ConnectionManager.getInstance().getConnection();
@@ -32,6 +34,10 @@ public class VendaDAOImpl implements VendaDAO {
 			
 			for(ItemVenda iv : v.getItems()) {
 				ivo.inserir(iv, ultV);
+			}
+			
+			for(FormaPagto fp : v.getFormasPagto()) {
+				fpi.inserir(fp, ultV.getId_venda());
 			}
 			
 			con.close();

@@ -1,8 +1,15 @@
 package com.curso.entity;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
+
+import com.sun.org.apache.xerces.internal.impl.dv.xs.YearMonthDV;
+
 import java.sql.Date;
+import java.time.YearMonth;
+
 import javafx.scene.control.Button;
 
 public class Cliente {
@@ -121,5 +128,8 @@ public class Cliente {
 		return false;
 	}
 	
+	public int calcIdade() {
+		 return (YearMonth.now().getYear() - dt_nasc.getYear());
+	}
 	
 }

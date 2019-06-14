@@ -185,11 +185,23 @@ public class ClientePreVendas extends Application implements EventHandler<MouseE
 	public static void main(String[]args) {
 		Application.launch(args);
 	}
+	
+	public void clienteToBoundary(Cliente c) {
+		nameClient.setText(c.getPrimeiroNome());
+		cpfClient.setText(Long.toString(c.getCpf()));
+		idadeClient.setText(Integer.toString(c.calcIdade()));
+		sexClient.setText(Character.toString(c.getSexo()));
+		ruaClient.setText(c.getEnd().getRua());
+		nClient.setText(Integer.toString(c.getEnd().getNumero()));
+		bairroClient.setText(c.getEnd().getBairro());
+	}
+	
 	@Override
 	public void handle(MouseEvent event) {
 		if(event.getSource()==btnPesquisar) {
 			try {
-				cc.pesquisarPorCliente(Long.parseLong(cpfCliente.getText()));
+				clienteToBoundary(cc.pesquisarPorCliente(Long.parseLong(cpfCliente.getText())));
+				
 			} catch (DAOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -221,6 +233,7 @@ public class ClientePreVendas extends Application implements EventHandler<MouseE
 		if(event.getSource() == btnAvancarSDef) {
 			TelaVendas tv = new TelaVendas();
 			try {
+				tv.cliente = new Cliente();
 				tv.start(stg);
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
