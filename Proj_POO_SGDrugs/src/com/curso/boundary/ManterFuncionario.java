@@ -229,7 +229,9 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 		StackPane painels = new StackPane(painelCad);
 		pane.setCenter(painels);
 		
-		Scene scene = new Scene(pane, 1100,600);
+		stage.setMaximized(true);
+		
+		Scene scene = new Scene(pane, stage.getWidth(),stage.getHeight());
 		stage.setScene(scene);
 		stage.setTitle("Manter Funcionarios");
 		stage.show();
