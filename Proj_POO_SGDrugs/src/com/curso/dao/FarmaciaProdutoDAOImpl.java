@@ -43,7 +43,7 @@ public class FarmaciaProdutoDAOImpl implements FarmaciaProdutoDAO {
 		SessaoDAOImpl sdi = new SessaoDAOImpl();
 		ProdutoDAOImpl pdi = new ProdutoDAOImpl();
 		FarmaciaDAOImpl fdi = new FarmaciaDAOImpl();
-		FarmaciaProduto fp = new FarmaciaProduto();
+		FarmaciaProduto fp = null;
 		try {
 			Connection con = ConnectionManager.getInstance().getConnection();
 			// String sql = "SELECT * from tbcliente where cpf like ?";
@@ -52,6 +52,7 @@ public class FarmaciaProdutoDAOImpl implements FarmaciaProdutoDAO {
 			stmt.setInt(1, id_produto);
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
+				fp = new FarmaciaProduto();
 				fp.setFarmacia(fdi.pesquisarFarmacia(rs.getInt("idFarmacia")));
 				fp.setIdFarmaciaProd(rs.getInt("idFarmaciaProduto"));
 				fp.setGrupo(gdi.pesquisarPorGrupo(rs.getInt("idGrupo")));

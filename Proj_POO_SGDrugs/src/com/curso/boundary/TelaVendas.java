@@ -81,9 +81,13 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 	ControlVendas cv;
 	
 	Funcionario func = new Funcionario();
+	
+	private Stage stg;
 
 	@Override
 	public void start(Stage stage) throws Exception {
+		
+		stg = stage;
 		
 		FarmaciaDAO fai = new FarmaciaDAOImpl();
 		FuncionarioDAO fdi = new FuncionarioDAOImpl();
@@ -384,7 +388,7 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 			
 			final int l = i;
 			
-			if(tblItens.getItems().get(i).getProduto().getProduto().getCategoria().equals("genérico")) {
+			if(tblItens.getItems().get(i).getProduto().getProduto().getCategoria().equals("Medicamentos Genéricos")) {
 				tblItens.getItems().get(i).getProduto().getBtnIsencao().setOnAction(e -> {
 					if(tblItens.getItems().get(l).getProduto().getBtnIsencao().getText().equals("SUS")) {
 						tblItens.getItems().get(l).aplicarIsencao();
@@ -464,6 +468,10 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 		if (event.getSource() == btnFinalizar) {
 			if((cbCartaoCredito.isSelected() || cbCartaoDebito.isSelected() || cbDinheiro.isSelected())
 					&& cv.getVendaAtual().getItems().size() != 0) {
+				cv.getVendaAtual().setCliente(cliente);
+				cv.getVendaAtual().setFuncionario(func);
+				lblNomeCliente.setText(cv.getVendaAtual().getCliente().getPrimeiroNome());
+				lblNomeVendedor.setText(cv.getVendaAtual().getFuncionario().getNome());
 				painelPosVenda.toFront();
 				configEntradaFormaPagamento();
 				
@@ -480,13 +488,20 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 		}else
 		if(event.getSource() == btnFinalizaPOS) {
 			//finalizar a compra tela pos venda
-			cv.getVendaAtual().setCliente(cliente);
-			cv.getVendaAtual().setFuncionario(func);
+			/*cv.getVendaAtual().setCliente(cliente);
+			cv.getVendaAtual().setFuncionario(func);*/
 			cv.addVenda();
 			JOptionPane.showMessageDialog(null, "Compra realiza com sucesso !!!", "Transação finalizada", JOptionPane.INFORMATION_MESSAGE);
 			painelVenda.toFront();
 			limparCampos();
 			cv.resetFarmaciaProdutos();
+			ClientePreVendas cpv = new ClientePreVendas();
+			try {
+				cpv.start(stg);
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 
 	}

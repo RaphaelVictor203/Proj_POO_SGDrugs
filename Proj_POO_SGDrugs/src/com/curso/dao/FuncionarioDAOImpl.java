@@ -85,6 +85,7 @@ public class FuncionarioDAOImpl implements FuncionarioDAO {
 				f.setEnd(edi.pesquisarEnderecoFuncionario(cpf));
 				f.setSobrenome(rs.getString("sobrenome"));
 				f.setSalario(rs.getFloat("salario"));
+				f.setID(rs.getInt("IdFuncionario"));
 				Farmacia frm = fdi.pesquisarFarmacia(rs.getInt("idFarmacia"));
 				Funcao func = new Funcao(rs.getInt("IdFuncao"));
 				f.setFarmacia(frm);
@@ -188,6 +189,7 @@ public class FuncionarioDAOImpl implements FuncionarioDAO {
 				f.setNome(rs.getString("nome"));
 				f.setSalario(rs.getFloat("salario"));
 				f.setDt_nasc(rs.getDate("dtnascimento"));
+				f.setID(rs.getInt("IdFuncionario"));
 				lista.add(f);
 			}
 		} catch (SQLException e) {

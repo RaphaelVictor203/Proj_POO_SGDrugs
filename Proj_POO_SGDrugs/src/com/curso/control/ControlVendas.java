@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.curso.dao.DAOException;
+import com.curso.dao.FarmaciaProdutoDAO;
+import com.curso.dao.FarmaciaProdutoDAOImpl;
 import com.curso.dao.VendaDAO;
 import com.curso.dao.VendaDAOImpl;
 import com.curso.entity.Cliente;
@@ -21,6 +23,7 @@ public class ControlVendas {
 	private ObservableList<ItemVenda> dataItens = FXCollections.observableArrayList();
 	private List<Venda> vendasRealizadas;
 	private VendaDAO vdi = new VendaDAOImpl();
+	private FarmaciaProdutoDAO fpdi = new FarmaciaProdutoDAOImpl();
 	
 	public ControlVendas() {
 	   
@@ -75,10 +78,16 @@ public class ControlVendas {
 	}
 	
 	public FarmaciaProduto pesquisaProd(int cod) {
-		for(FarmaciaProduto prod : produtos) {
+		/*for(FarmaciaProduto prod : produtos) {
 			if(prod.getProduto().getId_produto() == cod) {
 				return prod;
 			}
+		}*/
+		try {
+			return fpdi.pesquisarFarmaciaProduto(cod);
+		} catch (DAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return null;
 	}

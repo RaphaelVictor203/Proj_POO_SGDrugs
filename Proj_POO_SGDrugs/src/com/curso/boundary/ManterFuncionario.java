@@ -401,7 +401,7 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 	    fun.setDt_nasc(new java.sql.Date(Integer.parseInt(this.cmbAno.getSelectionModel().getSelectedItem()),
 	    		Integer.parseInt(this.cmbMes.getSelectionModel().getSelectedItem()),
 	    		Integer.parseInt(this.cmbDia.getSelectionModel().getSelectedItem())));
-	    fun.setRg(Integer.parseInt( txtRG.getText()));
+	    fun.setRg(Long.parseLong( txtRG.getText()));
 	    fun.setCpf(Long.parseLong( txtCPF.getText()));
 	    fun.setTelefone(Long.parseLong(txtTelefone.getText()));
 	    fun.setEmail(txtEmail.getText());
