@@ -175,6 +175,7 @@ public class FuncionarioDAOImpl implements FuncionarioDAO {
 
 	@Override
 	public List<Funcionario> pesquisarPorFuncionarios() throws DAOException {
+		FarmaciaDAO fdi = new FarmaciaDAOImpl();
 		List<Funcionario> lista = new ArrayList<>();
 		String sql = "select * from tbfuncionario";
 		try {		
@@ -190,6 +191,7 @@ public class FuncionarioDAOImpl implements FuncionarioDAO {
 				f.setSalario(rs.getFloat("salario"));
 				f.setDt_nasc(rs.getDate("dtnascimento"));
 				f.setID(rs.getInt("IdFuncionario"));
+				f.setFarmacia(fdi.pesquisarFarmacia(rs.getInt("idFarmacia")));
 				lista.add(f);
 			}
 		} catch (SQLException e) {

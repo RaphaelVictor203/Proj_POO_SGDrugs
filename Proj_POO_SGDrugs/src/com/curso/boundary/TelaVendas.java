@@ -92,7 +92,7 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 		FarmaciaDAO fai = new FarmaciaDAOImpl();
 		FuncionarioDAO fdi = new FuncionarioDAOImpl();
 		func = fdi.pesquisarPorFuncionarios().get(0);
-		func.setFarmacia(fai.pesquisarFarmacia().get(0));
+		//func.setFarmacia(fai.pesquisarFarmacia().get(0));
 
 		cv = new ControlVendas();
 		
@@ -574,7 +574,7 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 			cv.getVendaAtual().getFormasPagto().add(new FormaPagto("Crédito", vl));
 		}
 		if(deb) {
-			cv.getVendaAtual().getFormasPagto().add(new FormaPagto("Dédito", vl));
+			cv.getVendaAtual().getFormasPagto().add(new FormaPagto("Débito", vl));
 		}
 		if(din) {
 			cv.getVendaAtual().getFormasPagto().add(new FormaPagto("Dinheiro", vl));
