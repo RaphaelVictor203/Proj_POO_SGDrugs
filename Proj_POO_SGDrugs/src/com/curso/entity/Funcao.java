@@ -5,10 +5,6 @@ public class Funcao {
 	private int idFuncao;
 	private String descFuncao;
 	
-	public Funcao(int id) {
-		this.idFuncao = id;
-	}
-	
 	public int getIdFuncao() {
 		return idFuncao;
 	}
@@ -20,6 +16,10 @@ public class Funcao {
 	}
 	public void setDescFuncao(String descFuncao) {
 		this.descFuncao = descFuncao;
+	}
+	@Override
+	public String toString() {
+		return descFuncao;
 	}
 	
 	

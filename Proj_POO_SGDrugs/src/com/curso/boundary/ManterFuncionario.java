@@ -10,11 +10,14 @@ import com.curso.control.ControlClientes;
 import com.curso.control.ControlFuncionario;
 import com.curso.dao.DAOException;
 import com.curso.dao.FarmaciaDAOImpl;
+import com.curso.dao.FuncaoDAO;
+import com.curso.dao.FuncaoDAOImpl;
 import com.curso.dao.FuncionarioDAO;
 import com.curso.dao.FuncionarioDAOImpl;
 import com.curso.entity.Cliente;
 import com.curso.entity.Endereco;
 import com.curso.entity.Farmacia;
+import com.curso.entity.Funcao;
 import com.curso.entity.Funcionario;
 import com.curso.entity.ProblemaSaude;
 
@@ -64,7 +67,7 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 	private TextField txtCEP;
 	private TextField txtRua, txtNum;
 	private ComboBox<String> cmbCid, cmbUF;
-	private ComboBox<String> cargo;
+	private ComboBox<Funcao> cargo;
 	private TextField txtNomePesquisa;
 	private TextField txtUFPesquisa;
 	private TextField txtCidadePesquisa;
@@ -103,7 +106,9 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 		txtCPF = new TextField();
 		txtTelefone = new TextField();
 		txtEmail = new TextField();
-		cargo = new ComboBox<String>(FXCollections.observableArrayList(new String[]{"1"}));
+		
+		FuncaoDAO funcdi = new FuncaoDAOImpl();
+		cargo = new ComboBox<Funcao>(FXCollections.observableArrayList(funcdi.pesquisarPorFuncoes()));
 		
 		txtSalario = new TextField();
 		txtCEP = new TextField();
@@ -381,7 +386,7 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 		this.txtSobrenome.setText(c.getSobrenome());
 		this.txtSalario.setText(Float.toString(c.getSalario()));
 		this.cmbFarmacia.getSelectionModel().select(c.getFarmacia());
-		this.cargo.getSelectionModel().select(Integer.toString(c.getFuncao().getIdFuncao()));
+		this.cargo.getSelectionModel().select(c.getFuncao());
 	
 		Endereco ed = c.getEnd();
 		this.txtCEP.setText(ed.getCep());
@@ -419,7 +424,7 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 		if(funcio.funcSel.getEnd() != null) {
 			ed.setIdEndereco(funcio.funcSel.getEnd().getIdEndereco());
 		}
-		//fun.setFuncao(funcao);
+		fun.setFuncao(cargo.getSelectionModel().getSelectedItem());
 	    fun.setEnd(ed);
 		return fun;
 	}
