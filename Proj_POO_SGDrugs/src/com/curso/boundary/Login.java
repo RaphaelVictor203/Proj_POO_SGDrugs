@@ -4,6 +4,11 @@ import java.io.FileInputStream;
 
 import javax.swing.text.PasswordView;
 
+import com.curso.dao.DAOException;
+import com.curso.dao.LoginDAO;
+import com.curso.dao.LoginDAOImpl;
+import com.curso.entity.Funcionario;
+
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -28,6 +33,7 @@ public class Login extends Application {
 	PasswordField txtSenha = new PasswordField();
 	VBox vbLogin;
 	Label lblNomeProg = new Label("Login");
+	Label lblMsgLogin = new Label("conta não encontrada !!!");
 	Button btnLogar = new Button("Entrar");
 	
 	
@@ -47,7 +53,8 @@ public class Login extends Application {
 		panePrincipal.getChildren().add(imgView);
 		panePrincipal.getChildren().add(painelSubPrincipal);
 		
-		vbLogin = new VBox(10, txtUsuario, txtSenha, btnLogar);
+		lblMsgLogin.setVisible(false);
+		vbLogin = new VBox(10, txtUsuario, txtSenha, btnLogar, lblMsgLogin);
 		//vbLogin.setStyle("-fx-background-color: yellow");
 		vbLogin.setMaxWidth(stage.getWidth());
 		vbLogin.setMaxHeight(stage.getHeight()/2);
@@ -68,12 +75,28 @@ public class Login extends Application {
 		startStyle();
 		
 		btnLogar.setOnAction(e -> {
-			TelaPrincipal tp = new TelaPrincipal();
+			LoginDAO ldi = new LoginDAOImpl();
 			try {
-				tp.start(stage);
-			} catch (Exception e1) {
+				lblMsgLogin.setVisible(true);
+				Funcionario func = ldi.pesquisarPorConta(txtUsuario.getText(), txtSenha.getText());
+				if(func != null) {
+					lblMsgLogin.setText("bem vindo " + func.getNome());
+					lblMsgLogin.setStyle("-fx-font-size: 15px; -fx-text-fill: white");
+					TelaPrincipal tp = new TelaPrincipal();
+					try {
+						tp.func = func;
+						tp.start(stage);
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}else {
+					lblMsgLogin.setText("conta não encontrada !!!");
+					lblMsgLogin.setStyle("-fx-font-size: 15px; -fx-text-fill: red");
+				}
+			} catch (DAOException e2) {
 				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				e2.printStackTrace();
 			}
 		});
 	}
@@ -96,6 +119,7 @@ public class Login extends Application {
 				+ "-fx-text-fill: white;"
 				+ "-fx-cursor: hand;"
 				+ "-fx-font-size: 18px");
+		lblMsgLogin.setStyle("-fx-font-size: 15px; -fx-text-fill: red"); 
 				
 	}
 

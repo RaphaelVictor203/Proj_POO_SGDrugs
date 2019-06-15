@@ -3,6 +3,8 @@ package com.curso.boundary;
 import java.io.FileInputStream;
 import java.util.Optional;
 
+import com.curso.entity.Funcionario;
+
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -36,6 +38,7 @@ public class TelaPrincipal extends Application{
 	ImageView imgView;
 	BorderPane painelSubPrincipal  = new BorderPane();
 	Label lblBoasVindas = new Label("Bem vindo ao SGDrugs");
+	protected Funcionario func;
 	
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -136,6 +139,7 @@ public class TelaPrincipal extends Application{
 		venda.setOnAction(e -> {
 			ClientePreVendas pv = new ClientePreVendas();
 			try {
+				pv.func = this.func;
 				pv.start(stage);
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block

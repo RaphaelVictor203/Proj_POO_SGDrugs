@@ -77,10 +77,11 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 	private Button btnFinalizaPOS;
 	DecimalFormat df = new DecimalFormat("#,##0.00");
 	protected Cliente cliente;
+	protected Funcionario func;
 	
 	ControlVendas cv;
 	
-	Funcionario func = new Funcionario();
+	
 	
 	private Stage stg;
 
@@ -89,9 +90,9 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 		
 		stg = stage;
 		
-		FarmaciaDAO fai = new FarmaciaDAOImpl();
+		/*FarmaciaDAO fai = new FarmaciaDAOImpl();
 		FuncionarioDAO fdi = new FuncionarioDAOImpl();
-		func = fdi.pesquisarPorFuncionarios().get(0);
+		func = fdi.pesquisarPorFuncionarios().get(0);*/
 		//func.setFarmacia(fai.pesquisarFarmacia().get(0));
 
 		cv = new ControlVendas();

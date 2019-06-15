@@ -3,6 +3,7 @@ package com.curso.boundary;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 
@@ -34,12 +35,14 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -554,6 +557,7 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 			    limparCampos();
 			}else {
 			   cadastrarFuncionario();
+			   cadLogUsuario();
 			   limparCampos();
 			}
 			funcio.attTableFuncionario();
@@ -576,6 +580,42 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 		}
 		
 	}
+	
+	public void cadLogUsuario() {
+		String nome, senha, nivel;
+		
+		TextInputDialog dialogNome = new TextInputDialog();
+		dialogNome.setTitle("Criação de usuario");
+		dialogNome.setHeaderText("Para a finalização do cadastro do funcionario, é necessario definir um usuario e senha");
+		dialogNome.setContentText("Por favor, digite o usuario:");
+
+		nome = dialogNome.showAndWait().get();
+		
+		TextInputDialog dialogSenha = new TextInputDialog();
+		dialogSenha.setTitle("Criação de usuario");
+		dialogSenha.setHeaderText("Para a finalização do cadastro do funcionario, é necessario definir um usuario e senha");
+		dialogSenha.setContentText("Por favor, digite a senha:");
+
+		senha = dialogSenha.showAndWait().get();
+		
+		List<String> choices = new ArrayList<>();
+		choices.add("comum");
+		choices.add("farmacêutico");
+		choices.add("gerente");
+		choices.add("proprietário");
+
+		ChoiceDialog<String> dialogNivel = new ChoiceDialog<>("", choices);
+		dialogNivel.setTitle("Criação de usuario");
+		dialogNivel.setHeaderText("Defina o nível de usuario deste funcionário");
+		dialogNivel.setContentText("Escolha um nível:");
+
+		
+		nivel = dialogNivel.showAndWait().get();
+	
+		funcio.addLogUsuario(nome, senha, nivel);
+		
+	}
+	
 	private void alterarFuncionario() {
 		// TODO Auto-generated method stub
 		Funcionario fn = new Funcionario();
@@ -590,10 +630,10 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 	}
 
 	public void cadastrarFuncionario() {
-				Funcionario fn = new Funcionario();
+				//Funcionario fn = new Funcionario();
 				try {
-					fn = boundaryToFuncionario();
-					funcio.inserir(fn);
+					funcio.funcSel = boundaryToFuncionario(); 
+					funcio.inserir();
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();

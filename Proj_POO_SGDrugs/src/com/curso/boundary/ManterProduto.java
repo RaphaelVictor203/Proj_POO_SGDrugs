@@ -12,6 +12,8 @@ import javax.swing.JOptionPane;
 import com.curso.control.ControlFornecedores;
 import com.curso.control.ControlProdutos;
 import com.curso.dao.DAOException;
+import com.curso.dao.FornecedorDAO;
+import com.curso.dao.FornecedorDAOImpl;
 import com.curso.dao.ProdutoDAO;
 import com.curso.dao.ProdutoDAOImpl;
 import com.curso.entity.Fornecedor;
@@ -98,7 +100,8 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 		CAD_cmbCategoria.setPromptText("Selecione");
 		CAD_cmbCategoria.setPrefSize(280, 20);
 
-		CAD_cmbFornecedor = new ComboBox<>();
+		FornecedorDAO fdi = new FornecedorDAOImpl();
+		CAD_cmbFornecedor = new ComboBox<>(FXCollections.observableArrayList(fdi.pesquisarPorFornecedor()));
 		CAD_cmbFornecedor.setPrefSize(270, 20);
 		CAD_cmbFornecedor.setPromptText("Selecione");
 
@@ -132,7 +135,7 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 
 		adicionarFornecedor(ltFornecedores);
 		obsFornecedores.addAll(ltFornecedores);
-		CAD_cmbFornecedor.setItems(obsFornecedores);
+		//CAD_cmbFornecedor.setItems(obsFornecedores);
 
 		CAD_tblProdutos = new TableView<Produto>();
 		CAD_tblProdutos.setPrefWidth(600);

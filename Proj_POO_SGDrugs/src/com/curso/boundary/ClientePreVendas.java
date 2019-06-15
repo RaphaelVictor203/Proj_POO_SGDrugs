@@ -5,6 +5,7 @@ import javax.swing.JOptionPane;
 import com.curso.dao.ClienteDAOImpl;
 import com.curso.dao.DAOException;
 import com.curso.entity.Cliente;
+import com.curso.entity.Funcionario;
 
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -41,6 +42,7 @@ public class ClientePreVendas extends Application implements EventHandler<MouseE
 	private Label ruaClient,nClient,bairroClient;
 	private Button btnAvancarSDef;
 	private Stage stg;
+	protected Funcionario func;
 	
 	private ClienteDAOImpl cc = new ClienteDAOImpl();
 	@Override
@@ -213,6 +215,7 @@ public class ClientePreVendas extends Application implements EventHandler<MouseE
 				if (!cl.equals(null)) {
 					TelaVendas tv = new TelaVendas();
 					try {
+						tv.func = this.func;
 						tv.cliente = cl;
 						tv.start(stg);
 					} catch (Exception e) {
@@ -234,6 +237,7 @@ public class ClientePreVendas extends Application implements EventHandler<MouseE
 			TelaVendas tv = new TelaVendas();
 			try {
 				tv.cliente = new Cliente();
+				tv.func = this.func;
 				tv.start(stg);
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block

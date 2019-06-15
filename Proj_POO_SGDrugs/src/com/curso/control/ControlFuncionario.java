@@ -6,12 +6,15 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.TextInputDialog;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.curso.dao.DAOException;
-import com.curso.dao.FuncionarioDAOImpl;;
+import com.curso.dao.FuncionarioDAOImpl;
+import com.curso.dao.LoginDAO;
+import com.curso.dao.LoginDAOImpl;;
 
 public class ControlFuncionario {
 	FuncionarioDAOImpl dao = new FuncionarioDAOImpl();;
@@ -19,13 +22,13 @@ public class ControlFuncionario {
 	public  List<Funcionario> funcio = new ArrayList<>();
 	public static Funcionario funcSel = new Funcionario();
 	
-	public void inserir(Funcionario fn) {
-		fn.getEnd().setBairro("");
+	public void inserir() {
+		this.funcSel.getEnd().setBairro("");
 		try {
-			if(!ValidarCadastror(fn.getCpf())) {
-				ClassList.funcionario.add(fn);
-				funcio.add(fn);
-				dao.inserir(fn);
+			if(!ValidarCadastror(funcSel.getCpf())) {
+				ClassList.funcionario.add(funcSel);
+				funcio.add(funcSel);
+				dao.inserir(funcSel);
 				dataList.clear();
 				dataList.addAll(funcio);
 				Alert a = new Alert(AlertType.INFORMATION, "Usuário  cadastrado Com Sucesso!!!");
@@ -34,6 +37,16 @@ public class ControlFuncionario {
 				return;
 			}
 			
+		} catch (DAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void addLogUsuario(String nome, String senha, String nivel) {
+		LoginDAO ldi = new LoginDAOImpl();
+		try {
+			ldi.inserir(dao.pesquisarFuncionario(funcSel.getCpf()).getID(), nome, senha, nivel);
 		} catch (DAOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
