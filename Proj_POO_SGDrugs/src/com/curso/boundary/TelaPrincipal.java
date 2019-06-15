@@ -167,6 +167,7 @@ public class TelaPrincipal extends Application{
 		cadCli.setOnAction(e -> {
 			ManterCliente mc = new ManterCliente();
 			try {
+				mc.func = func;
 				mc.start(stage);
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block

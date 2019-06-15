@@ -20,6 +20,7 @@ import javax.swing.event.ChangeEvent;
 import com.curso.control.ControlClientes;
 import com.curso.entity.Cliente;
 import com.curso.entity.Endereco;
+import com.curso.entity.Funcionario;
 import com.curso.entity.ProblemaSaude;
 
 import javafx.application.Application;
@@ -79,6 +80,7 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 	private TableView<ProblemaSaude> tblProb;
 	private List<ProblemaSaude> ps;
 	private Button btnAddProb, btnLimpaCampos, btnCadastrar, btnPesquisaProb, btnPesquisa;
+	protected Funcionario func;
 
 	ControlClientes cc;
 
@@ -370,16 +372,21 @@ public class ManterCliente extends Application implements EventHandler<MouseEven
 				btnLimpaCampos.setText("CANCELAR ALTERAÇÃO");
 			});
 
-			tblCli.getItems().get(i).getBtnExcluir().setOnAction(e -> {
-				limparCampos();
-				Cliente c = cc.pesquisarCliente((long) tblCli.getItems().get(l).getCpf());
-				ControlClientes.clientSel = c;
-				System.out.println("clientSel = " + ControlClientes.clientSel.getId());
-				cc.removerCliente();
-				cc.attTableCliente();
-				setFunctionCliButtons();
-				btnSelected(1);
-			});
+			if(func.getNivel().equals("gerente") || func.getNivel().equals("proprietário")) {
+				tblCli.getItems().get(i).getBtnExcluir().setVisible(true);
+				tblCli.getItems().get(i).getBtnExcluir().setOnAction(e -> {
+					limparCampos();
+					Cliente c = cc.pesquisarCliente((long) tblCli.getItems().get(l).getCpf());
+					ControlClientes.clientSel = c;
+					System.out.println("clientSel = " + ControlClientes.clientSel.getId());
+					cc.removerCliente();
+					cc.attTableCliente();
+					setFunctionCliButtons();
+					btnSelected(1);
+				});
+			}else {
+				tblCli.getItems().get(i).getBtnExcluir().setVisible(false);
+			}
 		}
 	}
 
