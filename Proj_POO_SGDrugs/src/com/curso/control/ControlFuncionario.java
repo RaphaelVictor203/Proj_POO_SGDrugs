@@ -53,6 +53,16 @@ public class ControlFuncionario {
 		}
 	}
 	
+	public void attLogUsuario(String nome, String senha, String nivel) {
+		LoginDAO ldi = new LoginDAOImpl();
+		try {
+			ldi.alterar(dao.pesquisarFuncionario(funcSel.getCpf()).getID(), nome, senha, nivel);
+		} catch (DAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	private boolean ValidarCadastror (long cpf) {
 		
 		if(ClassList.funcionario.isEmpty()) {

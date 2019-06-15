@@ -4,6 +4,7 @@ package com.curso.boundary;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import javax.swing.JOptionPane;
 
@@ -34,7 +35,9 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -43,6 +46,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -554,6 +558,22 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 		if(e.getSource() == btnCadastrar && camposValidos()) {
 			if(btnCadastrar.getText().equals("ALTERAR")&& camposValidos()) {
 			    alterarFuncionario();
+			    
+			    Alert alert = new Alert(AlertType.CONFIRMATION);
+                alert.setTitle("SGDrugs");
+                alert.setHeaderText("Você deseja alterar o login e senha desse usuario ?");
+                alert.setContentText("Escolha sua opção.");
+
+                ButtonType buttonTypeSIM = new ButtonType("SIM");
+                ButtonType buttonTypeNAO = new ButtonType("NÃO");
+
+                alert.getButtonTypes().setAll(buttonTypeSIM, buttonTypeNAO);
+
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == buttonTypeSIM){
+                	attLogUsuario();
+                } 
+                
 			    limparCampos();
 			}else {
 			   cadastrarFuncionario();
@@ -614,6 +634,40 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 	
 		funcio.addLogUsuario(nome, senha, nivel);
 		
+	}
+	
+	public void attLogUsuario() {
+		String nome, senha, nivel;
+		
+		TextInputDialog dialogNome = new TextInputDialog();
+		dialogNome.setTitle("Criação de usuario");
+		dialogNome.setHeaderText("Para a finalização do cadastro do funcionario, é necessario definir um usuario e senha");
+		dialogNome.setContentText("Por favor, digite o usuario:");
+
+		nome = dialogNome.showAndWait().get();
+		
+		TextInputDialog dialogSenha = new TextInputDialog();
+		dialogSenha.setTitle("Criação de usuario");
+		dialogSenha.setHeaderText("Para a finalização do cadastro do funcionario, é necessario definir um usuario e senha");
+		dialogSenha.setContentText("Por favor, digite a senha:");
+
+		senha = dialogSenha.showAndWait().get();
+		
+		List<String> choices = new ArrayList<>();
+		choices.add("comum");
+		choices.add("farmacêutico");
+		choices.add("gerente");
+		choices.add("proprietário");
+
+		ChoiceDialog<String> dialogNivel = new ChoiceDialog<>("", choices);
+		dialogNivel.setTitle("Criação de usuario");
+		dialogNivel.setHeaderText("Defina o nível de usuario deste funcionário");
+		dialogNivel.setContentText("Escolha um nível:");
+
+		
+		nivel = dialogNivel.showAndWait().get();
+	
+		funcio.attLogUsuario(nome, senha, nivel);
 	}
 	
 	private void alterarFuncionario() {
