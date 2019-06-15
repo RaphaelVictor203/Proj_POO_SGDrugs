@@ -1,8 +1,11 @@
 package com.curso.boundary;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.Optional;
 
+import com.curso.dao.LoginDAO;
+import com.curso.dao.LoginDAOImpl;
 import com.curso.entity.Funcionario;
 
 import javafx.application.Application;
@@ -50,17 +53,7 @@ public class TelaPrincipal extends Application{
 		menuTop.getMenus().add(menu);
 		pane.setTop(menuTop);
 		
-		menu.getItems().add(venda);
-		ImageView iconMenu = new ImageView(new Image(new FileInputStream("imgs\\icon_menu.png")));  
-		iconMenu.setFitWidth(30);
-		iconMenu.setFitHeight(30);
-		menu.setGraphic(iconMenu);
-		subMenuCadastro.getItems().add(cadCli);
-		subMenuCadastro.getItems().add(cadFarmProd);
-		subMenuCadastro.getItems().add(cadProduto);
-		subMenuCadastro.getItems().add(cadFornecedor);
-		subMenuCadastro.getItems().add(cadFuncionario);
-		menu.getItems().add(subMenuCadastro);
+		listarFuncoes();
 		
 		painelSubPrincipal = new BorderPane();
 		painelSubPrincipal.setCenter(lblBoasVindas);
@@ -104,6 +97,7 @@ public class TelaPrincipal extends Application{
                 if (result.get() == buttonTypeSIM){
                 	TelaPrincipal tp = new TelaPrincipal();
         			try {
+        				tp.func = func;
         				tp.start(stage);
         			} catch (Exception e1) {
         				// TODO Auto-generated catch block
@@ -119,6 +113,30 @@ public class TelaPrincipal extends Application{
 		
 		
 		
+	}
+	
+	public void listarFuncoes() {
+		ImageView iconMenu;
+		try {
+			
+			if(func.getNivel().equals("gerente") || func.getNivel().equals("proprietário")) {
+				subMenuCadastro.getItems().add(cadFarmProd);
+				subMenuCadastro.getItems().add(cadProduto);
+				subMenuCadastro.getItems().add(cadFornecedor);
+				subMenuCadastro.getItems().add(cadFuncionario);
+			}
+			
+			iconMenu = new ImageView(new Image(new FileInputStream("imgs\\icon_menu.png")));
+			iconMenu.setFitWidth(30);
+			iconMenu.setFitHeight(30);
+			menu.setGraphic(iconMenu);
+			subMenuCadastro.getItems().add(cadCli);
+			menu.getItems().add(venda);
+			menu.getItems().add(subMenuCadastro);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}  
 	}
 	
 	public void startStyle() {

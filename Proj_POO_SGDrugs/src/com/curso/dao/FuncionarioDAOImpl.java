@@ -61,6 +61,7 @@ public class FuncionarioDAOImpl implements FuncionarioDAO {
 
 	@Override
 	public Funcionario pesquisarFuncionario(long cpf) throws DAOException {
+		LoginDAO ldi = new LoginDAOImpl();
 		Funcionario f = new Funcionario();
 		EnderecoDAOImpl edi = new EnderecoDAOImpl();
 		FarmaciaDAOImpl fdi = new FarmaciaDAOImpl();
@@ -91,7 +92,7 @@ public class FuncionarioDAOImpl implements FuncionarioDAO {
 				Funcao func = fndi.pesquisarPorFuncao(rs.getInt("IdFuncao"));
 				f.setFarmacia(frm);
 				f.setFuncao(func);
-				
+				f.setNivel(ldi.pesquisarNivelConta(rs.getInt("idFuncionario")));
 			}
 		} catch (SQLException e) {
 			System.out.println("Erro de conexão no banco de dados");
@@ -176,6 +177,7 @@ public class FuncionarioDAOImpl implements FuncionarioDAO {
 
 	@Override
 	public List<Funcionario> pesquisarPorFuncionarios() throws DAOException {
+		LoginDAO ldi = new LoginDAOImpl();
 		FarmaciaDAO fdi = new FarmaciaDAOImpl();
 		List<Funcionario> lista = new ArrayList<>();
 		String sql = "select * from tbfuncionario";
@@ -193,6 +195,7 @@ public class FuncionarioDAOImpl implements FuncionarioDAO {
 				f.setDt_nasc(rs.getDate("dtnascimento"));
 				f.setID(rs.getInt("IdFuncionario"));
 				f.setFarmacia(fdi.pesquisarFarmacia(rs.getInt("idFarmacia")));
+				f.setNivel(ldi.pesquisarNivelConta(rs.getInt("idFuncionario")));
 				lista.add(f);
 			}
 		} catch (SQLException e) {
@@ -207,6 +210,7 @@ public class FuncionarioDAOImpl implements FuncionarioDAO {
 
 	@Override
 	public Funcionario pesquisarFuncionario(int id) throws DAOException {
+		LoginDAO ldi = new LoginDAOImpl();
 		Funcionario f = new Funcionario();
 		EnderecoDAOImpl edi = new EnderecoDAOImpl();
 		FarmaciaDAOImpl fdi = new FarmaciaDAOImpl();
@@ -235,6 +239,7 @@ public class FuncionarioDAOImpl implements FuncionarioDAO {
 				f.setID(rs.getInt("idFuncionario"));
 				Farmacia frm = fdi.pesquisarFarmacia(rs.getInt("idFarmacia"));
 				Funcao func = fndi.pesquisarPorFuncao(rs.getInt("IdFuncao"));
+				f.setNivel(ldi.pesquisarNivelConta(rs.getInt("idFuncionario")));
 				f.setFarmacia(frm);
 				f.setFuncao(func);
 				

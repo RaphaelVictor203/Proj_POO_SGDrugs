@@ -51,4 +51,30 @@ public class LoginDAOImpl implements LoginDAO {
 		
 	}
 
+	@Override
+	public void alterar(int idFuncionario, String nomeLogin, String senha, String nivel) throws DAOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String pesquisarNivelConta(int idFunc) throws DAOException {
+		String nivel = "";
+		Connection con;
+		try {
+			con = ConnectionManager.getInstance().getConnection();
+			String sql = "select * from tblog where idFuncionario=?";
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setInt(1, idFunc);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()) {
+				nivel = rs.getString("nivel");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return nivel;
+	}
+
 }

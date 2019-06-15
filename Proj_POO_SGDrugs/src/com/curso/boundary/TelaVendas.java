@@ -469,10 +469,16 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 		if (event.getSource() == btnFinalizar) {
 			if((cbCartaoCredito.isSelected() || cbCartaoDebito.isSelected() || cbDinheiro.isSelected())
 					&& cv.getVendaAtual().getItems().size() != 0) {
-				cv.getVendaAtual().setCliente(cliente);
 				cv.getVendaAtual().setFuncionario(func);
-				lblNomeCliente.setText(cv.getVendaAtual().getCliente().getPrimeiroNome());
 				lblNomeVendedor.setText(cv.getVendaAtual().getFuncionario().getNome());
+				lblNomeVendedor.setText(cv.getVendaAtual().getFuncionario().getNome());
+				if(cliente != null) {
+					cv.getVendaAtual().setCliente(cliente);
+					lblNomeCliente.setText(cv.getVendaAtual().getCliente().getPrimeiroNome());
+				}else {
+					cliente = new Cliente();
+					cv.getVendaAtual().setCliente(cliente);
+				}
 				painelPosVenda.toFront();
 				configEntradaFormaPagamento();
 				
@@ -498,6 +504,7 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 			cv.resetFarmaciaProdutos();
 			ClientePreVendas cpv = new ClientePreVendas();
 			try {
+				cpv.func = func;
 				cpv.start(stg);
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block

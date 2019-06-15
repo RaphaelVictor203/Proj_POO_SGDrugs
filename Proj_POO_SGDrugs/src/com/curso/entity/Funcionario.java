@@ -12,9 +12,14 @@ public class Funcionario extends Pessoa{
 	private Endereco endereco;
 	private float salario;
 	private Button btnExcluir = new Button("Excluir");
+	private String nivel;
 	
-	
-	
+	public String getNivel() {
+		return nivel;
+	}
+	public void setNivel(String nivel) {
+		this.nivel = nivel;
+	}
 	public Button getBtnExcluir() {
 		return btnExcluir;
 	}
