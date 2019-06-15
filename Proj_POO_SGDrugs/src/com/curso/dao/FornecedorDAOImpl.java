@@ -209,6 +209,8 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 
 	@Override
 	public void alterar(Fornecedor Fornecedor) throws DAOException {
+		System.out.println("id endereco: " + Fornecedor.getEndereco().getIdEndereco());
+		System.out.println("id farmacia: " + Fornecedor.getFarmacia().getId());
 		try {
 			Connection con = ConnectionManager.getInstance().getConnection();
 			String sql = "update tbFornecedor "
@@ -217,7 +219,7 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setString(1, Fornecedor.getNome_fantasia());
 			stmt.setLong(2,Fornecedor.getTelefone());
-			stmt.setLong(4, Fornecedor.getCnpj());
+			stmt.setLong(3, Fornecedor.getCnpj());
 			
 			stmt.executeUpdate();
 			con.close();

@@ -120,6 +120,8 @@ public class ControlFornecedores {
 	}
 	
 	public void attFornecedor(Fornecedor fr) {
+		fr.getEndereco().setIdEndereco(fornecSel.getEndereco().getIdEndereco());
+		fr.getFarmacia().setId(fornecSel.getFarmacia().getId());
 		try {
 			fornecDAO.alterar(fr);
 		} catch (DAOException e) {
