@@ -33,11 +33,30 @@ public class ConjFornecedorDAOImpl implements ConjFornecedorDAO {
 			e.printStackTrace();
 		}
 	}
-
+	
+	@Override
+	public void alterar(int idFornecedor, int idFarmacia) throws DAOException {
+		try {
+			Connection con = ConnectionManager.getInstance().getConnection();
+			String sql = "update tbconjfornecedor"
+					+ " set idFarmacia=?"
+					+ " where idFornecedor=?";
+			PreparedStatement stmt = con.prepareStatement(sql);
+			stmt.setInt(1, idFarmacia);
+			stmt.setInt(2, idFornecedor);
+			stmt.executeUpdate();
+			//edi.remover(fdi.pesquisarPorFornecedor(idFornecedor).getEndereco());
+			con.close();
+		} catch (SQLException e) {
+			System.out.println("Erro de conexão no banco de dados");
+			e.printStackTrace();
+			throw new DAOException(e);
+		}
+		
+	}
+	
 	@Override
 	public void remover(int idFornecedor, int idFarmacia) throws DAOException {
-		//EnderecoDAO edi = new EnderecoDAOImpl();
-		FornecedorDAO fdi = new FornecedorDAOImpl();
 		try {
 			
 			Connection con = ConnectionManager.getInstance().getConnection();
@@ -55,5 +74,7 @@ public class ConjFornecedorDAOImpl implements ConjFornecedorDAO {
 			throw new DAOException(e);
 		}
 	}
+
+
 
 }

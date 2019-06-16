@@ -18,9 +18,9 @@ import com.curso.entity.ProblemaSaude;
 public class FornecedorDAOImpl implements FornecedorDAO{
 	EnderecoDAOImpl edi = new EnderecoDAOImpl();
 	FarmaciaDAOImpl far = new FarmaciaDAOImpl();
+	ConjFornecedorDAOImpl conj = new ConjFornecedorDAOImpl();
 	@Override
 	public void inserir(Fornecedor fr) throws DAOException {
-		fr.setFarmacia(far.pesquisarFarmacia().get(0));
 		ConjFornecedorDAO cfdi = new ConjFornecedorDAOImpl();
 		try {
 			System.out.println(edi.pesquisarEndereco(fr.getEndereco().getCep(), fr.getEndereco().getNumero(), fr.getEndereco().getRua(), fr.getEndereco().getBairro()).size());
@@ -32,7 +32,7 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 			System.out.println(edi.pesquisarEndereco(fr.getEndereco().getCep(), fr.getEndereco().getNumero(), fr.getEndereco().getRua(), fr.getEndereco().getBairro()).size());
 			Farmacia fa = null;
 			//far.inserir(fr.getFarmacia());
-			System.out.println(fr.getFarmacia().getEndereco()+ " - " + fr.getFarmacia().getUnidade() + " - " + fr.getFarmacia().getStatus());
+			System.out.println(fr.getFarmacia().getEndereco().getIdEndereco()+ " - " + fr.getFarmacia().getUnidade() + " - " + fr.getFarmacia().getStatus());
 			//fa = far.pesquisarFarmaciaFornecedor(fr.getCnpj());
 			
 			Connection con = ConnectionManager.getInstance().getConnection();
@@ -100,7 +100,8 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 	@Override
 	public List<Fornecedor> pesquisarPorFornecedor(String nome) throws DAOException {
 		List<Fornecedor> lista = new ArrayList<>();
-		String sql = "SELECT f.idFornecedor,f.nomeFantasia,f.telefone,f.cnpj,cf.idFarmacia,"
+		String sql = "SELECT f.idFornecedor,f.nomeFantasia,f.telefone,f.cnpj,"
+				+ " fr.idFarmacia,fr.unidade,fr.statusFarmacia,"
 				+ " efrm.idEndereco idEndFarm, efrm.cep cepFarm, efrm.numero numFarm, efrm.rua ruaFarm,"
 				+ " efrm.bairro bairroFarm, efrm.estado estadoFarm, efrm.cidade ufFarm,"
 				+ " e.idEndereco,e.cep,e.numero,e.rua,e.bairro,e.estado,e.cidade uf"
@@ -123,6 +124,8 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 
 				Farmacia frm = new Farmacia();
 				frm.setId(rs.getInt("idFarmacia"));
+				frm.setUnidade(rs.getString("unidade"));
+				frm.setStatus(rs.getString("statusFarmacia"));
 				Endereco endFarm = new Endereco();
 				endFarm.setIdEndereco(rs.getInt("idEndFarm"));
 				endFarm.setCep(rs.getString("cepFarm"));
@@ -155,9 +158,10 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 	
 	public List<Fornecedor> pesquisarPorFornecedor() throws DAOException{
 		List<Fornecedor> lista = new ArrayList<Fornecedor>();
-		String sql = "SELECT f.idFornecedor,f.nomeFantasia,f.telefone,f.cnpj,cf.idFarmacia,"
+		String sql = "SELECT f.idFornecedor,f.nomeFantasia,f.telefone,f.cnpj,"
+				+ " fr.idFarmacia,fr.unidade,fr.statusFarmacia,"
 				+ " efrm.idEndereco idEndFarm, efrm.cep cepFarm, efrm.numero numFarm, efrm.rua ruaFarm,"
-				+ " efrm.bairro bairroFarm, efrm.estado cidadeFarm, efrm.cidade ufFarm,"
+				+ " efrm.bairro bairroFarm, efrm.estado estadoFarm, efrm.cidade ufFarm,"
 				+ " e.idEndereco,e.cep,e.numero,e.rua,e.bairro,e.estado,e.cidade uf"
 				+ " from tbFornecedor f inner join tbendereco e on e.idEndereco=f.idEndereco"
 				+ " inner join tbConjFornecedor cf on cf.idFornecedor = f.idFornecedor"
@@ -176,6 +180,8 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 
 				Farmacia frm = new Farmacia();
 				frm.setId(rs.getInt("idFarmacia"));
+				frm.setUnidade(rs.getString("unidade"));
+				frm.setStatus(rs.getString("statusFarmacia"));
 				Endereco endFarm = new Endereco();
 				endFarm.setIdEndereco(rs.getInt("idEndFarm"));
 				endFarm.setCep(rs.getString("cepFarm"));
@@ -209,22 +215,24 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 
 	@Override
 	public void alterar(Fornecedor Fornecedor) throws DAOException {
+		System.out.println("id fornecedor: " + Fornecedor.getID());
 		System.out.println("id endereco: " + Fornecedor.getEndereco().getIdEndereco());
 		System.out.println("id farmacia: " + Fornecedor.getFarmacia().getId());
 		try {
 			Connection con = ConnectionManager.getInstance().getConnection();
 			String sql = "update tbFornecedor "
-					+ "set nomeFantasia=?, telefone=?"
+					+ "set nomeFantasia=?, telefone=? ,idEndereco=?"
 					+ " where cnpj=?";
 			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setString(1, Fornecedor.getNome_fantasia());
 			stmt.setLong(2,Fornecedor.getTelefone());
-			stmt.setLong(3, Fornecedor.getCnpj());
+			stmt.setInt(3, Fornecedor.getEndereco().getIdEndereco());
+			stmt.setLong(4, Fornecedor.getCnpj());
 			
 			stmt.executeUpdate();
 			con.close();
 			edi.alterar(Fornecedor.getEndereco());
-			far.alterar(Fornecedor.getFarmacia());
+			conj.alterar(Fornecedor.getID(), Fornecedor.getFarmacia().getId());
 		} catch (SQLException e) {
 			System.out.println("Erro de conex√£o no banco de dados");
 			e.printStackTrace();
@@ -238,7 +246,7 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 		try {
 			Fornecedor fr = pesquisarPorFornecedor(cnpj);
 			edi.remover(fr.getEndereco());
-			far.remover(fr.getFarmacia());
+			conj.remover(fr.getID(),fr.getFarmacia().getId());
 			Connection con = ConnectionManager.getInstance().getConnection();
 			String sql = "delete from tbFornecedor "
 					+ " where cnpj=?";
@@ -257,20 +265,26 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 	@Override
 	public Fornecedor pesquisarPorFornecedor(int id) throws DAOException {
 		Fornecedor fr = new Fornecedor();
-		EnderecoDAOImpl edi = new EnderecoDAOImpl();
+		EnderecoDAO edi = new EnderecoDAOImpl();
+		FarmaciaDAO fdi = new FarmaciaDAOImpl();
 		try {
 			Connection con = ConnectionManager.getInstance().getConnection();
-			String sql = "SELECT * from tbfornecedor where idFornecedor=?";
+			String sql = "SELECT f.idFornecedor,f.nomeFantasia,f.telefone,f.cnpj, cf.idFarmacia"
+					+ " from tbFornecedor f left join tbconjfornecedor cf on cf.idFornecedor=f.idFornecedor"
+					+ " where f.idFornecedor = ?";
 			PreparedStatement stmt = con.prepareStatement(sql);
-			stmt.setLong(1, id);
-			ResultSet  rs = stmt.executeQuery();		
+			stmt.setInt(1, id );
+			ResultSet  rs = stmt.executeQuery();
 			while(rs.next()) {
+				fr.setID(rs.getInt("idFornecedor"));
 				fr.setNome_fantasia(rs.getString("nomeFantasia"));
 				fr.setCnpj(rs.getLong("cnpj"));
 				fr.setTelefone(rs.getLong("telefone"));
-				fr.setEndereco(edi.pesquisarEnderecoFornecedor(rs.getInt("cnpj")));      
+	
+				fr.setFarmacia(fdi.pesquisarFarmacia(rs.getInt("idFarmacia")));
+				
+				fr.setEndereco(edi.pesquisarEnderecoFornecedor(rs.getLong("cnpj")));
 			}
-      
 		} catch (SQLException e) {
 			System.out.println("Erro de conex„o no banco de dados");
 			e.printStackTrace();

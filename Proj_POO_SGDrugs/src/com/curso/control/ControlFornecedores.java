@@ -11,7 +11,10 @@ import com.curso.entity.Fornecedor;
 import com.curso.dao.ConjFornecedorDAO;
 import com.curso.dao.ConjFornecedorDAOImpl;
 import com.curso.dao.DAOException;
+import com.curso.dao.EnderecoDAO;
+import com.curso.dao.EnderecoDAOImpl;
 import com.curso.dao.FarmaciaDAOImpl;
+import com.curso.dao.FornecedorDAO;
 import com.curso.dao.FornecedorDAOImpl;
 import com.curso.entity.Cliente;
 import com.curso.entity.Endereco;
@@ -108,9 +111,13 @@ public class ControlFornecedores {
 	
 	public void removerFornecedor() {
 		ConjFornecedorDAO cfdi = new ConjFornecedorDAOImpl();
+		FornecedorDAO fornec = new FornecedorDAOImpl();
+		EnderecoDAO	endfor = new EnderecoDAOImpl();
 		try {
 			this.fornecSel = this.fornecDAO.pesquisarPorFornecedor(fornecSel.getCnpj());
 			cfdi.remover(fornecSel.getID(), fornecSel.getFarmacia().getId());
+			fornec.remover(fornecSel.getCnpj());
+			endfor.remover(fornecSel.getEndereco());
 			//this.fornecDAO.remover(fornecSel.getCnpj());
 		} catch (DAOException e) {
 			// TODO Auto-generated catch block
@@ -120,8 +127,8 @@ public class ControlFornecedores {
 	}
 	
 	public void attFornecedor(Fornecedor fr) {
-		fr.getEndereco().setIdEndereco(fornecSel.getEndereco().getIdEndereco());
-		fr.getFarmacia().setId(fornecSel.getFarmacia().getId());
+		//fr.getEndereco().setIdEndereco(fornecSel.getEndereco().getIdEndereco());
+		//fr.getFarmacia().setId(fornecSel.getFarmacia().getId());
 		try {
 			fornecDAO.alterar(fr);
 		} catch (DAOException e) {
