@@ -114,7 +114,6 @@ public class ControlFornecedores {
 		FornecedorDAO fornec = new FornecedorDAOImpl();
 		EnderecoDAO	endfor = new EnderecoDAOImpl();
 		try {
-			this.fornecSel = this.fornecDAO.pesquisarPorFornecedor(fornecSel.getCnpj());
 			cfdi.remover(fornecSel.getID(), fornecSel.getFarmacia().getId());
 			fornec.remover(fornecSel.getCnpj());
 			endfor.remover(fornecSel.getEndereco());
@@ -135,6 +134,7 @@ public class ControlFornecedores {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		this.attTableFornecedor();
 	}
 	
 //FIM MANTER Fornecedor-----------------------------------------------------------------

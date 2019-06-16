@@ -36,6 +36,8 @@ public class ConjFornecedorDAOImpl implements ConjFornecedorDAO {
 	
 	@Override
 	public void alterar(int idFornecedor, int idFarmacia) throws DAOException {
+		System.out.println("id fornec :"+idFornecedor);
+		System.out.println("id fornec :"+idFarmacia);
 		try {
 			Connection con = ConnectionManager.getInstance().getConnection();
 			String sql = "update tbconjfornecedor"

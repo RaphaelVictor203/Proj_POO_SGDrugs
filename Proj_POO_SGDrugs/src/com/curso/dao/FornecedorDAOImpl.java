@@ -221,14 +221,12 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 		try {
 			Connection con = ConnectionManager.getInstance().getConnection();
 			String sql = "update tbFornecedor "
-					+ "set nomeFantasia=?, telefone=? ,idEndereco=?"
+					+ "set nomeFantasia=?, telefone=?"
 					+ " where cnpj=?";
 			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setString(1, Fornecedor.getNome_fantasia());
 			stmt.setLong(2,Fornecedor.getTelefone());
-			stmt.setInt(3, Fornecedor.getEndereco().getIdEndereco());
-			stmt.setLong(4, Fornecedor.getCnpj());
-			
+			stmt.setLong(3, Fornecedor.getCnpj());
 			stmt.executeUpdate();
 			con.close();
 			edi.alterar(Fornecedor.getEndereco());
@@ -245,14 +243,14 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 	public void remover(long cnpj) throws DAOException {
 		try {
 			Fornecedor fr = pesquisarPorFornecedor(cnpj);
-			edi.remover(fr.getEndereco());
 			conj.remover(fr.getID(),fr.getFarmacia().getId());
 			Connection con = ConnectionManager.getInstance().getConnection();
 			String sql = "delete from tbFornecedor "
 					+ " where cnpj=?";
 			PreparedStatement stmt = con.prepareStatement(sql);
-			stmt.setLong(1, cnpj);
+			stmt.setLong(1, fr.getCnpj());
 			stmt.executeUpdate();
+			edi.remover(fr.getEndereco());
 			con.close();
 		} catch (SQLException e) {
 			System.out.println("Erro de conexão no banco de dados");

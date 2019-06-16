@@ -312,6 +312,7 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 	public Fornecedor boundaryToFornecedor() {
 		
 		Fornecedor f = new Fornecedor();
+		f.setID(ff.pesquisarFornecedor(Long.parseLong(this.txtCNPJ.getText())).getID());
 		f.setNome_fantasia(this.txtNome.getText());
 		f.setCnpj(Long.parseLong(this.txtCNPJ.getText()));
 		if(!this.txtTelefone.getText().equals("")) {
@@ -319,6 +320,7 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 		}
 		f.setFarmacia(this.cmbFarmacia.getSelectionModel().getSelectedItem());
 		Endereco ed = new Endereco();
+		ed.setIdEndereco(ff.pesquisarFornecedor(Long.parseLong(this.txtCNPJ.getText())).getEndereco().getIdEndereco());
 		ed.setCep(this.txtCEP.getText());
 		ed.setRua(this.txtRua.getText());
 		ed.setNumero(Integer.parseInt(this.txtNum.getText()));
