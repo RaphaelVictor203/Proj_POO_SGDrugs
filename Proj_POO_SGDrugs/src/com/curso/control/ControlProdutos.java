@@ -11,7 +11,6 @@ public class ControlProdutos {
 	private ProdutoDAOImpl produtoDAO = new ProdutoDAOImpl();
 	private ObservableList<Produto> dataListProds = FXCollections.observableArrayList();
 	private ObservableList<Produto> ProdutosCAD = FXCollections.observableArrayList();
-	private ObservableList<Produto> ProdutosCTR = FXCollections.observableArrayList();
 
 	public ObservableList<Produto> getProdutosCAD() {
 		return ProdutosCAD;
@@ -19,14 +18,6 @@ public class ControlProdutos {
 
 	public void setProdutosCAD(ObservableList<Produto> produtosCAD) {
 		ProdutosCAD = produtosCAD;
-	}
-
-	public ObservableList<Produto> getProdutosCTR() {
-		return ProdutosCTR;
-	}
-
-	public void setProdutosCTR(ObservableList<Produto> produtosCTR) {
-		ProdutosCTR = produtosCTR;
 	}
 
 	public void AdicionarProduto(Produto produto) throws DAOException {
@@ -74,17 +65,18 @@ public class ControlProdutos {
 			ProdutosCAD.addAll(produtoDAO.consultarProduto(desc));
 
 	}
+	
+	public void SearchProdutoCadastro(int id) throws DAOException{
+		
+			ProdutosCAD.clear();
+			ProdutosCAD.addAll(produtoDAO.consultarProduto(id));
+	}
+	
 
-	public Produto SearchProdutoTabela(String entrada) throws DAOException {
+	/*public Produto SearchProdutoTabela(String entrada) throws DAOException {
 			
 			return (Produto) produtoDAO.consultarProduto(entrada);
-	}
-
-	public void SearchProdutoControle(String desc) throws DAOException {
-
-			ProdutosCTR.clear();
-			ProdutosCTR.addAll(produtoDAO.consultarProduto(desc));
-	}
+	}*/
 
 	public Produto selecionarProduto(int id) {
 		try {
