@@ -66,7 +66,7 @@ public class FarmaciaProdutoDAOImpl implements FarmaciaProdutoDAO {
 			e.printStackTrace();
 			throw new DAOException(e);
 		}
-		System.out.println("farmacia produto id - " + fp.getIdFarmaciaProd());
+		//System.out.println("farmacia produto id - " + fp.getIdFarmaciaProd());
 		return fp;
 	}
 
@@ -81,24 +81,24 @@ public class FarmaciaProdutoDAOImpl implements FarmaciaProdutoDAO {
 		String sql = "";
 		if (tipo.equals("NOME")) {
 			sql = "select fp.idFarmaciaProduto, p.idProduto, p.categoria, p.descricao, fp.qntd, fp.precoUnit, fp.idGrupo, fp.idSecao from tbfarmaciaproduto as fp"
-					+ " inner join tbproduto as p on p.idProduto=fp.idProduto where p.descricao=?";
+					+ " inner join tbproduto as p on p.idProduto=fp.idProduto where p.descricao like ?";
 			
 		} else if (tipo.equals("CATEGORIA")) {
 			sql = "select fp.idFarmaciaProduto, p.idProduto, p.categoria, p.descricao, fp.qntd, fp.precoUnit, fp.idGrupo, fp.idSecao from tbfarmaciaproduto as fp"
-					+ " inner join tbproduto as p on p.idProduto=fp.idProduto where p.categoria=?";
+					+ " inner join tbproduto as p on p.idProduto=fp.idProduto where p.categoria like ?";
 			
 		} else
 		if (tipo.equals("FORNECEDOR")) {
 			sql = "select fp.idFarmaciaProduto, p.idProduto, p.categoria, p.descricao, fp.qntd, fp.precoUnit, fp.idGrupo, fp.idSecao from tbfarmaciaproduto as fp"
 					+ " inner join tbproduto as p on p.idProduto=fp.idProduto inner join tbfornecedor as f"
-					+ " on f.idFornecedor=p.idFornecedor where f.nomeFantasia=?";
+					+ " on f.idFornecedor=p.idFornecedor where f.nomeFantasia like ?";
 		}
 		try {
 			Connection con = ConnectionManager.getInstance().getConnection();
 			// String sql = "SELECT * from tbcliente where cpf like ?";
 			PreparedStatement stmt = con.prepareStatement(sql);
-			// stmt.setString(1, "%" + cont + "%");
-			stmt.setString(1, cont);
+			 stmt.setString(1, "%" + cont + "%");
+			//stmt.setString(1, cont);
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				FarmaciaProduto fp = new FarmaciaProduto();

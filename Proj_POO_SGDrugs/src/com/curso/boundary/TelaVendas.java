@@ -1,4 +1,5 @@
 package com.curso.boundary;
+
 import java.io.FileInputStream;
 import java.text.DecimalFormat;
 
@@ -7,6 +8,7 @@ import javax.swing.JOptionPane;
 import com.curso.control.ControlClientes;
 import com.curso.control.ControlFuncionario;
 import com.curso.control.ControlVendas;
+import com.curso.dao.DAOException;
 import com.curso.dao.FarmaciaDAO;
 import com.curso.dao.FarmaciaDAOImpl;
 import com.curso.dao.FuncionarioDAO;
@@ -27,6 +29,8 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
@@ -63,14 +67,14 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 	private TextField txtPesquisa;
 	private TextField txtQuantidade;
 	private TableView<ItemVenda> tblItens;
-   // private Button btnPOSVenda;
-    private Button btnVenda;
-    private HBox menutop;
+	// private Button btnPOSVenda;
+	private Button btnVenda;
+	private HBox menutop;
 	private Label lblNomeCliente;
 	private Label lblInformacoesGerais;
 	private Label lblNomeVendedor;
 	private Label lblFormaPagamento;
-	private Button btnVoltar; 
+	private Button btnVoltar;
 	private TextField txtCardCredito;
 	private TextField txtCardDebito;
 	private TextField txtDinheiro;
@@ -78,31 +82,30 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 	DecimalFormat df = new DecimalFormat("#,##0.00");
 	protected Cliente cliente;
 	protected Funcionario func;
-	
+
 	ControlVendas cv;
-	
-	
-	
+
 	private Stage stg;
 
 	@Override
 	public void start(Stage stage) throws Exception {
-		
+
 		stg = stage;
-		
-		/*FarmaciaDAO fai = new FarmaciaDAOImpl();
-		FuncionarioDAO fdi = new FuncionarioDAOImpl();
-		func = fdi.pesquisarPorFuncionarios().get(0);*/
-		//func.setFarmacia(fai.pesquisarFarmacia().get(0));
+
+		/*
+		 * FarmaciaDAO fai = new FarmaciaDAOImpl(); FuncionarioDAO fdi = new
+		 * FuncionarioDAOImpl(); func = fdi.pesquisarPorFuncionarios().get(0);
+		 */
+		// func.setFarmacia(fai.pesquisarFarmacia().get(0));
 
 		cv = new ControlVendas();
-		
+
 		painelVenda = new Pane();
 		painelPosVenda = new Pane();
-		
-		//btnPOSVenda = new Button("POS-VENDA");
+
+		// btnPOSVenda = new Button("POS-VENDA");
 		btnVenda = new Button("VENDA");
-		//menutop = new HBox(btnVenda, btnPOSVenda);
+		// menutop = new HBox(btnVenda, btnPOSVenda);
 		menutop = new HBox(btnVenda);
 
 		BorderPane pane = new BorderPane();
@@ -125,7 +128,7 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 		lblNomeProd = new Label("Nome produto: Nenhum produto selecionado");
 		lblValorUnt = new Label("preço unitáro: R$0,00");
 		lblQuantidade = new Label("Qtd. total no estoque: 0");
-		
+
 		ImageView iv = new ImageView(new Image(new FileInputStream("imgs\\search.png")));
 		iv.setFitHeight(20);
 		iv.setFitWidth(20);
@@ -156,21 +159,18 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 		tblItens.setPrefHeight(400);
 
 		pane.setTop(menutop);
-		StackPane painels = new StackPane(painelPosVenda , painelVenda);
+		StackPane painels = new StackPane(painelPosVenda, painelVenda);
 		pane.setCenter(painels);
 
 		VBox vbEntradaProduto = new VBox(new Label("Adicionar Produto"), new Separator(),
-				new HBox(10, txtPesquisa, btnPesquisar), 
-				new HBox(10, txtQuantidade, btnAdicionar),
-				new HBox(10, lblNomeProd),
-				new HBox(10, lblValorUnt), 
-				new HBox(10, lblQuantidade));
+				new HBox(10, txtPesquisa, btnPesquisar), new HBox(10, txtQuantidade, btnAdicionar),
+				new HBox(10, lblNomeProd), new HBox(10, lblValorUnt), new HBox(10, lblQuantidade));
 		vbEntradaProduto.setPadding(new Insets(130, 60, 50, 20));
 		vbEntradaProduto.setSpacing(10);
 		vbEntradaProduto.setStyle("-fx-min-width: 50%; -fx-font-size: 15px; ");
 
-		VBox vbFormaPagamento = new VBox(new Label("Forma de Pagamento"), new Separator(), new HBox(10, cbCartaoCredito),
-				new HBox(10, cbCartaoDebito), new HBox(10, cbDinheiro));
+		VBox vbFormaPagamento = new VBox(new Label("Forma de Pagamento"), new Separator(),
+				new HBox(10, cbCartaoCredito), new HBox(10, cbCartaoDebito), new HBox(10, cbDinheiro));
 		vbFormaPagamento.setPadding(new Insets(20, 60, 40, 20));
 		vbFormaPagamento.setSpacing(10);
 		vbFormaPagamento.setStyle("-fx-min-width: 50%; -fx-font-size: 15px; ");
@@ -185,7 +185,7 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 
 		VBox vbTabelaItens = new VBox(new HBox(tblItens));
 		vbTabelaItens.setPadding(new Insets(140, 0, 100, 50));
-		
+
 		HBox hbTabelaItens = new HBox(new VBox(vbTabelaItens));
 		hbTabelaItens.setStyle("-fx-background-color: rgb(242,242,242)");
 		hbTabelaItens.setPadding(new Insets(0, 100, 100, 50));
@@ -196,99 +196,87 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 		hbGeralVenda.setStyle("-fx-background-color: rgb(242,242,242);");
 
 		painelVenda.getChildren().addAll(hbGeralVenda, lblCompra, lblVenda, lblTotal);
-		
-		
-		//-----------------------------------Fim do Painel Venda---------------------------------------------
-		
-		
+
+		// -----------------------------------Fim do Painel
+		// Venda---------------------------------------------
+
 		lblInformacoesGerais = new Label("INFORMAÇÕES GERAIS");
 		lblInformacoesGerais.setPrefSize(250, 30);
 		lblInformacoesGerais.setStyle("-fx-font-size: 20px;");
 		lblInformacoesGerais.relocate(320, 185);
-		
+
 		lblNomeCliente = new Label("_______________________");
 		lblNomeVendedor = new Label("_______________________");
 		lblFormaPagamento = new Label("_______________________");
-		
+
 		btnVoltar = new Button("VOLTAR");
 		btnVoltar.setPrefSize(350, 40);
-		
+
 		lblPagamento = new Label("EFETUAR PAGAMENTO");
 		lblPagamento.setPrefSize(360, 35);
-	    lblPagamento.setStyle("-fx-font-size: 35px;");
-	    lblPagamento.relocate(940, 45);
-		
+		lblPagamento.setStyle("-fx-font-size: 35px;");
+		lblPagamento.relocate(940, 45);
+
 		txtCardDebito = new TextField();
 		txtCardCredito = new TextField();
 		txtDinheiro = new TextField();
-	
+
 		btnFinalizaPOS = new Button("FINALIZAR COMPRA");
 		btnFinalizaPOS.setPrefSize(516, 105);
-		
-		VBox vbInfosGerais = new VBox(new HBox(10, new Label("Nome do Cliente:")), 
-		new HBox(10,  lblNomeCliente),
-		new HBox(10, new Label("Nome do Vendedor:")),
-		new HBox(10,  lblNomeVendedor),
-		new HBox(10, new Label("Formas de Pagamento: ")), 
-		new HBox(10, lblFormaPagamento));
-		
+
+		VBox vbInfosGerais = new VBox(new HBox(10, new Label("Nome do Cliente:")), new HBox(10, lblNomeCliente),
+				new HBox(10, new Label("Nome do Vendedor:")), new HBox(10, lblNomeVendedor),
+				new HBox(10, new Label("Formas de Pagamento: ")), new HBox(10, lblFormaPagamento));
+
 		vbInfosGerais.setSpacing(7);
 		vbInfosGerais.setPadding(new Insets(35, 150, 25, 40));
-        vbInfosGerais.setStyle("-fx-background-color: rgb(237,237,237);"
-        					 + "-fx-font-size: 15px;");
-				
-        HBox hbVoltar = new HBox(btnVoltar);
-        hbVoltar.setSpacing(20);
-        hbVoltar.setAlignment(Pos.BASELINE_CENTER);
-    
-        
+		vbInfosGerais.setStyle("-fx-background-color: rgb(237,237,237);" + "-fx-font-size: 15px;");
+
+		HBox hbVoltar = new HBox(btnVoltar);
+		hbVoltar.setSpacing(20);
+		hbVoltar.setAlignment(Pos.BASELINE_CENTER);
+
 		HBox hbInforsGerais = new HBox();
 		hbInforsGerais.setPadding(new Insets(50, 0, 0, 0));
 		hbInforsGerais.setSpacing(50);
 		hbInforsGerais.setStyle("-fx-background-color: rgb(237,237,237);");
-		hbInforsGerais.getChildren().addAll(new VBox(50, vbInfosGerais, hbVoltar));		
+		hbInforsGerais.getChildren().addAll(new VBox(50, vbInfosGerais, hbVoltar));
 		hbInforsGerais.relocate(245, 170);
-	
-		
-		VBox vbPagamento = new VBox(
-		new HBox(new Label("Cart. crédito: ")),
-		new HBox(txtCardCredito),
-		new HBox(new Label("Cart. débito:")),
-		new HBox(txtCardDebito),
-		new HBox(new Label("Dinheiro")),
-		new HBox(txtDinheiro)
-		); 
+
+		VBox vbPagamento = new VBox(new HBox(new Label("Cart. crédito: ")), new HBox(txtCardCredito),
+				new HBox(new Label("Cart. débito:")), new HBox(txtCardDebito), new HBox(new Label("Dinheiro")),
+				new HBox(txtDinheiro));
 		vbPagamento.setPadding(new Insets(150, 0, 50, 155));
 		vbPagamento.setStyle("-fx-font-size: 20px;");
 		vbPagamento.setSpacing(5);
-		
+
 		HBox hbFinalizaCompra = new HBox(btnFinalizaPOS);
 		hbFinalizaCompra.setPadding(new Insets(125, 0, 0, 0));
 		hbFinalizaCompra.setStyle("-fx-min-width: 50%; -fx-font-size: 25px; ");
 
 		HBox hbEfetuarPagamento = new HBox(new VBox(vbPagamento, hbFinalizaCompra));
-		
+
 		hbEfetuarPagamento.setStyle("-fx-background-color: #EEE5DE;");
 		hbEfetuarPagamento.setPadding(new Insets(40, 0, 0, 0));
 		hbEfetuarPagamento.relocate(850, 0);
 
 		painelPosVenda.setStyle("-fx-background-color: rgba(105,105,105, 0.6)");
 		painelPosVenda.getChildren().addAll(hbInforsGerais, lblInformacoesGerais, hbEfetuarPagamento, lblPagamento);
-		
+
 		stage.setMaximized(true);
-		Scene scene = new Scene(pane, stage.getWidth(),stage.getHeight());
+		Scene scene = new Scene(pane, stage.getWidth(), stage.getHeight());
 		stage.setScene(scene);
 		stage.setTitle("Tela de Vendas");
 		stage.show();
-		
+
 		btnVenda.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
-		//btnPOSVenda.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
+		// btnPOSVenda.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
 		btnFinalizar.addEventFilter(MouseEvent.MOUSE_CLICKED, this);
 		btnVoltar.addEventFilter(MouseEvent.MOUSE_CLICKED, this);
 		btnFinalizaPOS.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
 		btnAdicionar.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
 		btnPesquisar.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
-		
+
 		createTableColumnsItensVenda();
 		loadStyles();
 		btnSelected(0);
@@ -299,38 +287,24 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 
 		String stylePainelVendas = "-fx-background-color:white;" + "-fx-padding: 50, 50, 50, 50";
 
-		String styleEntradas = "-fx-background-radius: 8;"
-							 + "-fx-font-size: 15px;";
+		String styleEntradas = "-fx-background-radius: 8;" + "-fx-font-size: 15px;";
 
-		String styleBtnPesq = 	"-fx-background-color: #0095FE;"
-							+ 	"-fx-cursor: hand;";
-		
-		String styleBtnAdd = 	"-fx-background-color: #007F0E;" 
-						   + 	"-fx-text-fill: white;"
-						   + 	"-fx-cursor: hand;";
+		String styleBtnPesq = "-fx-background-color: #0095FE;" + "-fx-cursor: hand;";
 
-		String styleBtnFinaliza = "-fx-background-color: #007F0E;" 
-								+ "-fx-text-fill: white;"
-								+ "-fx-font-size: 35px;"
-								+ "-fx-background-radius: none;"
-								+ "-fx-cursor: hand;";
-				
-		String styleMeuBtn =	  "-fx-background-radius: none;" 
-								+ "-fx-min-width: 130px;" 
-								+ "-fx-min-height: 40px;"
-								+ "-fx-cursor: hand;" 
-								+ "-fx-font-size: 15px;";
-		
+		String styleBtnAdd = "-fx-background-color: #007F0E;" + "-fx-text-fill: white;" + "-fx-cursor: hand;";
+
+		String styleBtnFinaliza = "-fx-background-color: #007F0E;" + "-fx-text-fill: white;" + "-fx-font-size: 35px;"
+				+ "-fx-background-radius: none;" + "-fx-cursor: hand;";
+
+		String styleMeuBtn = "-fx-background-radius: none;" + "-fx-min-width: 130px;" + "-fx-min-height: 40px;"
+				+ "-fx-cursor: hand;" + "-fx-font-size: 15px;";
+
 		String styleMenuTop = "-fx-background-color: #E0DACE";
-		
-		String styleBtnVoltar = "-fx-background-color: red;"
-							  + "-fx-text-fill: white;"
-							  + "-fx-background-radius: none;"
-							  + "-fx-cursor: hand;"
-							  + "-fx-font-size: 15px;";
-		
-		String styleEntradasPagamento = "-fx-background-radius: 8;"
-									  + "-fx-font-size: 15px;";
+
+		String styleBtnVoltar = "-fx-background-color: red;" + "-fx-text-fill: white;" + "-fx-background-radius: none;"
+				+ "-fx-cursor: hand;" + "-fx-font-size: 15px;";
+
+		String styleEntradasPagamento = "-fx-background-radius: 8;" + "-fx-font-size: 15px;";
 
 		btnPesquisar.setStyle(styleBtnPesq);
 		btnAdicionar.setStyle(styleBtnAdd);
@@ -339,7 +313,7 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 		txtPesquisa.setStyle(styleEntradas);
 		txtQuantidade.setStyle(styleEntradas);
 		btnVenda.setStyle(styleMeuBtn);
-		//btnPOSVenda.setStyle(styleMeuBtn);
+		// btnPOSVenda.setStyle(styleMeuBtn);
 		menutop.setStyle(styleMenuTop);
 		btnVoltar.setStyle(styleBtnVoltar);
 		txtDinheiro.setStyle(styleEntradasPagamento);
@@ -351,7 +325,7 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 
 	@SuppressWarnings("unchecked")
 	public void createTableColumnsItensVenda() {
-		
+
 		tblItens.setItems(cv.getDataItens());
 		TableColumn<ItemVenda, Number> id_produto = new TableColumn<>("ID");
 		id_produto.setCellValueFactory(
@@ -368,33 +342,35 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 		quant_produto.setCellValueFactory(item -> new ReadOnlyIntegerWrapper(item.getValue().getQntd()));
 
 		TableColumn<ItemVenda, String> sub_total = new TableColumn<>("Subtotal");
-		sub_total.setCellValueFactory(
-				item -> new ReadOnlyStringWrapper(df.format(item.getValue().getSubtotal())));
-		
+		sub_total.setCellValueFactory(item -> new ReadOnlyStringWrapper(df.format(item.getValue().getSubtotal())));
+
 		TableColumn<ItemVenda, Button> btnIsencao = new TableColumn<>("Isenção");
-		btnIsencao.setCellValueFactory(item -> new ReadOnlyObjectWrapper<>(item.getValue().getProduto().getBtnIsencao()));
+		btnIsencao
+				.setCellValueFactory(item -> new ReadOnlyObjectWrapper<>(item.getValue().getProduto().getBtnIsencao()));
 		btnIsencao.setStyle("-fx-alignment: CENTER");
-		
+
 		TableColumn<ItemVenda, Button> btnExcluir = new TableColumn<>("Excluir");
-		btnExcluir.setCellValueFactory(item -> new ReadOnlyObjectWrapper<>(item.getValue().getProduto().getBtnExcluir()));
+		btnExcluir
+				.setCellValueFactory(item -> new ReadOnlyObjectWrapper<>(item.getValue().getProduto().getBtnExcluir()));
 		btnExcluir.setStyle("-fx-alignment: CENTER");
 
-		tblItens.getColumns().addAll(id_produto, desc_produto, valor_produto, quant_produto, sub_total, btnIsencao, btnExcluir);
+		tblItens.getColumns().addAll(id_produto, desc_produto, valor_produto, quant_produto, sub_total, btnIsencao,
+				btnExcluir);
 		setFunctionItensButtons();
-		
+
 	}
 
 	private void setFunctionItensButtons() {
-		for(int i=0; i<tblItens.getItems().size(); i++) {		
-			
+		for (int i = 0; i < tblItens.getItems().size(); i++) {
+
 			final int l = i;
-			
-			if(tblItens.getItems().get(i).getProduto().getProduto().getCategoria().equals("Medicamentos Genéricos")) {
+
+			if (tblItens.getItems().get(i).getProduto().getProduto().getCategoria().equals("Medicamentos Genéricos")) {
 				tblItens.getItems().get(i).getProduto().getBtnIsencao().setOnAction(e -> {
-					if(tblItens.getItems().get(l).getProduto().getBtnIsencao().getText().equals("SUS")) {
+					if (tblItens.getItems().get(l).getProduto().getBtnIsencao().getText().equals("SUS")) {
 						tblItens.getItems().get(l).aplicarIsencao();
 						tblItens.getItems().get(l).getProduto().getBtnIsencao().setText("X");
-					}else {
+					} else {
 						tblItens.getItems().get(l).removerIsencao();
 						tblItens.getItems().get(l).getProduto().getBtnIsencao().setText("SUS");
 					}
@@ -402,10 +378,10 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 					setFunctionItensButtons();
 					cv.attDataItens();
 				});
-			}else {
+			} else {
 				tblItens.getItems().get(i).getProduto().getBtnIsencao().setVisible(false);
 			}
-			
+
 			tblItens.getItems().get(i).getProduto().getBtnExcluir().setOnAction(e -> {
 				cv.resetFarmaciaProdutos();
 				cv.delItemVenda(tblItens.getItems().get(l));
@@ -414,15 +390,12 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 			});
 		}
 	}
-	
+
 	public void btnSelected(int btn) {
 		String SelectVENDA = "";
 		SelectVENDA = "rgb(242, 242, 242);";
-		btnVenda.setStyle("-fx-background-color: " + SelectVENDA + ";"
-				+ "-fx-background-radius: none;"
-				+ "-fx-min-width: 140px;"
-				+ "-fx-min-height: 40px;"
-				+ "-fx-cursor: hand;");
+		btnVenda.setStyle("-fx-background-color: " + SelectVENDA + ";" + "-fx-background-radius: none;"
+				+ "-fx-min-width: 140px;" + "-fx-min-height: 40px;" + "-fx-cursor: hand;");
 	}
 
 	public static void main(String[] args) {
@@ -436,69 +409,90 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 
 	@Override
 	public void handle(MouseEvent event) {
-		
+
 		if (event.getSource() == btnVenda) {
 			painelVenda.toFront();
 			btnSelected(0);
-		}else
-		if (event.getSource() == btnPesquisar) {
-			FarmaciaProduto fp = cv.pesquisaProd(Integer.parseInt(txtPesquisa.getText()));
-			if(fp != null) {
-				this.lblValorUnt.setText("preço unitáro: R$" + df.format(fp.getPreco()));
-				this.lblQuantidade.setText("Qtd. total no estoque:" + fp.getQntdEstoque());
-				this.lblNomeProd.setText("Nome produto: " + fp.getProduto().getNome());
-			}else {
-				JOptionPane.showMessageDialog(null, "Produto não encontrado !!!", "Ops...", JOptionPane.ERROR_MESSAGE);
-				limparCamposPesquisa();
+
+		} else if (event.getSource() == btnPesquisar) {
+			FarmaciaProduto fp;
+			try {
+				fp = cv.pesquisaProd(Integer.parseInt(txtPesquisa.getText()));
+				if (fp != null) {
+					this.lblValorUnt.setText("preço unitáro: R$" + df.format(fp.getPreco()));
+					this.lblQuantidade.setText("Qtd. total no estoque:" + fp.getQntdEstoque());
+					this.lblNomeProd.setText("Nome produto: " + fp.getProduto().getNome());
+				}
+			} catch (NumberFormatException e) {
+				txtPesquisa.clear();
+				txtPesquisa.requestFocus();
+			} catch (DAOException e) {
+				
+				Alert a = new Alert(AlertType.ERROR, "Produto Não Encontrado");
+				a.show();
+				txtPesquisa.requestFocus();
 			}
-		}else
-		if (event.getSource() == btnAdicionar) {
-			FarmaciaProduto fp = cv.pesquisaProd(Integer.parseInt(txtPesquisa.getText()));
-			if(!cv.getVendaAtual().existItem(fp.getProduto())) {
-				ItemVenda iv = new ItemVenda();
-				iv.setProduto(fp);
-				iv.setQntd(Integer.parseInt(txtQuantidade.getText()));
-				iv.calcSubTotal();
-				cv.addItemVenda(iv);
-				atualizarTotal();
-				setFunctionItensButtons();
-				limparCamposPesquisa();
+
+		} else if (event.getSource() == btnAdicionar) {
+			FarmaciaProduto fp;
+			try {	
+				fp = cv.pesquisaProd(Integer.parseInt(txtPesquisa.getText()));
+				if (!cv.getVendaAtual().existItem(fp.getProduto())) {
+					ItemVenda iv = new ItemVenda();
+					iv.setProduto(fp);
+					iv.setQntd(Integer.parseInt(txtQuantidade.getText()));
+					iv.calcSubTotal();
+					cv.addItemVenda(iv);
+					atualizarTotal();
+					setFunctionItensButtons();
+					limparCamposPesquisa();
+				}
+			} catch (NumberFormatException e) {
+				txtPesquisa.clear();
+				txtQuantidade.clear();
+				txtPesquisa.requestFocus();
+			
+			} catch (DAOException e) {
+				e.printStackTrace();
 			}
-		}
-		else
-		if (event.getSource() == btnFinalizar) {
-			if((cbCartaoCredito.isSelected() || cbCartaoDebito.isSelected() || cbDinheiro.isSelected())
+
+		} else if (event.getSource() == btnFinalizar) {
+			if ((cbCartaoCredito.isSelected() || cbCartaoDebito.isSelected() || cbDinheiro.isSelected())
 					&& cv.getVendaAtual().getItems().size() != 0) {
 				cv.getVendaAtual().setFuncionario(func);
 				lblNomeVendedor.setText(cv.getVendaAtual().getFuncionario().getNome());
 				lblNomeVendedor.setText(cv.getVendaAtual().getFuncionario().getNome());
-				if(cliente != null) {
+				if (cliente != null) {
 					cv.getVendaAtual().setCliente(cliente);
 					lblNomeCliente.setText(cv.getVendaAtual().getCliente().getPrimeiroNome());
-				}else {
+				} else {
 					cliente = new Cliente();
 					cv.getVendaAtual().setCliente(cliente);
 				}
 				painelPosVenda.toFront();
 				configEntradaFormaPagamento();
-				
-			}else {
-				if(cv.getVendaAtual().getItems().size() == 0) {
-					JOptionPane.showMessageDialog(null, "Não é possivel realizar a transação pois nenhum produto\nfoi adicionado.", "Problema na transação", JOptionPane.ERROR_MESSAGE);
-				}else {
-					JOptionPane.showMessageDialog(null, "Selecione ao menos uma forma de pagamento", "Problema na transação", JOptionPane.ERROR_MESSAGE);
+
+			} else {
+				if (cv.getVendaAtual().getItems().size() == 0) {
+					JOptionPane.showMessageDialog(null,
+							"Não é possivel realizar a transação pois nenhum produto\nfoi adicionado.",
+							"Problema na transação", JOptionPane.ERROR_MESSAGE);
+				} else {
+					JOptionPane.showMessageDialog(null, "Selecione ao menos uma forma de pagamento",
+							"Problema na transação", JOptionPane.ERROR_MESSAGE);
 				}
 			}
-		}else
-		if(event.getSource() == btnVoltar) {
+		} else if (event.getSource() == btnVoltar) {
 			painelVenda.toFront();
-		}else
-		if(event.getSource() == btnFinalizaPOS) {
-			//finalizar a compra tela pos venda
-			/*cv.getVendaAtual().setCliente(cliente);
-			cv.getVendaAtual().setFuncionario(func);*/
+		} else if (event.getSource() == btnFinalizaPOS) {
+			// finalizar a compra tela pos venda
+			/*
+			 * cv.getVendaAtual().setCliente(cliente);
+			 * cv.getVendaAtual().setFuncionario(func);
+			 */
 			cv.addVenda();
-			JOptionPane.showMessageDialog(null, "Compra realiza com sucesso !!!", "Transação finalizada", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Compra realiza com sucesso !!!", "Transação finalizada",
+					JOptionPane.INFORMATION_MESSAGE);
 			painelVenda.toFront();
 			limparCampos();
 			cv.resetFarmaciaProdutos();
@@ -513,84 +507,78 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 		}
 
 	}
-	
+
 	public void configEntradaFormaPagamento() {
 		boolean cred = false, deb = false, din = false;
 		txtCardCredito.setDisable(true);
 		txtCardDebito.setDisable(true);
 		txtDinheiro.setDisable(true);
 		lblFormaPagamento.setText("");
-		if(cbCartaoCredito.isSelected()) {
+		if (cbCartaoCredito.isSelected()) {
 			txtCardCredito.setDisable(false);
 			lblFormaPagamento.setText(lblFormaPagamento.getText() + "Crédito\n");
 			cred = true;
 		}
-		if(cbCartaoDebito.isSelected()) {
+		if (cbCartaoDebito.isSelected()) {
 			txtCardDebito.setDisable(false);
 			lblFormaPagamento.setText(lblFormaPagamento.getText() + "Debito\n");
 			deb = true;
 		}
-		if(cbDinheiro.isSelected()) {
+		if (cbDinheiro.isSelected()) {
 			txtDinheiro.setDisable(false);
 			lblFormaPagamento.setText(lblFormaPagamento.getText() + "Dinheiro\n");
 			din = true;
 		}
 		distribuiValor(cred, deb, din);
 	}
-	
+
 	private void distribuiValor(boolean cred, boolean deb, boolean din) {
 		cv.getVendaAtual().resetListFormasPagto();
 		double vl = 0;
 		txtCardCredito.setText("");
 		txtCardDebito.setText("");
 		txtDinheiro.setText("");
-		if(cred && deb && din) {
+		if (cred && deb && din) {
 			vl = cv.getVendaAtual().returnPrecoTotal() / 3;
 			txtCardCredito.setText(df.format(vl));
 			txtCardDebito.setText(df.format(vl));
 			txtDinheiro.setText(df.format(vl));
-		}else
-		if(cred && deb) {
+		} else if (cred && deb) {
 			vl = cv.getVendaAtual().returnPrecoTotal() / 2;
 			txtCardCredito.setText(df.format(vl));
 			txtCardDebito.setText(df.format(vl));
-		}else 
-		if(cred && din){
+		} else if (cred && din) {
 			vl = cv.getVendaAtual().returnPrecoTotal() / 2;
 			txtCardCredito.setText(df.format(vl));
 			txtDinheiro.setText(df.format(vl));
-		}else
-		if(deb && din) {
+		} else if (deb && din) {
 			vl = cv.getVendaAtual().returnPrecoTotal() / 2;
 			txtCardDebito.setText(df.format(vl));
 			txtDinheiro.setText(df.format(vl));
-		}else
-		if(cred) {
+		} else if (cred) {
 			vl = cv.getVendaAtual().returnPrecoTotal();
 			txtCardCredito.setText(df.format(vl));
-		}else
-		if(deb) {
+		} else if (deb) {
 			vl = cv.getVendaAtual().returnPrecoTotal();
 			txtCardDebito.setText(df.format(vl));
-		}else
-		if(din) {
+		} else if (din) {
 			vl = cv.getVendaAtual().returnPrecoTotal();
 			txtDinheiro.setText(df.format(vl));
 		}
-		
-		if(cred) {
+
+		if (cred) {
 			cv.getVendaAtual().getFormasPagto().add(new FormaPagto("Crédito", vl));
 		}
-		if(deb) {
+		if (deb) {
 			cv.getVendaAtual().getFormasPagto().add(new FormaPagto("Débito", vl));
 		}
-		if(din) {
+		if (din) {
 			cv.getVendaAtual().getFormasPagto().add(new FormaPagto("Dinheiro", vl));
 		}
-			
+
 	}
-	
-	public void limparCampos(){
+
+	public void limparCampos() {
 		this.txtPesquisa.setText("");
 		this.txtQuantidade.setText("");
 		this.cbCartaoCredito.setSelected(false);
@@ -599,7 +587,7 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 		limparCamposPesquisa();
 		atualizarTotal();
 	}
-	
+
 	public void limparCamposPesquisa() {
 		this.lblValorUnt.setText("preço unitáro: R$0,00");
 		this.lblQuantidade.setText("Qtd. total no estoque: 0");

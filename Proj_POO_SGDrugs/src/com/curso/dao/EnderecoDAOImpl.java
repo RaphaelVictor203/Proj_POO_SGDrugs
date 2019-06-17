@@ -394,6 +394,34 @@ public class EnderecoDAOImpl implements EnderecoDAO {
 		return end;
 	}
 
+	@Override
+	public Endereco pesquisarEnderecoFuncionario(String nome) throws DAOException {
+		Endereco end = new Endereco();
+		try {
+			Connection con = ConnectionManager.getInstance().getConnection();
+			String sql ="SELECT e.idEndereco, e.cep, e.rua, e.numero, e.bairro, e.cidade, e.estado from tbendereco as e"
+					+ " inner join tbfuncionario as f on f.idEndereco=e.idEndereco where f.nome like ?";
+			PreparedStatement stmt = con.prepareStatement(sql);
+			stmt.setString(1, "%" + nome + "%");
+			ResultSet  rs = stmt.executeQuery();	
+			while(rs.next()) {
+				end.setCep(rs.getString("cep"));
+				end.setRua(rs.getString("rua"));
+				end.setNumero(rs.getInt("numero"));
+				end.setBairro(rs.getString("Bairro"));
+				end.setCidade(rs.getString("estado"));
+				end.setUf(rs.getString("cidade"));
+				end.setIdEndereco(rs.getInt("idEndereco"));
+			}
+		} catch (SQLException e) {
+			System.out.println("Erro de conexão no banco de dados");
+			e.printStackTrace();
+			throw new DAOException(e);
+		}
+	
+		return end;
+	}
+
 }
 
 

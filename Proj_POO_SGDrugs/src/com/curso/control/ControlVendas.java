@@ -77,7 +77,7 @@ public class ControlVendas {
 		this.vendaAtual = vendaAtual;
 	}
 	
-	public FarmaciaProduto pesquisaProd(int cod) {
+	public FarmaciaProduto pesquisaProd(int cod) throws DAOException{
 		/*for(FarmaciaProduto prod : produtos) {
 			if(prod.getProduto().getId_produto() == cod) {
 				return prod;

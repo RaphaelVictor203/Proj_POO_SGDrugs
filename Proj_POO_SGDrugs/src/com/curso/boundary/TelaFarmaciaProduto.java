@@ -31,6 +31,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -99,6 +100,8 @@ public class TelaFarmaciaProduto extends Application implements EventHandler<Mou
 		cmbTipoPesquisa = new ComboBox<String>(FXCollections.observableArrayList(new String[] {"ID", "NOME", "CATEGORIA", "FORNECEDOR"}));
 		cmbTipoPesquisa.setPromptText("Tipo");
 		tblProduto = new TableView<Produto>();
+
+
 		cp = new ControlProdutos();
 		cfp = new ControlFarmaciaProduto();
 		lblNomeProduto = new Label();
@@ -120,6 +123,7 @@ public class TelaFarmaciaProduto extends Application implements EventHandler<Mou
 				)
 		);
 		hb.setStyle("-fx-font-size: 15px;");
+	
 		
 //FIM FORMULARIO CADASTRO PRODUTO FARMACIA------------------------------------------		
 
@@ -214,9 +218,9 @@ public class TelaFarmaciaProduto extends Application implements EventHandler<Mou
 		painelCad.setStyle(stylePainel);
 		painelMant.setStyle(stylePainel);
 		menuTop.setStyle(styleMenuTop);
-		txtPesquisaProd.setStyle(styleEntradaPesquisa + "-fx-font-size: 15.1px; -fx-min-width: 920px;");
+		txtPesquisaProd.setStyle(styleEntradaPesquisa + "-fx-font-size: 15.1px; -fx-min-width: 850px;");
 		btnPesquisaProd.setStyle(styleBtnPesquisa);
-		cmbTipoPesquisa.setStyle(comboStyle + "-fx-font-size: 15.1px; -fx-min-width: 100px;");
+		cmbTipoPesquisa.setStyle(comboStyle + "-fx-font-size: 15.1px; -fx-min-width: 160px;");
 		cmbTipoPesquisa.setEffect(dp);
 		cmbGrupo.setStyle(comboStyle + "-fx-font-size: 20px; -fx-min-width: 248px;");
 		cmbGrupo.setEffect(dp);

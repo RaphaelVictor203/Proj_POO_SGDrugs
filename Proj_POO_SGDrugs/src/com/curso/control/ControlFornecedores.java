@@ -93,7 +93,6 @@ public class ControlFornecedores {
 		try {
 			return fornecDAO.pesquisarPorFornecedor(Cnpj);
 		} catch (DAOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -103,7 +102,6 @@ public class ControlFornecedores {
 		try {
 			return (fornecDAO.pesquisarPorFornecedor(Cnpj) != null) ? true : false;
 		} catch (DAOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return false;

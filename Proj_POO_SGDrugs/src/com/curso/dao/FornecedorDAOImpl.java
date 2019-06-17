@@ -75,7 +75,7 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 					+ " where f.cnpj = ?";*/
 			String sql = "SELECT f.idFornecedor,f.nomeFantasia,f.telefone,f.cnpj, cf.idFarmacia"
 					+ " from tbFornecedor f left join tbconjfornecedor cf on cf.idFornecedor=f.idFornecedor"
-					+ " where f.cnpj = ?";
+					+ " where f.cnpj=?";
 			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setLong(1, cnpj );
 			ResultSet  rs = stmt.executeQuery();
@@ -267,7 +267,7 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 		FarmaciaDAO fdi = new FarmaciaDAOImpl();
 		try {
 			Connection con = ConnectionManager.getInstance().getConnection();
-			String sql = "SELECT f.idFornecedor,f.nomeFantasia,f.telefone,f.cnpj, cf.idFarmacia"
+			String sql ="SELECT f.idFornecedor,f.nomeFantasia,f.telefone,f.cnpj, cf.idFarmacia"
 					+ " from tbFornecedor f left join tbconjfornecedor cf on cf.idFornecedor=f.idFornecedor"
 					+ " where f.idFornecedor = ?";
 			PreparedStatement stmt = con.prepareStatement(sql);

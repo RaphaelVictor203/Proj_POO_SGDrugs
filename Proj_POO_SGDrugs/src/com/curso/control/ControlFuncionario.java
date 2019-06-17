@@ -18,31 +18,31 @@ import com.curso.dao.LoginDAOImpl;;
 
 public class ControlFuncionario {
 	FuncionarioDAOImpl dao = new FuncionarioDAOImpl();;
-	public  ObservableList<Funcionario> dataList = FXCollections.observableArrayList();
-	public  List<Funcionario> funcio = new ArrayList<>();
+	public ObservableList<Funcionario> dataList = FXCollections.observableArrayList();
+	public List<Funcionario> funcio = new ArrayList<>();
 	public static Funcionario funcSel = new Funcionario();
-	
+
 	public void inserir() {
 		this.funcSel.getEnd().setBairro("");
 		try {
-			if(!ValidarCadastror(funcSel.getCpf())) {
+			if (!ValidarCadastror(funcSel.getCpf())) {
 				ClassList.funcionario.add(funcSel);
 				funcio.add(funcSel);
 				dao.inserir(funcSel);
 				dataList.clear();
 				dataList.addAll(funcio);
 				Alert a = new Alert(AlertType.INFORMATION, "Usuário  cadastrado Com Sucesso!!!");
-				
+
 				a.showAndWait();
 				return;
 			}
-			
+
 		} catch (DAOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void addLogUsuario(String nome, String senha, String nivel) {
 		LoginDAO ldi = new LoginDAOImpl();
 		try {
@@ -52,7 +52,7 @@ public class ControlFuncionario {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void attLogUsuario(String nome, String senha, String nivel) {
 		LoginDAO ldi = new LoginDAOImpl();
 		try {
@@ -62,35 +62,36 @@ public class ControlFuncionario {
 			e.printStackTrace();
 		}
 	}
-	
-	private boolean ValidarCadastror (long cpf) {
-		
-		if(ClassList.funcionario.isEmpty()) {
+
+	private boolean ValidarCadastror(long cpf) {
+
+		if (ClassList.funcionario.isEmpty()) {
 			return false;
 		}
-		for(Funcionario n : ClassList.funcionario) {
-			if(n.getCpf()==cpf) {
+		for (Funcionario n : ClassList.funcionario) {
+			if (n.getCpf() == cpf) {
 				Alert a = new Alert(AlertType.WARNING, "Usuário Já cadastrado!!!");
-				a.showAndWait();;
+				a.showAndWait();
+				;
 				return true;
+			}
+
 		}
-			
-	}
 		return false;
-		
-		
+
 	}
 
 	public void alterar(Funcionario fn) {
 		// TODO Auto-generated method stub
 		try {
-			 dao.alterar(fn);
-			
-		}catch (Exception e) {
+			dao.alterar(fn);
+
+		} catch (Exception e) {
 			// TODO: handle exception
 		}
-		
+
 	}
+
 	public ObservableList<Funcionario> getDataList() {
 		return dataList;
 	}
@@ -98,7 +99,7 @@ public class ControlFuncionario {
 	public void setDataList(ObservableList<Funcionario> dataList) {
 		this.dataList = dataList;
 	}
-	
+
 	public void attTableFuncionario() {
 		this.dataList.clear();
 		try {
@@ -107,11 +108,11 @@ public class ControlFuncionario {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//this.dataList.addAll(ClassList.funcionario);
-		//System.out.println(ClassList.funcionario.size()+" kkkkkkk");
+		// this.dataList.addAll(ClassList.funcionario);
+		// System.out.println(ClassList.funcionario.size()+" kkkkkkk");
 	}
 
-	public void pesquisarFuncionario(long cpf) {
+	public void pesquisarFuncionario(long cpf) throws DAOException {
 		this.dataList.clear();
 		try {
 			this.dataList.add(dao.pesquisarFuncionario(cpf));
@@ -120,5 +121,15 @@ public class ControlFuncionario {
 			e.printStackTrace();
 		}
 	}
-	
+
+	public void pesquisarFuncionario(String nome) throws DAOException {
+		this.dataList.clear();
+		try {
+			this.dataList.add(dao.pesquisarFuncionario(nome));
+		} catch (DAOException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+	}
+
 }

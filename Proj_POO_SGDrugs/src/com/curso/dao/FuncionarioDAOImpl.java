@@ -56,7 +56,49 @@ public class FuncionarioDAOImpl implements FuncionarioDAO {
 		}
 		
 	}
-
+	
+	@Override
+	public Funcionario pesquisarFuncionario(String nome) throws DAOException {
+		
+		Funcionario f = new Funcionario();
+		LoginDAO ldi = new LoginDAOImpl();
+		EnderecoDAOImpl edi = new EnderecoDAOImpl();
+		FarmaciaDAOImpl fdi = new FarmaciaDAOImpl();
+		FuncaoDAOImpl fndi = new FuncaoDAOImpl();
+		
+		try {
+			Connection con = ConnectionManager.getInstance().getConnection();
+			String sql = "Select tbfuncionario.idFuncionario, tbfuncionario.nome, tbfuncionario.sobrenome,"
+					+ "tbfuncionario.dtnascimento, tbfuncionario.cpf, tbfuncionario.sexo, tbfuncionario.telefone,"
+					+ "tbfuncionario.email, tbfuncionario.rg, tbfuncionario.salario, tbfuncionario.idFuncao,"
+					+ "tbfuncionario.idFarmacia from tbfuncionario where nome like ?";
+			PreparedStatement stmt = con.prepareStatement(sql);
+			stmt.setString(1, "%" + nome + "%");
+			ResultSet rs = stmt.executeQuery();
+			while(rs.next()) {
+				f.setID(rs.getInt("idFuncionario"));
+				f.setNome(rs.getString("nome"));
+				f.setSobrenome(rs.getString("sobrenome"));
+				f.setDt_nasc(rs.getDate("dtnascimento"));
+				f.setCpf(rs.getLong("cpf"));
+				f.setSexo(rs.getString("sexo").charAt(0));
+				f.setTelefone(rs.getInt("telefone"));
+				f.setEmail(rs.getString("email"));
+				f.setRg(rs.getLong("rg"));
+				f.setSalario(rs.getFloat("salario"));
+				f.setEnd(edi.pesquisarEnderecoFuncionario(nome));
+				Farmacia frm = fdi.pesquisarFarmacia(rs.getInt("idFarmacia"));
+				Funcao fnc = fndi.pesquisarPorFuncao(rs.getInt("idFuncao"));
+				f.setFarmacia(frm);
+				f.setFuncao(fnc);
+				f.setNivel(ldi.pesquisarNivelConta(rs.getInt("idFuncionario")));
+			}
+		} catch (SQLException e) {
+			System.out.println("Erro de Conexão com o Banco de Dados");
+			e.printStackTrace();
+		}
+		return f;
+	}
 
 
 	@Override
@@ -64,11 +106,10 @@ public class FuncionarioDAOImpl implements FuncionarioDAO {
 		LoginDAO ldi = new LoginDAOImpl();
 		Funcionario f = new Funcionario();
 		EnderecoDAOImpl edi = new EnderecoDAOImpl();
-		FarmaciaDAOImpl fdi = new FarmaciaDAOImpl();
+		FarmaciaDAOImpl fdi = new FarmaciaDAOImpl(); 
 		FuncaoDAO fndi = new FuncaoDAOImpl();
 		try {
 			Connection con = ConnectionManager.getInstance().getConnection();
-			//String sql = "SELECT * from tbcliente where cpf like ?";
 			String sql  = "select tbfuncionario.idFuncionario, tbfuncionario.nome, tbfuncionario.dtnascimento, tbfuncionario.sobrenome, tbfuncionario.cpf, tbfuncionario.sexo"
 					+ ", tbfuncionario.telefone, tbfuncionario.email, tbfuncionario.rg, tbfuncionario.salario, tbfuncionario.idFuncao, tbfuncionario.idFarmacia"  
 					+" from tbfuncionario where cpf=?";
@@ -152,12 +193,11 @@ public class FuncionarioDAOImpl implements FuncionarioDAO {
 	}
 	@Override
 	public void remover(long l) throws DAOException {
-		// TODO Auto-generated method stub
 		EnderecoDAOImpl edi = new EnderecoDAOImpl();
 		try {
 			Funcionario f = pesquisarFuncionario(l);
 			Connection con = ConnectionManager.getInstance().getConnection();
-			String sql = "DELETE FROM tbFuncionario WHERE cpf=?;";		
+			String sql = "DELETE FROM tbFuncionario WHERE cpf=?";		
 			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setLong(1, l);
 			stmt.executeUpdate();
@@ -251,5 +291,4 @@ public class FuncionarioDAOImpl implements FuncionarioDAO {
 		}
 		return f;
 	}
-
 }
