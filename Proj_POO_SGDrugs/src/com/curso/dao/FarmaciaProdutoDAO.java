@@ -12,5 +12,6 @@ public interface FarmaciaProdutoDAO {
 	List<FarmaciaProduto> pesquisarFarmaciaProdutos() throws DAOException;
 	void alterar(FarmaciaProduto fp) throws DAOException ;
 	void remover(int id_produto) throws DAOException ;
+	public void attQntdProd(int qntd, int id_produto) throws DAOException;
 	
 }

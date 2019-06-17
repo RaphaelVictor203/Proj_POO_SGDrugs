@@ -17,6 +17,7 @@ public class VendaDAOImpl implements VendaDAO {
 	public void inserir(Venda v) throws DAOException {
 		ItemVendaDAO ivo = new ItemVendaDAOImpl();
 		FormaPagtoDAO fpi = new FormaPagtoDAOImpl();
+		FarmaciaProdutoDAO fpdi = new FarmaciaProdutoDAOImpl();
 		try {
 			
 			Connection con = ConnectionManager.getInstance().getConnection();
@@ -34,6 +35,7 @@ public class VendaDAOImpl implements VendaDAO {
 			
 			for(ItemVenda iv : v.getItems()) {
 				ivo.inserir(iv, ultV);
+				fpdi.attQntdProd(iv.getQntd(), iv.getProduto().getIdFarmaciaProd());
 			}
 			
 			for(FormaPagto fp : v.getFormasPagto()) {

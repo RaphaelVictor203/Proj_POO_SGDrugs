@@ -173,5 +173,32 @@ public class FarmaciaProdutoDAOImpl implements FarmaciaProdutoDAO {
 		}
 
 	}
+	
+	public void attQntdProd(int qntd, int id_produto) throws DAOException {
+		int qntdBancoAtual = 0;
+		try {
+			Connection con = ConnectionManager.getInstance().getConnection();
+			// String sql = "SELECT * from tbcliente where cpf like ?";
+			String sql = "select qntd from tbfarmaciaproduto where idFarmaciaProduto=?";
+			PreparedStatement stmt = con.prepareStatement(sql);
+			stmt.setInt(1, id_produto);
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				qntdBancoAtual = rs.getInt("qntd");
+			}
+			
+			qntdBancoAtual -= qntd;
+			sql = "update tbfarmaciaproduto set qntd=? where idFarmaciaProduto=?";
+			stmt = con.prepareStatement(sql);
+			stmt.setInt(1, qntdBancoAtual);
+			stmt.setInt(2, id_produto);
+			stmt.executeUpdate();
+			con.close();			
+		} catch (SQLException e) {
+			System.out.println("Erro de conexão no banco de dados");
+			e.printStackTrace();
+			throw new DAOException(e);
+		}
+	}
 
 }
