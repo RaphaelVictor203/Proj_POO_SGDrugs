@@ -409,6 +409,7 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 					CAD_tblProdutos.requestFocus();
 					CAD_tblProdutos.getSelectionModel().clearAndSelect(0);
 				} catch (Exception e) {
+					CAD_txtPesquisar.clear();
 					CAD_txtPesquisar.requestFocus();
 				}				
 			} 
