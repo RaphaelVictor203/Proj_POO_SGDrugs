@@ -320,7 +320,9 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 		}
 		f.setFarmacia(this.cmbFarmacia.getSelectionModel().getSelectedItem());
 		Endereco ed = new Endereco();
-		ed.setIdEndereco(ff.pesquisarFornecedor(Long.parseLong(this.txtCNPJ.getText())).getEndereco().getIdEndereco());
+		if(!btnCadastrar.getText().equals("CADASTRAR")) {
+			ed.setIdEndereco(ff.pesquisarFornecedor(Long.parseLong(this.txtCNPJ.getText())).getEndereco().getIdEndereco());
+		}
 		ed.setCep(this.txtCEP.getText());
 		ed.setRua(this.txtRua.getText());
 		ed.setNumero(Integer.parseInt(this.txtNum.getText()));
