@@ -427,10 +427,9 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 				txtPesquisa.clear();
 				txtPesquisa.requestFocus();
 			} catch (DAOException e) {
-				
 				Alert a = new Alert(AlertType.ERROR, "Produto Não Encontrado");
 				a.show();
-				txtPesquisa.requestFocus();
+				e.printStackTrace();
 			}
 
 		} else if (event.getSource() == btnAdicionar) {

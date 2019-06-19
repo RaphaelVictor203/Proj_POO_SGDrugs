@@ -11,6 +11,7 @@ import com.curso.entity.Fornecedor;
 import com.curso.entity.Produto;
 import javafx.application.Application;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -235,9 +236,8 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 		categoria_produto.setCellValueFactory(item -> new ReadOnlyStringWrapper(item.getValue().getCategoria()));
 		categoria_produto.setPrefWidth(210);
 
-		TableColumn<Produto, String> fornecedor_produto = new TableColumn<>("Fornecedor");
-		fornecedor_produto.setCellValueFactory(
-				item -> new ReadOnlyStringWrapper(item.getValue().getFornecedor().getNome_fantasia()));
+		TableColumn<Produto, Fornecedor> fornecedor_produto = new TableColumn<>("Fornecedor");
+		fornecedor_produto.setCellValueFactory(item -> new ReadOnlyObjectWrapper<>(item.getValue().getFornecedor()));
 		fornecedor_produto.setPrefWidth(150);
 
 		cp.CarregarProdutos();
@@ -374,12 +374,12 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 		}
 
 		if (event.getSource() == CAD_btnCancelar) {
-			resetarCampos();
 			try {
 				cp.SearchProdutoCadastro("");
 			} catch (DAOException e) {
 				e.printStackTrace();
 			}
+			resetarCampos();
 		}
 
 		if (event.getSource() == CAD_btnInserir) {
@@ -400,9 +400,8 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 
 			if (CAD_cmbPesquisa.getSelectionModel().getSelectedIndex() == -1) {
 				Alert alert = new Alert(AlertType.WARNING, "Por Favor, informe o tipo de Pesquisa");
-				alert.show();			
-			} 
-			else if (CAD_cmbPesquisa.getSelectionModel().getSelectedIndex() == 0) {
+				alert.show();
+			} else if (CAD_cmbPesquisa.getSelectionModel().getSelectedIndex() == 0) {
 
 				try {
 					cp.SearchProdutoCadastro(Integer.parseInt(CAD_txtPesquisar.getText()));
@@ -411,9 +410,8 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 				} catch (Exception e) {
 					CAD_txtPesquisar.clear();
 					CAD_txtPesquisar.requestFocus();
-				}				
-			} 
-			else {
+				}
+			} else {
 
 				try {
 					cp.SearchProdutoCadastro(CAD_txtPesquisar.getText());
@@ -447,8 +445,6 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 			p.setId_produto(CAD_tblProdutos.getSelectionModel().getSelectedItem().getId_produto());
 			try {
 				cp.ExcluirProduto(p);
-				Alert alert = new Alert(AlertType.INFORMATION, "Exclusão Realizada com Êxito");
-				alert.show();
 				resetarCampos();
 			} catch (DAOException e) {
 				e.printStackTrace();
@@ -475,9 +471,9 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 	}
 
 	public void resetarCampos() {
-		
-		CAD_txtDescricao.setText(null);
-		CAD_txtPesquisar.setText(null);
+
+		CAD_txtDescricao.clear();
+		CAD_txtPesquisar.clear();
 		CAD_cmbCategoria.getSelectionModel().clearAndSelect(-1);
 		CAD_cmbFornecedor.getSelectionModel().clearAndSelect(-1);
 		CAD_txtDescricao.requestFocus();

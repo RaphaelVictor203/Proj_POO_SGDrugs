@@ -85,7 +85,7 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 		txtNum = new TextField();
 		/*txtCid = new TextField();
 		txtUF = new TextField();*/
-		cmbCid = new ComboBox<String>(FXCollections.observableArrayList(new String[] {"São Paulo", "Ribeirão", "Botucatu", "Piracicaba", "Santos", "Franca", "Araçatuba"}));
+		cmbCid = new ComboBox<String>(FXCollections.observableArrayList(new String[] {"São Paulo", "Ribeirão", "Botucatu", "Piracicaba", "Santos", "Franca", "Araçatuba", "Barueri"}));
 		cmbUF = new ComboBox<String>(FXCollections.observableArrayList(new String[] {"SP"}));
 
 		txtPesquisa = new TextField();
@@ -318,7 +318,7 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 		f.setID(ff.pesquisarFornecedor(Long.parseLong(this.txtCNPJ.getText())).getID());
 		f.setNome_fantasia(this.txtNome.getText());
 		f.setCnpj(Long.parseLong(this.txtCNPJ.getText()));
-		if(!this.txtTelefone.getText().equals("")) {
+		if(!this.txtTelefone.getText().equals("")) {	
 			f.setTelefone(Long.parseLong(this.txtTelefone.getText()));
 		}
 		f.setFarmacia(this.cmbFarmacia.getSelectionModel().getSelectedItem());

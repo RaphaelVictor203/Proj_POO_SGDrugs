@@ -10,6 +10,9 @@ import java.util.List;
 import com.curso.entity.Fornecedor;
 import com.curso.entity.Produto;
 
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+
 public class ProdutoDAOImpl implements ProdutoDAO {
 
 	@Override
@@ -60,12 +63,12 @@ public class ProdutoDAOImpl implements ProdutoDAO {
 		}
 		return lista;
 	}
-	
+
 	@Override
 	public void alterarProduto(Produto p) throws DAOException {
 
 		try {
-			
+
 			Connection con = ConnectionManager.getInstance().getConnection();
 			String sql = "UPDATE tbProduto set descricao=?, categoria=?, idFornecedor=? WHERE idProduto=?";
 			PreparedStatement cmd = con.prepareStatement(sql);
@@ -86,6 +89,7 @@ public class ProdutoDAOImpl implements ProdutoDAO {
 	public void excluirProduto(Produto p) throws DAOException {
 		FarmaciaProdutoDAO fap = new FarmaciaProdutoDAOImpl();
 		try {
+
 			fap.remover(p.getId_produto());
 			Connection con = ConnectionManager.getInstance().getConnection();
 			String sql = "DELETE FROM tbProduto WHERE idProduto=?";
@@ -94,8 +98,13 @@ public class ProdutoDAOImpl implements ProdutoDAO {
 			cmd.executeUpdate();
 			cmd.close();
 
+			Alert alert = new Alert(AlertType.INFORMATION, "Exclusão Realizada com Êxito");
+			alert.show();
+
 		} catch (SQLException e) {
-			e.printStackTrace();
+
+			Alert alert = new Alert(AlertType.ERROR, "Impossível Excluir esse Produto, pois o mesmo está registrado no Estoque");
+			alert.show();
 		}
 
 	}
@@ -105,12 +114,12 @@ public class ProdutoDAOImpl implements ProdutoDAO {
 		FornecedorDAOImpl fdi = new FornecedorDAOImpl();
 		Produto p = new Produto();
 		String sql = "select * from tbproduto where idProduto=?";
-		try {		
+		try {
 			Connection con = ConnectionManager.getInstance().getConnection();
 			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setInt(1, id);
-			ResultSet  rs = stmt.executeQuery();
-			while (rs.next()) { 
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
 				p.setId_produto(rs.getInt("idProduto"));
 				p.setNome(rs.getString("descricao"));
 				p.setFornecedor(fdi.pesquisarPorFornecedor(rs.getInt("idFornecedor")));
@@ -129,11 +138,11 @@ public class ProdutoDAOImpl implements ProdutoDAO {
 		FornecedorDAOImpl fdi = new FornecedorDAOImpl();
 		List<Produto> lista = new ArrayList<>();
 		String sql = "select * from tbproduto;";
-		try {		
+		try {
 			Connection con = ConnectionManager.getInstance().getConnection();
 			PreparedStatement stmt = con.prepareStatement(sql);
-			ResultSet  rs = stmt.executeQuery();
-			while (rs.next()) { 
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
 				Produto p = new Produto();
 				p.setId_produto(rs.getInt("idProduto"));
 				p.setNome(rs.getString("descricao"));
@@ -148,6 +157,5 @@ public class ProdutoDAOImpl implements ProdutoDAO {
 		}
 		return lista;
 	}
-	
 
 }

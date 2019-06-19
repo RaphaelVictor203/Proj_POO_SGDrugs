@@ -11,6 +11,9 @@ import com.curso.entity.Endereco;
 import com.curso.entity.FarmaciaProduto;
 import com.curso.entity.Grupo;
 
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+
 public class FarmaciaProdutoDAOImpl implements FarmaciaProdutoDAO {
 
 	@Override
@@ -62,9 +65,9 @@ public class FarmaciaProdutoDAOImpl implements FarmaciaProdutoDAO {
 				fp.setQntdEstoque(rs.getInt("qntd"));
 			}
 		} catch (SQLException e) {
-			System.out.println("Erro de conexão no banco de dados");
 			e.printStackTrace();
-			throw new DAOException(e);
+			System.out.println("Erro de Conexao");
+			throw new DAOException();
 		}
 		//System.out.println("farmacia produto id - " + fp.getIdFarmaciaProd());
 		return fp;

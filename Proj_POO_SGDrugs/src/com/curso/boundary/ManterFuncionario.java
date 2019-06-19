@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.swing.JOptionPane;
+import javax.swing.text.PasswordView;
 
 import com.curso.control.ControlClientes;
 import com.curso.control.ControlFuncionario;
@@ -41,6 +42,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -551,6 +553,7 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 			} else if (cmbTipoPesquisa.getSelectionModel().getSelectedIndex() == 0) {
 				try {
 					funcio.pesquisarFuncionario(Long.parseLong(txtPesquisa.getText()));
+					tableFuncionario.getSelectionModel().clearAndSelect(0);
 				} catch (NumberFormatException ex) {
 					txtPesquisa.clear();
 					txtPesquisa.requestFocus();
@@ -562,8 +565,10 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 				try {
 					if(!txtPesquisa.getText().equals("")) {
 						funcio.pesquisarFuncionario(txtPesquisa.getText());
+						tableFuncionario.getSelectionModel().clearAndSelect(0);
 					} else {
 						funcio.attTableFuncionario();
+						limparCampos();
 					}
 				} catch (DAOException ex) {
 					ex.printStackTrace();
@@ -590,7 +595,6 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 		dialogSenha.setHeaderText(
 				"Para a finalização do cadastro do funcionario, é necessario definir um usuario e senha");
 		dialogSenha.setContentText("Por favor, digite a senha:");
-
 		senha = dialogSenha.showAndWait().get();
 
 		List<String> choices = new ArrayList<>();

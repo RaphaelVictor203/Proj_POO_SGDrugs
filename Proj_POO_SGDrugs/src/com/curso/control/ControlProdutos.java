@@ -44,7 +44,6 @@ public class ControlProdutos {
 	}
 
 	public void ExcluirProduto(Produto produto) throws DAOException {
-
 		try {
 			produtoDAO.excluirProduto(produto);
 			ProdutosCAD.clear();
