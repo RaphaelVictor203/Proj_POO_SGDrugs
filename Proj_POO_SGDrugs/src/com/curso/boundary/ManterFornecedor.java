@@ -3,6 +3,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.JOptionPane;
 import com.curso.control.ControlFornecedores;
+import com.curso.dao.DAOException;
+import com.curso.dao.EnderecoDAO;
+import com.curso.dao.EnderecoDAOImpl;
 import com.curso.entity.Fornecedor;
 import com.curso.entity.Fornecedor;
 import com.curso.entity.Fornecedor;
@@ -310,7 +313,7 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 	
 
 	public Fornecedor boundaryToFornecedor() {
-		
+		EnderecoDAO edi = new EnderecoDAOImpl();
 		Fornecedor f = new Fornecedor();
 		f.setID(ff.pesquisarFornecedor(Long.parseLong(this.txtCNPJ.getText())).getID());
 		f.setNome_fantasia(this.txtNome.getText());
@@ -438,6 +441,7 @@ public class ManterFornecedor extends Application implements EventHandler<MouseE
 				if(ff.cadFornecedor(boundaryToFornecedor())) {
 					Alert a = new Alert(AlertType.INFORMATION, "Cadastro realizado com sucesso !!!");
 					a.show();
+					//ff.cadFornecedor(boundaryToFornecedor());
 					limparCampos();
 					tblFornec.refresh();
 					setFunctionForButtons();

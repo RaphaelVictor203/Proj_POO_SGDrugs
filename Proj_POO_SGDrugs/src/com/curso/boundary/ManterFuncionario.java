@@ -133,7 +133,7 @@ public class ManterFuncionario extends Application implements EventHandler<Mouse
 		txtPesquisa.setPrefSize(200, 30);
 		txtPesquisa.setPromptText("Insira o nome ou CPF do Funcionário..");
 
-		cmbTipoPesquisa = new ComboBox<>(FXCollections.observableArrayList(new String[] { "CNPJ", "NOME" }));
+		cmbTipoPesquisa = new ComboBox<>(FXCollections.observableArrayList(new String[] { "CPF", "NOME" }));
 		cmbTipoPesquisa.setPrefSize(130, 30);
 		cmbTipoPesquisa.setPromptText("Selecione");
 

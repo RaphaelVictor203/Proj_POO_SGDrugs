@@ -273,6 +273,7 @@ public class EnderecoDAOImpl implements EnderecoDAO {
 
 	@Override
 	public void alterar(Endereco end) throws DAOException {
+		System.out.println("teste id endereco: " + end.getIdEndereco());
 		try {
 			Connection con = ConnectionManager.getInstance().getConnection();
 			String sql = "update tbendereco "
@@ -332,6 +333,7 @@ public class EnderecoDAOImpl implements EnderecoDAO {
 				end.setBairro(rs.getString("Bairro"));
 				end.setCidade(rs.getString("estado"));
 				end.setUf(rs.getString("cidade"));
+				System.out.println("NOME RUA " + end.getRua());
 			}
 		} catch (SQLException e) {
 			System.out.println("Erro de conexão no banco de dados");

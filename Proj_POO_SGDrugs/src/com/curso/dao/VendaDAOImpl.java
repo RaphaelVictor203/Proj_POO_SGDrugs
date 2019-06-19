@@ -3,7 +3,9 @@ package com.curso.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLData;
 import java.sql.SQLException;
+import java.sql.Types;
 
 import com.curso.entity.Cliente;
 import com.curso.entity.Endereco;
@@ -26,7 +28,11 @@ public class VendaDAOImpl implements VendaDAO {
 					+ " VALUES (?, ?, ?, ?)";
 			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setDouble(1, v.returnPrecoTotal());
-			stmt.setInt(2, v.getCliente().getId());
+			if(v.getCliente().getId() == 0) {
+				stmt.setNull(2, Types.VARCHAR);
+			}else {
+				stmt.setInt(2, v.getCliente().getId());
+			}
 			stmt.setInt(3, v.getFuncionario().getID());
 			stmt.setInt(4, v.getFuncionario().getFarmacia().getId());
 			stmt.executeUpdate();

@@ -90,4 +90,20 @@ public class LoginDAOImpl implements LoginDAO {
 		return nivel;
 	}
 
+	@Override
+	public void remover(int idFuncionario) throws DAOException {
+		Connection con;
+		try {
+			con = ConnectionManager.getInstance().getConnection();
+			String sql = "delete from tblog where idFuncionario=?";
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setInt(1, idFuncionario);
+			ps.executeUpdate();
+			con.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+	}
+
 }

@@ -84,8 +84,9 @@ public class ProdutoDAOImpl implements ProdutoDAO {
 
 	@Override
 	public void excluirProduto(Produto p) throws DAOException {
-
+		FarmaciaProdutoDAO fap = new FarmaciaProdutoDAOImpl();
 		try {
+			fap.remover(p.getId_produto());
 			Connection con = ConnectionManager.getInstance().getConnection();
 			String sql = "DELETE FROM tbProduto WHERE idProduto=?";
 			PreparedStatement cmd = con.prepareStatement(sql);

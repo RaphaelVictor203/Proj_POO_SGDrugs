@@ -193,9 +193,12 @@ public class FuncionarioDAOImpl implements FuncionarioDAO {
 	}
 	@Override
 	public void remover(long l) throws DAOException {
+		//System.out.println("cpf funcionario exclusão: " + l);
+		LoginDAO ldi = new LoginDAOImpl();
 		EnderecoDAOImpl edi = new EnderecoDAOImpl();
 		try {
 			Funcionario f = pesquisarFuncionario(l);
+			ldi.remover(f.getID());
 			Connection con = ConnectionManager.getInstance().getConnection();
 			String sql = "DELETE FROM tbFuncionario WHERE cpf=?";		
 			PreparedStatement stmt = con.prepareStatement(sql);
