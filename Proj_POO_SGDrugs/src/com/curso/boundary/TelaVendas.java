@@ -473,25 +473,27 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 
 			} else {
 				if (cv.getVendaAtual().getItems().size() == 0) {
-					JOptionPane.showMessageDialog(null,
-							"Não é possivel realizar a transação pois nenhum produto\nfoi adicionado.",
-							"Problema na transação", JOptionPane.ERROR_MESSAGE);
+					Alert alert = new Alert(AlertType.ERROR, "Não é Possível Realizar a Transição"
+														   + "\nPois nenhum produto foi Adicionado");
+					alert.setTitle("Erro na Transição");
+					alert.show();
 				} else {
-					JOptionPane.showMessageDialog(null, "Selecione ao menos uma forma de pagamento",
-							"Problema na transação", JOptionPane.ERROR_MESSAGE);
+					Alert alert = new Alert(AlertType.WARNING, 	"Selecione ao menos uma forma de pagamento" );
+					alert.setTitle("Atenção");
+					alert.show();
 				}
 			}
 		} else if (event.getSource() == btnVoltar) {
 			painelVenda.toFront();
 		} else if (event.getSource() == btnFinalizaPOS) {
-			// finalizar a compra tela pos venda
-			/*
-			 * cv.getVendaAtual().setCliente(cliente);
-			 * cv.getVendaAtual().setFuncionario(func);
+			/*finalizar a compra tela pos venda
+			  cv.getVendaAtual().setCliente(cliente);
+			  cv.getVendaAtual().setFuncionario(func);
 			 */
 			cv.addVenda();
-			JOptionPane.showMessageDialog(null, "Compra realiza com sucesso !!!", "Transação finalizada",
-					JOptionPane.INFORMATION_MESSAGE);
+			Alert alert = new Alert(AlertType.INFORMATION, "Compra Realizada com Sucesso !!!");
+			alert.setTitle("Transição Finalizada");
+			alert.show();
 			painelVenda.toFront();
 			limparCampos();
 			cv.resetFarmaciaProdutos();
@@ -500,7 +502,6 @@ public class TelaVendas extends Application implements EventHandler<MouseEvent> 
 				cpv.func = func;
 				cpv.start(stg);
 			} catch (Exception e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		}

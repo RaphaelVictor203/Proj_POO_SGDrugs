@@ -11,6 +11,7 @@ import com.curso.dao.VendaDAOImpl;
 import com.curso.entity.Cliente;
 import com.curso.entity.FarmaciaProduto;
 import com.curso.entity.FormaPagto;
+import com.curso.entity.Funcionario;
 import com.curso.entity.ItemVenda;
 import com.curso.entity.Venda;
 import javafx.collections.FXCollections;
@@ -127,18 +128,25 @@ public class ControlVendas {
 		}
 	}
 	
+	Funcionario f = new Funcionario();
 	public void printVendas() {
 		DecimalFormat df = new DecimalFormat("#,##0.00");
 		System.out.println("Venda: -------------------------------------------------");
 		for(Venda v : vendasRealizadas) {
-			System.out.println("NUM.:" + v.getId_venda() + " - CLIENTE:" + v.getCliente().getPrimeiroNome() + " - FUNCIONARIO:" + v.getFuncionario().getPrimeiroNome() + "\n");
+			v.setFuncionario(f);
+			System.out.println("NUM.:" + v.getId_venda() 
+						+ "\nCLIENTE:" + v.getCliente().getPrimeiroNome() 
+						+ "\nFUNCIONARIO:" + getVendaAtual().getFuncionario().getNome());
 				for(ItemVenda iv : v.getItems()) {
-					System.out.println("        " + iv.getProduto().getProduto().getNome() + " - " + iv.getProduto().getPreco() + " - " + iv.getSubtotal());
+					System.out.println("\nProduto: " + iv.getProduto().getProduto().getNome() + 
+									   "\nPreço: " + df.format(iv.getProduto().getPreco()) +
+									   "\nQuatidade: " + iv.getQntd() +
+									   "\nSubtotal" + df.format(iv.getSubtotal()));
 				}
 				System.out.println("\nTOTAL:R$" + df.format(v.returnPrecoTotal()));
 				System.out.println("FORMAS DE PAGAMENTO------------------------------------");
 				for(FormaPagto fp : v.getFormasPagto()) {
-					System.out.println("        " + fp.getFormaPagamento() + " - " + fp.getValor());
+					System.out.println("" + fp.getFormaPagamento() + ":" + fp.getValor());
 				}
 			System.out.println("-----------------------------------------------------------");
 		}

@@ -141,8 +141,8 @@ public class ControlFornecedores {
 //MANTER TABELAS---------------------------------------------------------------------
 
 	public void attTableFornecedor() {
-		this.dataList.clear();
 		try {
+			this.dataList.clear();
 			this.dataList.addAll(fornecDAO.pesquisarPorFornecedor());
 		} catch (DAOException e) {
 			// TODO Auto-generated catch block

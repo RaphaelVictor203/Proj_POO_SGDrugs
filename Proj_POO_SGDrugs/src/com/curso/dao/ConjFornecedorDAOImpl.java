@@ -21,7 +21,7 @@ public class ConjFornecedorDAOImpl implements ConjFornecedorDAO {
 		try {
 			con = ConnectionManager.getInstance().getConnection();
 			String sql = "INSERT INTO tbConjFornecedor "
-					+ "(idFornecedor,idFarmacia) "
+					+ "(idFornecedor, idFarmacia) "
 					+ " VALUES (?, ?)";
 			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setInt(1, idFornecedor);
@@ -29,7 +29,6 @@ public class ConjFornecedorDAOImpl implements ConjFornecedorDAO {
 			stmt.executeUpdate();
 			con.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

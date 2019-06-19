@@ -87,10 +87,7 @@ public class ProdutoDAOImpl implements ProdutoDAO {
 
 	@Override
 	public void excluirProduto(Produto p) throws DAOException {
-		FarmaciaProdutoDAO fap = new FarmaciaProdutoDAOImpl();
-		try {
-
-			fap.remover(p.getId_produto());
+		try {	
 			Connection con = ConnectionManager.getInstance().getConnection();
 			String sql = "DELETE FROM tbProduto WHERE idProduto=?";
 			PreparedStatement cmd = con.prepareStatement(sql);
@@ -103,7 +100,8 @@ public class ProdutoDAOImpl implements ProdutoDAO {
 
 		} catch (SQLException e) {
 
-			Alert alert = new Alert(AlertType.ERROR, "Impossível Excluir esse Produto, pois o mesmo está registrado no Estoque");
+			Alert alert = new Alert(AlertType.ERROR, "Não é possível excluir esse Produto, pois o mesmo\n"
+			+ "está vinculado ao estoque de uma ou mais farmácias");
 			alert.show();
 		}
 

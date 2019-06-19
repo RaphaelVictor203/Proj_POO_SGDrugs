@@ -46,7 +46,6 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 			stmt.setInt(4, ed.getIdEndereco());
 			stmt.executeUpdate();
 			con.close();
-			
 			cfdi.inserir(pesquisarPorFornecedor(fr.getCnpj()).getID(), fr.getFarmacia().getId());
 			
 		} catch (SQLException e) {
@@ -86,7 +85,6 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 				fr.setTelefone(rs.getLong("telefone"));
 	
 				fr.setFarmacia(fdi.pesquisarFarmacia(rs.getInt("idFarmacia")));
-				
 				fr.setEndereco(edi.pesquisarEnderecoFornecedor(rs.getLong("cnpj")));
 			}
 		} catch (SQLException e) {
@@ -166,7 +164,7 @@ public class FornecedorDAOImpl implements FornecedorDAO{
 				+ " from tbFornecedor f inner join tbendereco e on e.idEndereco=f.idEndereco"
 				+ " inner join tbConjFornecedor cf on cf.idFornecedor = f.idFornecedor"
 				+ " inner join tbFarmacia fr on fr.idFarmacia = cf.idFarmacia"
-				+ " inner join tbEndereco efrm on efrm.idEndereco = fr.idEndereco";
+				+ " inner join tbEndereco efrm on efrm.idEndereco = fr.idEndereco order by f.idFornecedor";
 		try {		
 			Connection con = ConnectionManager.getInstance().getConnection();
 			PreparedStatement stmt = con.prepareStatement(sql);

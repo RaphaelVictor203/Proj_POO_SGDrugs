@@ -3,6 +3,9 @@ package com.curso.boundary;
 import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.plaf.basic.BasicSplitPaneUI.KeyboardEndHandler;
+
 import com.curso.control.ControlProdutos;
 import com.curso.dao.DAOException;
 import com.curso.dao.FornecedorDAO;
@@ -199,9 +202,10 @@ public class ManterProduto extends Application implements EventHandler<MouseEven
 		CAD_btnAnterior.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
 		CAD_btnProximo.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
 		CAD_btnUltimo.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
-
 		CAD_tblProdutos.addEventHandler(MouseEvent.MOUSE_CLICKED, this);
 
+		
+		
 		loadstyles();
 		btnSelected(0);
 

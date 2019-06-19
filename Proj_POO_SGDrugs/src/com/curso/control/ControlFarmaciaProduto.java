@@ -10,6 +10,8 @@ import com.curso.entity.FarmaciaProduto;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 
 public class ControlFarmaciaProduto {
 
@@ -99,9 +101,13 @@ public class ControlFarmaciaProduto {
 		this.attTableProdutoFarm();
 		try {
 			fpdi.remover(fp.getIdFarmaciaProd());
+			Alert alert = new Alert(AlertType.INFORMATION, "Produto Removido do Estoque");
+			alert.setTitle("Remoção Concretizada");
+			alert.show();
 		} catch (DAOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Alert alert = new Alert(AlertType.ERROR, "Impossível Remover o Produto, \nPois o mesmo foi associado a uma Venda");
+			alert.setTitle("Remoção Não Concretizada");
+			alert.show();
 		}
 	}
 	

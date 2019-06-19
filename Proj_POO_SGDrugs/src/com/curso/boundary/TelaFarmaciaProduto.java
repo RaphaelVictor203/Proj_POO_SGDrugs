@@ -268,10 +268,12 @@ public class TelaFarmaciaProduto extends Application implements EventHandler<Mou
 			btnSelected(0);
 			painelCad.toFront();
 		}else
+		
 		if(e.getSource() == btnMantProd) {
 			btnSelected(1);
 			painelMant.toFront();
 		}else
+		
 		if(e.getSource() == btnCadastro) {
 			cfp.inserir(boundaryToFarmaciaProd());
 			setFunctionProdFarmButtons();
@@ -302,7 +304,7 @@ public class TelaFarmaciaProduto extends Application implements EventHandler<Mou
 							cfp.pesquisarFarmaciaProd(txtPesquisaProd.getText(), "FORNECEDOR");
 							break;
 					}
-				}else {
+				} else {
 					JOptionPane.showMessageDialog(null, "Atenção, é preciso determinar o tipo de pesquisa que sera realizada", "Erro", JOptionPane.ERROR_MESSAGE);
 				}
 			}
@@ -361,7 +363,7 @@ public class TelaFarmaciaProduto extends Application implements EventHandler<Mou
 		preco.setCellValueFactory(item -> new ReadOnlyDoubleWrapper(item.getValue().getPreco()));
 		
 		TableColumn<FarmaciaProduto, Button> excluir = new TableColumn<>("Excluir");
-		excluir.setCellValueFactory(item -> new ReadOnlyObjectWrapper(item.getValue().getBtnExcluir()));
+		excluir.setCellValueFactory(item -> new ReadOnlyObjectWrapper<>(item.getValue().getBtnExcluir()));
 		
 		tblFarmaciaProd.getColumns().addAll(id_produto, categoria, nome, qntdEstoque, preco, excluir);
 		setFunctionProdFarmButtons();
